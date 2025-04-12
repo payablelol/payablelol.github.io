@@ -3,43 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang-key="pageTitle">支付实验室 - Shaping the Payment Future</title>
+    <title data-lang-key="pageTitle">Payment Lab - Shaping the Payment Future</title>
     <style>
-        /* 1. 基本重置与全局样式 */
+        /* 1. Base Reset & Global Styles */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             line-height: 1.6;
-            /* 更新为浅色主题 */
-            color: var(--text-primary); /* 使用深色文字 */
-            background-color: var(--background-body); /* 使用浅绿色背景 */
+            color: var(--text-primary);
+            background-color: var(--background-body);
             overflow-x: hidden;
         }
 
-        /* 2. 变量定义 - 全新浅绿色护眼色系 */
+        /* 2. Variable Definitions - Light Green Theme */
         :root {
-            --primary-color: #34d399; /* 柔和翠绿 (Accent) */
-            --secondary-accent-color: #10b981; /* 稍深的翠绿，用于按钮悬停等 */
-            --background-body: #f0fff4; /* Honeydew (非常浅的绿色背景) */
-            --background-header: rgba(255, 255, 255, 0.9); /* 白色半透明 Header */
-            --background-card: #ffffff; /* 白色卡片背景 */
-            --text-primary: #2d3748; /* 深蓝灰色 (主要文字) */
-            --text-secondary: #718096; /* 灰石色 (次要文字) */
-            --text-on-accent: #ffffff; /* 在主色调按钮上使用的白色文字 */
-            --border-color: #e5e7eb; /* 浅灰色边框 */
-            --shadow-color-light: rgba(45, 55, 72, 0.1); /* 浅色主题的阴影 */
+            --primary-color: #34d399; /* Soft Emerald Green */
+            --secondary-accent-color: #10b981; /* Slightly deeper green for hover states */
+            --background-body: #f0fff4; /* Honeydew (very light green background) */
+            --background-header: rgba(255, 255, 255, 0.9); /* White with slight opacity */
+            --background-card: #ffffff; /* White background for cards */
+            --text-primary: #2d3748; /* Dark blue-gray for main text */
+            --text-secondary: #718096; /* Stone gray for secondary text */
+            --text-on-accent: #ffffff; /* White text on accent colors */
+            --border-color: #e5e7eb; /* Light gray border */
+            --shadow-color-light: rgba(45, 55, 72, 0.1); /* Light shadow */
             --hover-delay: 0.15s;
             --header-height-desktop: 70px;
             --header-height-mobile: 130px; /* Approximate */
         }
 
-        /* 3. 容器与布局 */
+        /* 3. Containers & Layout */
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
         header, section, footer { padding: 60px 0; }
         section h2 {
             text-align: center; margin-bottom: 40px; font-size: 2.5rem;
-            color: var(--text-primary); /* 深色标题 */
+            color: var(--text-primary);
             position: relative; display: inline-block; left: 50%; transform: translateX(-50%);
         }
         section h2::after {
@@ -48,22 +47,20 @@
             margin: 8px auto 0;
         }
 
-        /* 4. 页头 (Header) */
+        /* 4. Header */
         .site-header {
             position: fixed; top: 0; left: 0; width: 100%;
-            background-color: var(--background-header); /* 白色半透明 */
-            backdrop-filter: blur(10px); /* 在浅色上也保留一点模糊效果 */
+            background-color: var(--background-header);
+            backdrop-filter: blur(10px);
             z-index: 100; transition: top 0.3s, background-color 0.3s, box-shadow 0.3s;
             height: var(--header-height-desktop);
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid transparent; /* 初始透明边框，滚动时变色 */
+            display: flex; align-items: center;
+            border-bottom: 1px solid transparent;
         }
-        /* 可选：滚动时给 Header 加阴影和实线边框 */
         .site-header.scrolled {
-             background-color: rgba(255, 255, 255, 0.95); /* 滚动时更不透明 */
-             box-shadow: 0 2px 4px var(--shadow-color-light);
-             border-bottom-color: var(--border-color);
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 4px var(--shadow-color-light);
+            border-bottom-color: var(--border-color);
         }
 
         .header-container {
@@ -73,35 +70,47 @@
 
         /* 5. Logo */
         .logo { display: flex; align-items: center; text-decoration: none;
-            color: var(--text-primary); /* 深色 Logo 文字 */
+            color: var(--text-primary);
             font-size: 1.5rem; font-weight: bold;
         }
         .logo-icon { width: 35px; height: 35px; margin-right: 10px; position: relative; transform: rotate(45deg); }
         .logo-icon::before, .logo-icon::after {
             content: ''; position: absolute; width: 70%; height: 70%;
-            border-radius: 2px; animation: logo-pulse 2.5s infinite ease-in-out; opacity: 0.9; /* 浅色背景上可以更不透明 */
+            border-radius: 2px; animation: logo-pulse 2.5s infinite ease-in-out; opacity: 0.9;
         }
         .logo-icon::before { top: 0; left: 0; animation-delay: 0s; background-color: var(--primary-color); }
-        .logo-icon::after { bottom: 0; right: 0; animation-delay: -1.25s; background-color: #d1fae5; /* 非常浅的绿色 */ opacity: 0.7; }
-        @keyframes logo-pulse { 0%, 100% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+        .logo-icon::after { bottom: 0; right: 0; animation-delay: -1.25s; background-color: #d1fae5; opacity: 0.7; }
 
-        /* 6. 导航 (Navigation) */
+        @keyframes logo-pulse {
+            0%, 100% {
+                transform: scale(0.95); opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.05); opacity: 1;
+            }
+        }
+
+        /* 6. Navigation */
         .main-nav ul { list-style: none; display: flex; align-items: center; }
         .main-nav li { margin-left: 25px; }
-        .main-nav a { text-decoration: none;
-            color: var(--text-primary); /* 深色导航链接 */
+        .main-nav a {
+            text-decoration: none;
+            color: var(--text-primary);
             font-size: 1rem; padding: 5px 0; position: relative; transition: color var(--hover-delay) ease;
         }
-        .main-nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -3px; left: 0; background-color: var(--primary-color); transition: width var(--hover-delay) ease; }
+        .main-nav a::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: -3px; left: 0; background-color: var(--primary-color);
+            transition: width var(--hover-delay) ease;
+        }
         .main-nav a:hover, .main-nav a:focus { color: var(--primary-color); }
         .main-nav a:hover::after, .main-nav a:focus::after { width: 100%; }
 
-        /* 6.1 语言切换器样式 */
+        /* 6.1 Language Switcher */
         .language-switcher { margin-left: 30px; }
         #lang-select {
-            background-color: var(--background-card); /* 白色背景 */
-            color: var(--text-primary); /* 深色文字 */
-            border: 1px solid var(--border-color); /* 浅灰边框 */
+            background-color: var(--background-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
             padding: 5px 8px;
             border-radius: 4px; font-size: 0.9rem; cursor: pointer;
             transition: border-color var(--hover-delay) ease;
@@ -109,21 +118,23 @@
         #lang-select:hover, #lang-select:focus { border-color: var(--primary-color); outline: none; }
         #lang-select option { background-color: var(--background-card); color: var(--text-primary); }
 
-        /* 7. 主内容区 (Main Content) */
+        /* 7. Main Content */
         main { padding-top: calc(var(--header-height-desktop) + 20px); }
 
-        /* 7.1 英雄区域 (Hero Section) */
+        /* 7.1 Hero Section */
         #hero {
-             display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left;
-             padding-top: 0;
-             min-height: calc(80vh - var(--header-height-desktop));
+            display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left;
+            padding-top: 0;
+            min-height: calc(80vh - var(--header-height-desktop));
         }
-        #hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem);
+        #hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
             color: var(--text-primary);
             margin-bottom: 15px; line-height: 1.1;
         }
         #hero h1 .highlight { color: var(--primary-color); }
-        #hero .subtitle { font-size: 1.5rem;
+        #hero .subtitle {
+            font-size: 1.5rem;
             color: var(--text-secondary);
             margin-bottom: 30px; max-width: 600px;
         }
@@ -135,16 +146,19 @@
             cursor: pointer;
         }
         .cta-button:hover, .cta-button:focus {
-             background-color: var(--primary-color);
-             color: var(--text-on-accent);
-             transform: translateY(-2px);
-             box-shadow: 0 4px 8px var(--shadow-color-light);
+            background-color: var(--primary-color);
+            color: var(--text-on-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color-light);
         }
 
-        /* 7.2 关于我们 (About Section) */
-        #about p { color: var(--text-secondary); max-width: 700px; margin: 0 auto 20px; text-align: center; font-size: 1.1rem; }
+        /* 7.2 About Us Section */
+        #about p {
+            color: var(--text-secondary);
+            max-width: 700px; margin: 0 auto 20px; text-align: center; font-size: 1.1rem;
+        }
 
-        /* 7.3 研究领域 (Research Section) */
+        /* 7.3 Research Section */
         #research .research-focus-content {
             max-width: 800px; margin: 30px auto 0; padding: 35px;
             background-color: var(--background-card);
@@ -165,25 +179,32 @@
         }
         #research .research-focus-content p:last-of-type { margin-bottom: 0; }
 
-        /* 7.4 联系我们 (Contact Section) */
-        #contact p { text-align: center; color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px; }
-        #contact .contact-info { text-align: center; font-size: 1.1rem;
+        /* 7.4 Contact Section */
+        #contact p {
+            text-align: center; color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;
+        }
+        #contact .contact-info {
+            text-align: center; font-size: 1.1rem;
             color: var(--text-primary);
         }
-        #contact .contact-info a { color: var(--primary-color); text-decoration: none; border-bottom: 1px dashed var(--primary-color); transition: color var(--hover-delay), border-bottom-color var(--hover-delay); }
+        #contact .contact-info a {
+            color: var(--primary-color); text-decoration: none; border-bottom: 1px dashed var(--primary-color);
+            transition: color var(--hover-delay), border-bottom-color var(--hover-delay);
+        }
         #contact .contact-info a:hover {
             color: var(--secondary-accent-color);
             border-bottom-color: var(--secondary-accent-color);
         }
 
-        /* 8. 页脚 (Footer) */
-        .site-footer { text-align: center; padding: 30px 0;
+        /* 8. Footer */
+        .site-footer {
+            text-align: center; padding: 30px 0;
             border-top: 1px solid var(--border-color);
             font-size: 0.9rem; color: var(--text-secondary);
             background-color: var(--background-card);
         }
 
-        /* 9. 响应式设计 */
+        /* 9. Responsive */
         @media (max-width: 900px) {
             .site-header { height: auto; padding-top: 10px; padding-bottom: 10px; }
             .header-container { flex-direction: column; align-items: center; }
@@ -210,17 +231,16 @@
             main { padding-top: calc(var(--header-height-mobile) + 10px); }
             #research .research-focus-content h3 { font-size: 1.4rem; }
         }
-
     </style>
 </head>
 <body>
 
-    <!-- 页头 -->
+    <!-- Header -->
     <header class="site-header" id="site-header">
         <div class="header-container">
             <a href="#hero" class="logo">
                 <div class="logo-icon"></div>
-                <span data-lang-key="logoText">支付实验室</span>
+                <span data-lang-key="logoText">Payment Lab</span>
             </a>
             <nav class="main-nav">
                 <ul>
@@ -240,65 +260,80 @@
         </div>
     </header>
 
-    <br>
-    <br>
-    <br>
-    <!-- 主内容区 -->
+    <!-- Main Content -->
     <main>
-        <!-- 英雄区域 -->
+        <!-- Hero Section -->
         <section id="hero" class="container">
-            <h1 data-lang-key="heroTitle">支付实验室, <span class="highlight">Building Tomorrow</span></h1>
-            <p class="subtitle" data-lang-key="heroSubtitle">Empowering the future of financial transactions with ground-breaking payment solutions.</p>
+            <h1 data-lang-key="heroTitle">Payment Lab, <span class="highlight">Building Tomorrow</span></h1>
+            <p class="subtitle" data-lang-key="heroSubtitle">
+                Empowering the future of financial transactions with groundbreaking payment solutions.
+            </p>
             <a href="#research" class="cta-button" data-lang-key="heroCta">Discover Our Focus</a>
         </section>
 
-        <!-- 关于我们 -->
+        <!-- About Us Section -->
         <section id="about" class="container">
             <h2 data-lang-key="aboutTitle">About Us</h2>
-            <p data-lang-key="aboutP1">支付实验室汇集了顶尖的业务专家、软件开发人员和金融工程师，致力于为现代商业实现无缝交易。</p>
-            <p data-lang-key="aboutP2">协作、创新和严谨的行业专长推动我们构建可靠的支付系统和前沿解决方案。</p>
+            <p data-lang-key="aboutP1">
+                Payment Lab brings together top business experts, software developers, and financial engineers dedicated to seamless transactions in modern commerce.
+            </p>
+            <p data-lang-key="aboutP2">
+                Collaboration, innovation, and rigorous industry expertise drive us to build reliable payment systems and cutting-edge solutions.
+            </p>
         </section>
 
-        <!-- 研究领域 - 单一焦点 -->
+        <!-- Research Section -->
         <section id="research" class="container">
             <h2 data-lang-key="researchTitle">Our Research Focus</h2>
             <div class="research-focus-content">
                 <h3 data-lang-key="researchFocusTitle">Seamless Payment Integration</h3>
-                <p data-lang-key="researchFocusDesc1">数字支付十分复杂且容易出现交易失败，导致错误或延迟。我们的主要研究集中在设计可靠的支付网络和安全的交易协议。</p>
-                <p data-lang-key="researchFocusDesc2">我们研究新的数字货币，开发先进的欺诈检测技术，并创建框架以确保可靠的大规模支付处理。这对于在零售、数字市场和订阅服务等领域释放现代电子商务的潜力至关重要。</p>
+                <p data-lang-key="researchFocusDesc1">
+                    Digital payments are complex and prone to transaction failures, resulting in errors or delays. Our primary research focuses on designing robust payment networks and secure transaction protocols.
+                </p>
+                <p data-lang-key="researchFocusDesc2">
+                    We explore emerging digital currencies, develop advanced fraud detection techniques, and create frameworks to ensure reliable large-scale payment processing. This is critical for unlocking the potential of modern e-commerce across retail, digital marketplaces, and subscription services.
+                </p>
             </div>
         </section>
 
-        <!-- 联系我们 -->
+        <!-- Contact Section -->
         <section id="contact" class="container">
             <h2 data-lang-key="contactTitle">Contact Us</h2>
-            <p data-lang-key="contactP1">有兴趣合作、加入我们的团队或了解更多关于我们支付创新的信息吗？我们非常期待您的来信。</p>
+            <p data-lang-key="contactP1">
+                Interested in collaborating, joining our team, or learning more about our payment innovations? We look forward to hearing from you!
+            </p>
             <div class="contact-info">
-                <p><span data-lang-key="contactEmailLabel">Email</span>: <a href="mailto:admin@payable.lol">admin@payable.lol</a></p>
-                <p><span data-lang-key="contactAddressLabel">Address</span>: Payment Wing, Payment Tech Park</p>
+                <p>
+                    <span data-lang-key="contactEmailLabel">Email</span>:
+                    <a href="mailto:admin@payable.lol">admin@payable.lol</a>
+                </p>
+                <p>
+                    <span data-lang-key="contactAddressLabel">Address</span>:
+                    Payment Wing, Payment Tech Park
+                </p>
             </div>
         </section>
     </main>
 
-    <!-- 页脚 -->
+    <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
-            <p data-lang-key="footerText">© 2024 支付实验室. All rights reserved.</p>
+            <p data-lang-key="footerText">© 2024 Payment Lab. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- JavaScript (语言切换逻辑: 注入"支付实验室"相关翻译) -->
+    <!-- JavaScript -->
     <script>
-        // 1. 翻译文本存储 (更新为 "支付实验室" 主题)
+        // 1. Translations (Now in English)
         const translations = {
             pageTitle: {
-                en: "支付实验室 - Shaping the Payment Future",
+                en: "Payment Lab - Shaping the Payment Future",
                 'zh-CN': "支付实验室 - 塑造支付未来",
                 'zh-TW': "支付實驗室 - 塑造支付未來",
                 ru: "支付实验室 - Формируя будущее платежей"
             },
             logoText: {
-                en: "支付实验室",
+                en: "Payment Lab",
                 'zh-CN': "支付实验室",
                 'zh-TW': "支付實驗室",
                 ru: "支付实验室"
@@ -322,13 +357,13 @@
                 ru: "Контакты"
             },
             heroTitle: {
-                en: '支付实验室, <span class="highlight">Building Tomorrow</span>',
+                en: 'Payment Lab, <span class="highlight">Building Tomorrow</span>',
                 'zh-CN': '支付实验室，<span class="highlight">构建明天</span>',
                 'zh-TW': '支付實驗室，<span class="highlight">構建明天</span>',
                 ru: '支付实验室, <span class="highlight">Строим Завтра</span>'
             },
             heroSubtitle: {
-                en: "Empowering the future of financial transactions with ground-breaking payment solutions.",
+                en: "Empowering the future of financial transactions with groundbreaking payment solutions.",
                 'zh-CN': "通过突破性的支付解决方案，赋能金融交易的未来。",
                 'zh-TW': "透過突破性的支付解決方案，賦能金融交易的未來。",
                 ru: "Расширяем будущее финансовых транзакций с помощью прорывных платежных решений."
@@ -346,13 +381,13 @@
                 ru: "О нас"
             },
             aboutP1: {
-                en: "支付实验室汇集了顶尖的业务专家、软件开发人员和金融工程师，致力于为现代商业实现无缝交易。",
+                en: "Payment Lab brings together top business experts, software developers, and financial engineers dedicated to seamless transactions in modern commerce.",
                 'zh-CN': "支付实验室汇集了顶尖的业务专家、软件开发人员和金融工程师，致力于为现代商业实现无缝交易。",
                 'zh-TW': "支付實驗室匯集了頂尖的業務專家、軟體開發人員和金融工程師，致力於為現代商業實現無縫交易。",
                 ru: "支付实验室 объединяет ведущих бизнес-экспертов, разработчиков ПО и финансовых инженеров, посвятивших себя созданию беспрепятственных транзакций."
             },
             aboutP2: {
-                en: "协作、创新和严谨的行业专长推动我们构建可靠的支付系统和前沿解决方案。",
+                en: "Collaboration, innovation, and rigorous industry expertise drive us to build reliable payment systems and cutting-edge solutions.",
                 'zh-CN': "协作、创新和严谨的行业专长推动我们构建可靠的支付系统和前沿解决方案。",
                 'zh-TW': "協作、創新和嚴謹的行業專長推動我們構建可靠的支付系統和前沿解決方案。",
                 ru: "Сотрудничество, инновации и глубокая профессиональная экспертиза направляют нас в создании надёжных платёжных систем и новейших решений."
@@ -370,13 +405,13 @@
                 ru: "Бесшовная интеграция платежей"
             },
             researchFocusDesc1: {
-                en: "数字支付十分复杂且容易出现交易失败，导致错误或延迟。我们的主要研究集中在设计可靠的支付网络和安全的交易协议。",
+                en: "Digital payments are complex and prone to transaction failures, resulting in errors or delays. Our primary research focuses on designing robust payment networks and secure transaction protocols.",
                 'zh-CN': "数字支付十分复杂且容易出现交易失败，导致错误或延迟。我们的主要研究集中在设计可靠的支付网络和安全的交易协议。",
                 'zh-TW': "數位支付相當複雜且容易出現交易失敗，導致錯誤或延遲。我們的主要研究集中在設計可靠的支付網路和安全的交易協定。",
                 ru: "Цифровые платежи часто бывают сложными и подверженными сбоям, что приводит к ошибкам или задержкам. Мы нацелены на разработку надёжных платёжных сетей и безопасных протоколов транзакций."
             },
             researchFocusDesc2: {
-                en: "我们研究新的数字货币，开发先进的欺诈检测技术，并创建框架以确保可靠的大规模支付处理。这对于在零售、数字市场和订阅服务等领域释放现代电子商务的潜力至关重要。",
+                en: "We explore emerging digital currencies, develop advanced fraud detection techniques, and create frameworks to ensure reliable large-scale payment processing. This is critical for unlocking the potential of modern e-commerce across retail, digital marketplaces, and subscription services.",
                 'zh-CN': "我们研究新的数字货币，开发先进的欺诈检测技术，并创建框架以确保可靠的大规模支付处理。这对于在零售、数字市场和订阅服务等领域释放现代电子商务的潜力至关重要。",
                 'zh-TW': "我們研究新的數位貨幣，開發先進的詐欺檢測技術，並創建框架以確保可靠的大規模支付處理。這對於在零售、數位市場和訂閱服務等領域釋放現代電子商務的潛力至關重要。",
                 ru: "Мы исследуем новые цифровые валюты, внедряем передовые методы обнаружения мошенничества и разрабатываем структуры, гарантирующие надёжную крупномасштабную обработку платежей. Это крайне важно для реализации возможностей современной электронной коммерции."
@@ -388,7 +423,7 @@
                 ru: "Свяжитесь с нами"
             },
             contactP1: {
-                en: "有兴趣合作、加入我们的团队或了解更多关于我们支付创新的信息吗？我们非常期待您的来信。",
+                en: "Interested in collaborating, joining our team, or learning more about our payment innovations? We look forward to hearing from you!",
                 'zh-CN': "有兴趣合作、加入我们的团队或了解更多关于我们支付创新的信息吗？我们非常期待您的来信。",
                 'zh-TW': "有興趣合作、加入我們的團隊或了解更多關於我們支付創新的資訊嗎？我們非常期待您的來信。",
                 ru: "Заинтересованы в сотрудничестве, работе с нами или хотите узнать больше о наших инновациях в сфере платежей? Будем рады вашему письму."
@@ -406,19 +441,19 @@
                 ru: "Адрес"
             },
             footerText: {
-                en: "© 2024 支付实验室. All rights reserved.",
+                en: "© 2024 Payment Lab. All rights reserved.",
                 'zh-CN': "© 2024 支付实验室. 保留所有权利.",
                 'zh-TW': "© 2024 支付實驗室. 保留所有權利.",
                 ru: "© 2024 支付实验室. Все права защищены."
             }
         };
 
-        // 2. 获取需要的 DOM 元素
+        // 2. DOM Elements:
         const langSelect = document.getElementById('lang-select');
         const translatableElements = document.querySelectorAll('[data-lang-key]');
         const htmlElement = document.documentElement;
 
-        // 3. 语言切换函数
+        // 3. Language Switch Function
         function changeLanguage(lang) {
             if (!translations.pageTitle[lang]) {
                 console.warn(`Language "${lang}" not found in translations. Falling back to 'en'.`);
@@ -428,6 +463,7 @@
             translatableElements.forEach(element => {
                 const key = element.getAttribute('data-lang-key');
                 if (translations[key] && translations[key][lang]) {
+                    // For <title> elements
                     if (element.tagName === 'TITLE') {
                         document.title = translations[key][lang];
                     } else {
@@ -436,9 +472,9 @@
                 } else {
                     console.warn(`Translation key "${key}" not found for language "${lang}".`);
                     if (translations[key] && translations[key]['en']) {
-                         element.innerHTML = translations[key]['en'];
+                        element.innerHTML = translations[key]['en'];
                     } else {
-                         element.innerHTML = key;
+                        element.innerHTML = key;
                     }
                 }
             });
@@ -450,7 +486,7 @@
             }
         }
 
-        // 4. 初始化语言
+        // 4. Initialize Language
         function initializeLanguage() {
             let preferredLang = 'en';
             try {
@@ -471,47 +507,45 @@
             changeLanguage(preferredLang);
         }
 
-        // 5. 添加事件监听器
+        // 5. Event Listener
         langSelect.addEventListener('change', (event) => {
             changeLanguage(event.target.value);
         });
 
-        // 6. 页面加载完成后初始化语言
+        // 6. On Document Ready
         document.addEventListener('DOMContentLoaded', initializeLanguage);
 
-        // --- 其他 JS (导航栏滚动效果) ---
+        // Additional JS (Hide / Show Header on Scroll)
         let lastScrollTop = 0;
         const header = document.getElementById('site-header');
         const headerHeightDesktop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height-desktop'), 10) || 70;
 
         window.addEventListener('scroll', function() {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-            // 添加/移除 scrolled 类，用于控制 Header 样式变化
+            // Add/Remove "scrolled" class for the header style changes
             if (scrollTop > 50) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
 
-            // Header 隐藏/显示逻辑
+            // Header hide/show logic
             let currentHeaderHeight = header.offsetHeight;
             if (scrollTop > lastScrollTop && scrollTop > currentHeaderHeight) {
-                 if (window.innerWidth > 900) {
-                     if (scrollTop > headerHeightDesktop) {
-                         header.style.top = `-${currentHeaderHeight}px`;
-                     }
-                 } else {
-                     header.style.top = `-${currentHeaderHeight}px`;
-                 }
+                if (window.innerWidth > 900) {
+                    if (scrollTop > headerHeightDesktop) {
+                        header.style.top = `-${currentHeaderHeight}px`;
+                    }
+                } else {
+                    header.style.top = `-${currentHeaderHeight}px`;
+                }
             } else {
                 header.style.top = '0';
             }
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
 
-        console.log("Light green theme 支付实验室 website loaded!");
+        console.log("Light green Payment Lab website loaded with English as the primary language!");
     </script>
-
 </body>
 </html>
