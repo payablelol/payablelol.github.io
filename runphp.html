@@ -1,1 +1,183 @@
-ss
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP 代码运行器 (前端模拟)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px); /* Full height minus padding */
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Take remaining height */
+            gap: 15px; /* Space between elements */
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        #php-code {
+            width: 100%;
+            height: 40%; /* Adjust height as needed */
+            flex-grow: 1; /* Allow textarea to grow */
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            resize: vertical; /* Allow vertical resize */
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+
+        .controls {
+            display: flex;
+            justify-content: flex-end; /* Align button to the right */
+        }
+
+        #run-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #28a745; /* Green button */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        #run-button:hover {
+            background-color: #218838;
+        }
+
+        #output-container {
+            flex-grow: 1; /* Take remaining height */
+            height: 40%; /* Adjust height as needed */
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: #e9ecef;
+            padding: 15px;
+            overflow-y: auto; /* Add scroll if content overflows */
+            box-sizing: border-box;
+        }
+
+        #output {
+            white-space: pre-wrap; /* Preserve whitespace and wrap lines */
+            word-wrap: break-word; /* Break long words */
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            color: #495057;
+        }
+         #output .error {
+             color: #dc3545; /* Red for errors */
+             font-weight: bold;
+         }
+         #output .info {
+             color: #17a2b8; /* Blue for info messages */
+             font-style: italic;
+         }
+
+    </style>
+</head>
+<body>
+
+    <h1>PHP 代码运行器 (前端模拟)</h1>
+
+    <div class="container">
+        <label for="php-code">输入 PHP 代码 (需要包含 `<?php` 标签):</label>
+        <textarea id="php-code" spellcheck="false"><?php
+
+echo "你好，世界! Hello, World!\n";
+echo "当前时间是：" . date("Y-m-d H:i:s");
+
+// 尝试产生一个错误
+// echo $undefinedVariable;
+
+?></textarea>
+
+        <div class="controls">
+            <button id="run-button">运行代码</button>
+        </div>
+
+        <label for="output-container">输出结果:</label>
+        <div id="output-container">
+            <pre><code id="output">点击“运行代码”按钮将代码发送到服务器执行 (此为模拟)。</code></pre>
+        </div>
+    </div>
+
+    <script>
+        const codeInput = document.getElementById('php-code');
+        const runButton = document.getElementById('run-button');
+        const outputElement = document.getElementById('output');
+
+        runButton.addEventListener('click', () => {
+            const phpCode = codeInput.value;
+
+            // 1. 清空之前的输出并显示加载状态
+            outputElement.textContent = '正在发送代码到服务器并等待结果...';
+            outputElement.className = 'info'; // Set info style
+
+            // 2. **模拟** 发送代码到后端 (实际应用中需要替换)
+            // 在真实的实现中，你会使用 fetch API 将 phpCode 发送到你的后端 PHP 脚本
+            /*
+            fetch('/api/run-php.php', { // <-- 替换成你的后端脚本 URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // 或者 'application/x-www-form-urlencoded'
+                },
+                body: JSON.stringify({ code: phpCode }) // 发送 JSON 数据
+                // 或者 body: 'code=' + encodeURIComponent(phpCode) // 发送表单数据
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // 如果服务器返回错误状态 (如 4xx, 5xx)
+                    throw new Error(`服务器错误: ${response.status} ${response.statusText}`);
+                }
+                return response.text(); // 获取服务器返回的文本输出
+            })
+            .then(data => {
+                // 3. 显示从服务器获取的真实结果
+                outputElement.textContent = data;
+                outputElement.className = ''; // Reset style
+            })
+            .catch(error => {
+                // 4. 显示错误信息
+                console.error('运行 PHP 代码时出错:', error);
+                outputElement.textContent = `运行出错:\n${error.message}\n\n(请检查浏览器控制台和后端服务器日志获取详细信息)`;
+                outputElement.className = 'error'; // Set error style
+            });
+            */
+
+            // --- 以下是纯前端模拟，无实际执行 ---
+            // 为了演示，我们设置一个短暂的延迟，然后显示一条消息
+            // 实际应用中应删除此 setTimeout 部分，并取消上面 fetch 的注释
+            setTimeout(() => {
+                 outputElement.textContent = `(模拟) 后端服务器需要接收以下代码并执行：\n\n${phpCode}\n\n然后将 PHP 的输出返回到这里显示。\n\n**警告：在服务器上执行任意代码具有极高的安全风险！必须采取严格的安全措施！**`;
+                 outputElement.className = 'info';
+            }, 1000); // 模拟 1 秒的网络延迟
+            // --- 模拟结束 ---
+
+        });
+    </script>
+
+</body>
+</html>
