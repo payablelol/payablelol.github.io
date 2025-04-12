@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> <!-- Default language set to English -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang-key="pageTitle">Payment Lab - Shaping the Payment Future</title>
+    <!-- Updated Title reflecting the theme -->
+    <title data-lang-key="pageTitle">Payment Lab - Crafting Comfortable & Secure Payments</title>
     <style>
-        /* 1. Base Reset & Global Styles */
+        /* 1. Basic Reset & Global Styles (Keep as is) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
@@ -16,16 +17,16 @@
             overflow-x: hidden;
         }
 
-        /* 2. Variable Definitions - Light Green Theme */
+        /* 2. Color Variables (Keep light green theme) */
         :root {
-            --primary-color: #34d399; /* Soft Emerald Green */
-            --secondary-accent-color: #10b981; /* Slightly deeper green for hover states */
-            --background-body: #f0fff4; /* Honeydew (very light green background) */
-            --background-header: rgba(255, 255, 255, 0.9); /* White with slight opacity */
-            --background-card: #ffffff; /* White background for cards */
-            --text-primary: #2d3748; /* Dark blue-gray for main text */
-            --text-secondary: #718096; /* Stone gray for secondary text */
-            --text-on-accent: #ffffff; /* White text on accent colors */
+            --primary-color: #34d399; /* Accent */
+            --secondary-accent-color: #10b981; /* Darker accent for hover */
+            --background-body: #f0fff4; /* Honeydew background */
+            --background-header: rgba(255, 255, 255, 0.9); /* Translucent white header */
+            --background-card: #ffffff; /* White card background */
+            --text-primary: #2d3748; /* Dark text */
+            --text-secondary: #718096; /* Secondary text */
+            --text-on-accent: #ffffff; /* White text on accent buttons */
             --border-color: #e5e7eb; /* Light gray border */
             --shadow-color-light: rgba(45, 55, 72, 0.1); /* Light shadow */
             --hover-delay: 0.15s;
@@ -33,7 +34,7 @@
             --header-height-mobile: 130px; /* Approximate */
         }
 
-        /* 3. Containers & Layout */
+        /* 3. Container & Layout (Keep as is) */
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
         header, section, footer { padding: 60px 0; }
         section h2 {
@@ -47,28 +48,28 @@
             margin: 8px auto 0;
         }
 
-        /* 4. Header */
+        /* 4. Header (Keep as is, including scroll effect) */
         .site-header {
             position: fixed; top: 0; left: 0; width: 100%;
             background-color: var(--background-header);
             backdrop-filter: blur(10px);
             z-index: 100; transition: top 0.3s, background-color 0.3s, box-shadow 0.3s;
             height: var(--header-height-desktop);
-            display: flex; align-items: center;
+            display: flex;
+            align-items: center;
             border-bottom: 1px solid transparent;
         }
         .site-header.scrolled {
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 2px 4px var(--shadow-color-light);
-            border-bottom-color: var(--border-color);
+             background-color: rgba(255, 255, 255, 0.95);
+             box-shadow: 0 2px 4px var(--shadow-color-light);
+             border-bottom-color: var(--border-color);
         }
-
         .header-container {
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 20px; max-width: 1200px; margin: 0 auto; width: 100%;
         }
 
-        /* 5. Logo */
+        /* 5. Logo (Keep as is) */
         .logo { display: flex; align-items: center; text-decoration: none;
             color: var(--text-primary);
             font-size: 1.5rem; font-weight: bold;
@@ -80,32 +81,18 @@
         }
         .logo-icon::before { top: 0; left: 0; animation-delay: 0s; background-color: var(--primary-color); }
         .logo-icon::after { bottom: 0; right: 0; animation-delay: -1.25s; background-color: #d1fae5; opacity: 0.7; }
+        @keyframes logo-pulse { 0%, 100% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
 
-        @keyframes logo-pulse {
-            0%, 100% {
-                transform: scale(0.95); opacity: 0.8;
-            }
-            50% {
-                transform: scale(1.05); opacity: 1;
-            }
-        }
-
-        /* 6. Navigation */
+        /* 6. Navigation & Language Switcher (Keep as is) */
         .main-nav ul { list-style: none; display: flex; align-items: center; }
         .main-nav li { margin-left: 25px; }
-        .main-nav a {
-            text-decoration: none;
+        .main-nav a { text-decoration: none;
             color: var(--text-primary);
             font-size: 1rem; padding: 5px 0; position: relative; transition: color var(--hover-delay) ease;
         }
-        .main-nav a::after {
-            content: ''; position: absolute; width: 0; height: 2px; bottom: -3px; left: 0; background-color: var(--primary-color);
-            transition: width var(--hover-delay) ease;
-        }
+        .main-nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -3px; left: 0; background-color: var(--primary-color); transition: width var(--hover-delay) ease; }
         .main-nav a:hover, .main-nav a:focus { color: var(--primary-color); }
         .main-nav a:hover::after, .main-nav a:focus::after { width: 100%; }
-
-        /* 6.1 Language Switcher */
         .language-switcher { margin-left: 30px; }
         #lang-select {
             background-color: var(--background-card);
@@ -118,23 +105,21 @@
         #lang-select:hover, #lang-select:focus { border-color: var(--primary-color); outline: none; }
         #lang-select option { background-color: var(--background-card); color: var(--text-primary); }
 
-        /* 7. Main Content */
+        /* 7. Main Content Area (Keep padding fix) */
         main { padding-top: calc(var(--header-height-desktop) + 20px); }
 
-        /* 7.1 Hero Section */
+        /* 7.1 Hero Section (Keep styles) */
         #hero {
-            display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left;
-            padding-top: 0;
-            min-height: calc(80vh - var(--header-height-desktop));
+             display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left;
+             padding-top: 0;
+             min-height: calc(80vh - var(--header-height-desktop));
         }
-        #hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4.5rem);
+        #hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem);
             color: var(--text-primary);
             margin-bottom: 15px; line-height: 1.1;
         }
         #hero h1 .highlight { color: var(--primary-color); }
-        #hero .subtitle {
-            font-size: 1.5rem;
+        #hero .subtitle { font-size: 1.5rem;
             color: var(--text-secondary);
             margin-bottom: 30px; max-width: 600px;
         }
@@ -146,19 +131,16 @@
             cursor: pointer;
         }
         .cta-button:hover, .cta-button:focus {
-            background-color: var(--primary-color);
-            color: var(--text-on-accent);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px var(--shadow-color-light);
+             background-color: var(--primary-color);
+             color: var(--text-on-accent);
+             transform: translateY(-2px);
+             box-shadow: 0 4px 8px var(--shadow-color-light);
         }
 
-        /* 7.2 About Us Section */
-        #about p {
-            color: var(--text-secondary);
-            max-width: 700px; margin: 0 auto 20px; text-align: center; font-size: 1.1rem;
-        }
+        /* 7.2 About Section (Keep styles) */
+        #about p { color: var(--text-secondary); max-width: 700px; margin: 0 auto 20px; text-align: center; font-size: 1.1rem; }
 
-        /* 7.3 Research Section */
+        /* 7.3 Research Section (Keep styles, update icon) */
         #research .research-focus-content {
             max-width: 800px; margin: 30px auto 0; padding: 35px;
             background-color: var(--background-card);
@@ -171,40 +153,35 @@
             font-size: 1.9rem; color: var(--primary-color); margin-bottom: 20px;
             text-align: center;
         }
+        /* Updated Icon for Payment Theme */
         #research .research-focus-content h3::before {
-            content: '💰'; margin-right: 10px; font-size: 1.7rem; vertical-align: middle;
+            content: '💳'; /* Credit card emoji */
+            margin-right: 10px; font-size: 1.7rem; vertical-align: middle;
         }
         #research .research-focus-content p {
             color: var(--text-secondary); font-size: 1.1rem; line-height: 1.7; margin-bottom: 18px;
         }
         #research .research-focus-content p:last-of-type { margin-bottom: 0; }
 
-        /* 7.4 Contact Section */
-        #contact p {
-            text-align: center; color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;
-        }
-        #contact .contact-info {
-            text-align: center; font-size: 1.1rem;
+        /* 7.4 Contact Section (Keep styles) */
+        #contact p { text-align: center; color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px; }
+        #contact .contact-info { text-align: center; font-size: 1.1rem;
             color: var(--text-primary);
         }
-        #contact .contact-info a {
-            color: var(--primary-color); text-decoration: none; border-bottom: 1px dashed var(--primary-color);
-            transition: color var(--hover-delay), border-bottom-color var(--hover-delay);
-        }
+        #contact .contact-info a { color: var(--primary-color); text-decoration: none; border-bottom: 1px dashed var(--primary-color); transition: color var(--hover-delay), border-bottom-color var(--hover-delay); }
         #contact .contact-info a:hover {
             color: var(--secondary-accent-color);
             border-bottom-color: var(--secondary-accent-color);
         }
 
-        /* 8. Footer */
-        .site-footer {
-            text-align: center; padding: 30px 0;
+        /* 8. Footer (Keep styles) */
+        .site-footer { text-align: center; padding: 30px 0;
             border-top: 1px solid var(--border-color);
             font-size: 0.9rem; color: var(--text-secondary);
             background-color: var(--background-card);
         }
 
-        /* 9. Responsive */
+        /* 9. Responsive Design (Keep as is) */
         @media (max-width: 900px) {
             .site-header { height: auto; padding-top: 10px; padding-bottom: 10px; }
             .header-container { flex-direction: column; align-items: center; }
@@ -231,6 +208,7 @@
             main { padding-top: calc(var(--header-height-mobile) + 10px); }
             #research .research-focus-content h3 { font-size: 1.4rem; }
         }
+
     </style>
 </head>
 <body>
@@ -240,12 +218,14 @@
         <div class="header-container">
             <a href="#hero" class="logo">
                 <div class="logo-icon"></div>
+                <!-- Updated Logo Text -->
                 <span data-lang-key="logoText">Payment Lab</span>
             </a>
             <nav class="main-nav">
                 <ul>
+                    <!-- Standard Nav Items -->
                     <li><a href="#about" data-lang-key="navAbout">About Us</a></li>
-                    <li><a href="#research" data-lang-key="navResearch">Our Payment Research</a></li>
+                    <li><a href="#research" data-lang-key="navResearch">Our Research</a></li>
                     <li><a href="#contact" data-lang-key="navContact">Contact</a></li>
                     <li class="language-switcher">
                         <select id="lang-select">
@@ -260,60 +240,45 @@
         </div>
     </header>
 
-    <br>
-    <br>
-    <br>
     <!-- Main Content -->
     <main>
         <!-- Hero Section -->
         <section id="hero" class="container">
-            <h1 data-lang-key="heroTitle">Payment Lab, <span class="highlight">Building Tomorrow</span></h1>
-            <p class="subtitle" data-lang-key="heroSubtitle">
-                Empowering the future of financial transactions with groundbreaking payment solutions.
-            </p>
-            <a href="#research" class="cta-button" data-lang-key="heroCta">Discover Our Focus</a>
+            <!-- Updated Hero Content -->
+            <h1 data-lang-key="heroTitle">Effortless Payments, <span class="highlight">Engineered for You</span></h1>
+            <p class="subtitle" data-lang-key="heroSubtitle">We research and build secure, intuitive payment solutions that make transactions a seamless and enjoyable experience.</p>
+            <a href="#research" class="cta-button" data-lang-key="heroCta">Explore Our Innovations</a>
         </section>
 
         <!-- About Us Section -->
         <section id="about" class="container">
             <h2 data-lang-key="aboutTitle">About Us</h2>
-            <p data-lang-key="aboutP1">
-                Payment Lab brings together top business experts, software developers, and financial engineers dedicated to seamless transactions in modern commerce.
-            </p>
-            <p data-lang-key="aboutP2">
-                Collaboration, innovation, and rigorous industry expertise drive us to build reliable payment systems and cutting-edge solutions.
-            </p>
+            <!-- Updated About Content -->
+            <p data-lang-key="aboutP1">Payment Lab is dedicated to transforming the payment landscape. We bring together experts in finance, technology, and user experience to create solutions that are not just functional, but truly comfortable and secure.</p>
+            <p data-lang-key="aboutP2">Through collaboration and relentless innovation, we aim to simplify complexity and make every payment feel effortless, turning a necessity into a positive interaction.</p>
         </section>
 
         <!-- Research Section -->
         <section id="research" class="container">
             <h2 data-lang-key="researchTitle">Our Research Focus</h2>
             <div class="research-focus-content">
-                <h3 data-lang-key="researchFocusTitle">Seamless Payment Integration</h3>
-                <p data-lang-key="researchFocusDesc1">
-                    Digital payments are complex and prone to transaction failures, resulting in errors or delays. Our primary research focuses on designing robust payment networks and secure transaction protocols.
-                </p>
-                <p data-lang-key="researchFocusDesc2">
-                    We explore emerging digital currencies, develop advanced fraud detection techniques, and create frameworks to ensure reliable large-scale payment processing. This is critical for unlocking the potential of modern e-commerce across retail, digital marketplaces, and subscription services.
-                </p>
+                <!-- Updated Research Content -->
+                <h3 data-lang-key="researchFocusTitle">Frictionless & Secure Transactions</h3>
+                <p data-lang-key="researchFocusDesc1">Digital payments can be complex and prone to friction or security concerns. Our core research focuses on designing robust, user-friendly payment flows and integrating cutting-edge security protocols.</p>
+                <p data-lang-key="researchFocusDesc2">We explore areas like biometric authentication, real-time fraud detection, and seamless cross-platform integration to build trust and ensure every transaction is smooth, swift, and safe. Our goal is to make paying feel natural and worry-free.</p>
             </div>
         </section>
 
         <!-- Contact Section -->
         <section id="contact" class="container">
             <h2 data-lang-key="contactTitle">Contact Us</h2>
-            <p data-lang-key="contactP1">
-                Interested in collaborating, joining our team, or learning more about our payment innovations? We look forward to hearing from you!
-            </p>
+            <!-- Updated Contact Content -->
+            <p data-lang-key="contactP1">Interested in collaborating, joining our team, or learning more about our vision for enjoyable payments? We'd love to connect.</p>
             <div class="contact-info">
-                <p>
-                    <span data-lang-key="contactEmailLabel">Email</span>:
-                    <a href="mailto:admin@payable.lol">admin@payable.lol</a>
-                </p>
-                <p>
-                    <span data-lang-key="contactAddressLabel">Address</span>:
-                    Payment Wing, Payment Tech Park
-                </p>
+                <!-- Updated Email -->
+                <p><span data-lang-key="contactEmailLabel">Email</span>: <a href="mailto:admin@payable.lol">admin@payable.lol</a></p>
+                <!-- Updated Address -->
+                <p><span data-lang-key="contactAddressLabel">Address</span>: Suite 404, Payment Innovation Hub</p>
             </div>
         </section>
     </main>
@@ -321,25 +286,26 @@
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
+            <!-- Updated Footer Text -->
             <p data-lang-key="footerText">© 2024 Payment Lab. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- JavaScript (Updated Translations) -->
     <script>
-        // 1. Translations (Now in English)
+        // 1. Updated Translations for "Payment Lab" Theme
         const translations = {
             pageTitle: {
-                en: "Payment Lab - Shaping the Payment Future",
-                'zh-CN': "支付实验室 - 塑造支付未来",
-                'zh-TW': "支付實驗室 - 塑造支付未來",
-                ru: "支付实验室 - Формируя будущее платежей"
+                en: "Payment Lab - Crafting Comfortable & Secure Payments",
+                'zh-CN': "支付实验室 - 打造舒适安全的支付体验",
+                'zh-TW': "支付實驗室 - 打造舒適安全的支付體驗",
+                ru: "Лаборатория Платежей - Создаем комфортные и безопасные платежи"
             },
             logoText: {
                 en: "Payment Lab",
                 'zh-CN': "支付实验室",
                 'zh-TW': "支付實驗室",
-                ru: "支付实验室"
+                ru: "Лаборатория Платежей" // Russian translation for Payment Lab
             },
             navAbout: {
                 en: "About Us",
@@ -348,10 +314,10 @@
                 ru: "О нас"
             },
             navResearch: {
-                en: "Our Payment Research",
-                'zh-CN': "我们的支付研究",
-                'zh-TW': "我們的支付研究",
-                ru: "Наши исследования в области платежей"
+                en: "Our Research",
+                'zh-CN': "我们的研究",
+                'zh-TW': "我們的研究",
+                ru: "Наши исследования"
             },
             navContact: {
                 en: "Contact",
@@ -360,22 +326,22 @@
                 ru: "Контакты"
             },
             heroTitle: {
-                en: 'Payment Lab, <span class="highlight">Building Tomorrow</span>',
-                'zh-CN': '支付实验室，<span class="highlight">构建明天</span>',
-                'zh-TW': '支付實驗室，<span class="highlight">構建明天</span>',
-                ru: '支付实验室, <span class="highlight">Строим Завтра</span>'
+                en: 'Effortless Payments, <span class="highlight">Engineered for You</span>',
+                'zh-CN': '轻松支付，<span class="highlight">为你定制</span>',
+                'zh-TW': '輕鬆支付，<span class="highlight">為你訂製</span>',
+                ru: 'Платежи без усилий, <span class="highlight">созданные для вас</span>'
             },
             heroSubtitle: {
-                en: "Empowering the future of financial transactions with groundbreaking payment solutions.",
-                'zh-CN': "通过突破性的支付解决方案，赋能金融交易的未来。",
-                'zh-TW': "透過突破性的支付解決方案，賦能金融交易的未來。",
-                ru: "Расширяем будущее финансовых транзакций с помощью прорывных платежных решений."
+                en: "We research and build secure, intuitive payment solutions that make transactions a seamless and enjoyable experience.",
+                'zh-CN': "我们研究并构建安全、直观的支付解决方案，让交易成为无缝且愉快的体验。",
+                'zh-TW': "我們研究並構建安全、直觀的支付解決方案，讓交易成為無縫且愉快的體驗。",
+                ru: "Мы исследуем и создаем безопасные, интуитивно понятные платежные решения, которые делают транзакции безупречными и приятными."
             },
             heroCta: {
-                en: "Discover Our Focus",
-                'zh-CN': "了解我们的焦点",
-                'zh-TW': "了解我們的焦點",
-                ru: "Узнайте о нашем фокусе"
+                en: "Explore Our Innovations",
+                'zh-CN': "探索我们的创新",
+                'zh-TW': "探索我們的創新",
+                ru: "Наши инновации"
             },
             aboutTitle: {
                 en: "About Us",
@@ -384,16 +350,16 @@
                 ru: "О нас"
             },
             aboutP1: {
-                en: "Payment Lab brings together top business experts, software developers, and financial engineers dedicated to seamless transactions in modern commerce.",
-                'zh-CN': "支付实验室汇集了顶尖的业务专家、软件开发人员和金融工程师，致力于为现代商业实现无缝交易。",
-                'zh-TW': "支付實驗室匯集了頂尖的業務專家、軟體開發人員和金融工程師，致力於為現代商業實現無縫交易。",
-                ru: "支付实验室 объединяет ведущих бизнес-экспертов, разработчиков ПО и финансовых инженеров, посвятивших себя созданию беспрепятственных транзакций."
+                en: "Payment Lab is dedicated to transforming the payment landscape. We bring together experts in finance, technology, and user experience to create solutions that are not just functional, but truly comfortable and secure.",
+                'zh-CN': "支付实验室致力于改变支付领域。我们汇集金融、技术和用户体验方面的专家，创造出不仅实用，而且真正舒适和安全的解决方案。",
+                'zh-TW': "支付實驗室致力於改變支付領域。我們匯集金融、技術和用戶體驗方面的專家，創造出不僅實用，而且真正舒適和安全的解決方案。",
+                ru: "Лаборатория Платежей посвящена трансформации платежного ландшафта. Мы объединяем экспертов в области финансов, технологий и пользовательского опыта для создания решений, которые не просто функциональны, но и по-настоящему удобны и безопасны."
             },
             aboutP2: {
-                en: "Collaboration, innovation, and rigorous industry expertise drive us to build reliable payment systems and cutting-edge solutions.",
-                'zh-CN': "协作、创新和严谨的行业专长推动我们构建可靠的支付系统和前沿解决方案。",
-                'zh-TW': "協作、創新和嚴謹的行業專長推動我們構建可靠的支付系統和前沿解決方案。",
-                ru: "Сотрудничество, инновации и глубокая профессиональная экспертиза направляют нас в создании надёжных платёжных систем и новейших решений."
+                en: "Through collaboration and relentless innovation, we aim to simplify complexity and make every payment feel effortless, turning a necessity into a positive interaction.",
+                'zh-CN': "通过协作和不懈的创新，我们旨在化繁为简，让每一次支付都感觉轻松自如，将必需变成积极的互动。",
+                'zh-TW': "透過協作和不懈的創新，我們旨在化繁為簡，讓每一次支付都感覺輕鬆自如，將必需變成積極的互動。",
+                ru: "Посредством сотрудничества и неустанных инноваций мы стремимся упростить сложность и сделать каждый платеж легким, превращая необходимость в позитивное взаимодействие."
             },
             researchTitle: {
                 en: "Our Research Focus",
@@ -402,22 +368,22 @@
                 ru: "Фокус наших исследований"
             },
             researchFocusTitle: {
-                en: "Seamless Payment Integration",
-                'zh-CN': "无缝支付集成",
-                'zh-TW': "無縫支付整合",
-                ru: "Бесшовная интеграция платежей"
+                en: "Frictionless & Secure Transactions",
+                'zh-CN': "无缝与安全交易",
+                'zh-TW': "無縫與安全交易",
+                ru: "Бесшовные и безопасные транзакции"
             },
             researchFocusDesc1: {
-                en: "Digital payments are complex and prone to transaction failures, resulting in errors or delays. Our primary research focuses on designing robust payment networks and secure transaction protocols.",
-                'zh-CN': "数字支付十分复杂且容易出现交易失败，导致错误或延迟。我们的主要研究集中在设计可靠的支付网络和安全的交易协议。",
-                'zh-TW': "數位支付相當複雜且容易出現交易失敗，導致錯誤或延遲。我們的主要研究集中在設計可靠的支付網路和安全的交易協定。",
-                ru: "Цифровые платежи часто бывают сложными и подверженными сбоям, что приводит к ошибкам или задержкам. Мы нацелены на разработку надёжных платёжных сетей и безопасных протоколов транзакций."
+                en: "Digital payments can be complex and prone to friction or security concerns. Our core research focuses on designing robust, user-friendly payment flows and integrating cutting-edge security protocols.",
+                'zh-CN': "数字支付可能很复杂，并且容易遇到障碍或安全问题。我们的核心研究专注于设计健壮、用户友好的支付流程，并集成尖端的安全协议。",
+                'zh-TW': "數位支付可能很複雜，並且容易遇到障礙或安全問題。我們的核心研究專注於設計健壯、用戶友好的支付流程，並整合尖端的安全協議。",
+                ru: "Цифровые платежи могут быть сложными и подверженными трениям или проблемам безопасности. Наши основные исследования сосредоточены на разработке надежных, удобных для пользователя платежных потоков и интеграции передовых протоколов безопасности."
             },
             researchFocusDesc2: {
-                en: "We explore emerging digital currencies, develop advanced fraud detection techniques, and create frameworks to ensure reliable large-scale payment processing. This is critical for unlocking the potential of modern e-commerce across retail, digital marketplaces, and subscription services.",
-                'zh-CN': "我们研究新的数字货币，开发先进的欺诈检测技术，并创建框架以确保可靠的大规模支付处理。这对于在零售、数字市场和订阅服务等领域释放现代电子商务的潜力至关重要。",
-                'zh-TW': "我們研究新的數位貨幣，開發先進的詐欺檢測技術，並創建框架以確保可靠的大規模支付處理。這對於在零售、數位市場和訂閱服務等領域釋放現代電子商務的潛力至關重要。",
-                ru: "Мы исследуем новые цифровые валюты, внедряем передовые методы обнаружения мошенничества и разрабатываем структуры, гарантирующие надёжную крупномасштабную обработку платежей. Это крайне важно для реализации возможностей современной электронной коммерции."
+                en: "We explore areas like biometric authentication, real-time fraud detection, and seamless cross-platform integration to build trust and ensure every transaction is smooth, swift, and safe. Our goal is to make paying feel natural and worry-free.",
+                'zh-CN': "我们探索生物识别认证、实时欺诈检测和无缝跨平台集成等领域，以建立信任并确保每笔交易都顺畅、快捷和安全。我们的目标是让支付感觉自然且无忧。",
+                'zh-TW': "我們探索生物識別認證、即時詐欺偵測和無縫跨平台整合等領域，以建立信任並確保每筆交易都順暢、快捷和安全。我們的目標是讓支付感覺自然且無憂。",
+                ru: "Мы исследуем такие области, как биометрическая аутентификация, обнаружение мошенничества в реальном времени и бесшовная межплатформенная интеграция, чтобы укрепить доверие и гарантировать, что каждая транзакция будет плавной, быстрой и безопасной. Наша цель - сделать оплату естественной и беззаботной."
             },
             contactTitle: {
                 en: "Contact Us",
@@ -426,10 +392,10 @@
                 ru: "Свяжитесь с нами"
             },
             contactP1: {
-                en: "Interested in collaborating, joining our team, or learning more about our payment innovations? We look forward to hearing from you!",
-                'zh-CN': "有兴趣合作、加入我们的团队或了解更多关于我们支付创新的信息吗？我们非常期待您的来信。",
-                'zh-TW': "有興趣合作、加入我們的團隊或了解更多關於我們支付創新的資訊嗎？我們非常期待您的來信。",
-                ru: "Заинтересованы в сотрудничестве, работе с нами или хотите узнать больше о наших инновациях в сфере платежей? Будем рады вашему письму."
+                en: "Interested in collaborating, joining our team, or learning more about our vision for enjoyable payments? We'd love to connect.",
+                'zh-CN': "有兴趣合作、加入我们的团队，或想了解更多关于我们愉快支付愿景的信息吗？我们期待与您联系。",
+                'zh-TW': "有興趣合作、加入我們的團隊，或想了解更多關於我們愉快支付願景的資訊嗎？我們期待與您聯繫。",
+                ru: "Заинтересованы в сотрудничестве, присоединении к нашей команде или хотите узнать больше о нашем видении приятных платежей? Мы будем рады общению."
             },
             contactEmailLabel: {
                 en: "Email",
@@ -447,16 +413,16 @@
                 en: "© 2024 Payment Lab. All rights reserved.",
                 'zh-CN': "© 2024 支付实验室. 保留所有权利.",
                 'zh-TW': "© 2024 支付實驗室. 保留所有權利.",
-                ru: "© 2024 支付实验室. Все права защищены."
+                ru: "© 2024 Лаборатория Платежей. Все права защищены."
             }
         };
 
-        // 2. DOM Elements:
+        // 2. Get DOM Elements (No change)
         const langSelect = document.getElementById('lang-select');
         const translatableElements = document.querySelectorAll('[data-lang-key]');
         const htmlElement = document.documentElement;
 
-        // 3. Language Switch Function
+        // 3. Change Language Function (No change)
         function changeLanguage(lang) {
             if (!translations.pageTitle[lang]) {
                 console.warn(`Language "${lang}" not found in translations. Falling back to 'en'.`);
@@ -466,7 +432,6 @@
             translatableElements.forEach(element => {
                 const key = element.getAttribute('data-lang-key');
                 if (translations[key] && translations[key][lang]) {
-                    // For <title> elements
                     if (element.tagName === 'TITLE') {
                         document.title = translations[key][lang];
                     } else {
@@ -475,9 +440,9 @@
                 } else {
                     console.warn(`Translation key "${key}" not found for language "${lang}".`);
                     if (translations[key] && translations[key]['en']) {
-                        element.innerHTML = translations[key]['en'];
+                         element.innerHTML = translations[key]['en'];
                     } else {
-                        element.innerHTML = key;
+                         element.innerHTML = key;
                     }
                 }
             });
@@ -489,20 +454,22 @@
             }
         }
 
-        // 4. Initialize Language
+        // 4. Initialize Language (No change)
         function initializeLanguage() {
-            let preferredLang = 'en';
+            let preferredLang = 'en'; // Default to English
             try {
                 const savedLang = localStorage.getItem('preferredLanguage');
                 if (savedLang && translations.pageTitle[savedLang]) {
                     preferredLang = savedLang;
                 } else {
+                    // Optional: Browser language detection can remain
                     const browserLang = navigator.language || navigator.userLanguage;
                     const baseLang = browserLang.split('-')[0];
                     const fullLang = browserLang;
                     if (fullLang === 'zh-CN') preferredLang = 'zh-CN';
                     else if (fullLang === 'zh-TW' || fullLang === 'zh-HK') preferredLang = 'zh-TW';
                     else if (baseLang === 'ru') preferredLang = 'ru';
+                    // else defaults to 'en'
                 }
             } catch (e) {
                 console.warn("Could not access localStorage or navigator language.", e);
@@ -510,45 +477,45 @@
             changeLanguage(preferredLang);
         }
 
-        // 5. Event Listener
+        // 5. Event Listener (No change)
         langSelect.addEventListener('change', (event) => {
             changeLanguage(event.target.value);
         });
 
-        // 6. On Document Ready
+        // 6. Initialize on Load (No change)
         document.addEventListener('DOMContentLoaded', initializeLanguage);
 
-        // Additional JS (Hide / Show Header on Scroll)
+        // --- Other JS (Header Scroll Effect) --- (No change)
         let lastScrollTop = 0;
         const header = document.getElementById('site-header');
         const headerHeightDesktop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height-desktop'), 10) || 70;
 
         window.addEventListener('scroll', function() {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            // Add/Remove "scrolled" class for the header style changes
+
             if (scrollTop > 50) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
 
-            // Header hide/show logic
             let currentHeaderHeight = header.offsetHeight;
             if (scrollTop > lastScrollTop && scrollTop > currentHeaderHeight) {
-                if (window.innerWidth > 900) {
-                    if (scrollTop > headerHeightDesktop) {
-                        header.style.top = `-${currentHeaderHeight}px`;
-                    }
-                } else {
-                    header.style.top = `-${currentHeaderHeight}px`;
-                }
+                 if (window.innerWidth > 900) {
+                     if (scrollTop > headerHeightDesktop) {
+                         header.style.top = `-${currentHeaderHeight}px`;
+                     }
+                 } else {
+                     header.style.top = `-${currentHeaderHeight}px`;
+                 }
             } else {
                 header.style.top = '0';
             }
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
 
-        console.log("Light green Payment Lab website loaded with English as the primary language!");
+        console.log("Payment Lab website loaded with updated theme and translations!");
     </script>
+
 </body>
 </html>
