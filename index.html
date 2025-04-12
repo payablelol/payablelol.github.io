@@ -1,1 +1,422 @@
-hello world
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="pageTitle">Quantum Computing Lab - Shaping the Quantum Future</title>
+    <style>
+        /* 1. 基本重置与全局样式 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            /* 更新为浅色主题 */
+            color: var(--text-primary); /* 使用深色文字 */
+            background-color: var(--background-body); /* 使用浅绿色背景 */
+            overflow-x: hidden;
+        }
+
+        /* 2. 变量定义 - 全新浅绿色护眼色系 */
+        :root {
+            --primary-color: #34d399; /* 柔和翠绿 (Accent) */
+            --secondary-accent-color: #10b981; /* 稍深的翠绿，用于按钮悬停等 */
+            --background-body: #f0fff4; /* Honeydew (非常浅的绿色背景) */
+            --background-header: rgba(255, 255, 255, 0.9); /* 白色半透明 Header */
+            --background-card: #ffffff; /* 白色卡片背景 */
+            --text-primary: #2d3748; /* 深蓝灰色 (主要文字) */
+            --text-secondary: #718096; /* 灰石色 (次要文字) */
+            --text-on-accent: #ffffff; /* 在主色调按钮上使用的白色文字 */
+            --border-color: #e5e7eb; /* 浅灰色边框 */
+            --shadow-color-light: rgba(45, 55, 72, 0.1); /* 浅色主题的阴影 */
+            --hover-delay: 0.15s;
+            --header-height-desktop: 70px;
+            --header-height-mobile: 130px; /* Approximate */
+        }
+
+        /* 3. 容器与布局 */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        header, section, footer { padding: 60px 0; }
+        section h2 {
+            text-align: center; margin-bottom: 40px; font-size: 2.5rem;
+            color: var(--text-primary); /* 深色标题 */
+            position: relative; display: inline-block; left: 50%; transform: translateX(-50%);
+        }
+        section h2::after {
+            content: ''; display: block; width: 60px; height: 3px;
+            background-color: var(--primary-color);
+            margin: 8px auto 0;
+        }
+
+        /* 4. 页头 (Header) */
+        .site-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background-color: var(--background-header); /* 白色半透明 */
+            backdrop-filter: blur(10px); /* 在浅色上也保留一点模糊效果 */
+            z-index: 100; transition: top 0.3s, background-color 0.3s, box-shadow 0.3s;
+            height: var(--header-height-desktop);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid transparent; /* 初始透明边框，滚动时变色 */
+        }
+        /* 可选：滚动时给 Header 加阴影和实线边框 */
+        .site-header.scrolled {
+             background-color: rgba(255, 255, 255, 0.95); /* 滚动时更不透明 */
+             box-shadow: 0 2px 4px var(--shadow-color-light);
+             border-bottom-color: var(--border-color);
+        }
+
+        .header-container {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; max-width: 1200px; margin: 0 auto; width: 100%;
+        }
+
+        /* 5. Logo */
+        .logo { display: flex; align-items: center; text-decoration: none;
+            color: var(--text-primary); /* 深色 Logo 文字 */
+            font-size: 1.5rem; font-weight: bold;
+        }
+        .logo-icon { width: 35px; height: 35px; margin-right: 10px; position: relative; transform: rotate(45deg); }
+        .logo-icon::before, .logo-icon::after {
+            content: ''; position: absolute; width: 70%; height: 70%;
+            border-radius: 2px; animation: logo-pulse 2.5s infinite ease-in-out; opacity: 0.9; /* 浅色背景上可以更不透明 */
+        }
+        .logo-icon::before { top: 0; left: 0; animation-delay: 0s; background-color: var(--primary-color); }
+        /* 次要颜色改为浅灰色，与背景协调 */
+        .logo-icon::after { bottom: 0; right: 0; animation-delay: -1.25s; background-color: #d1fae5; /* 非常浅的绿色 */ opacity: 0.7; }
+        /* 动画保持不变 */
+        @keyframes logo-pulse { 0%, 100% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+
+        /* 6. 导航 (Navigation) */
+        .main-nav ul { list-style: none; display: flex; align-items: center; }
+        .main-nav li { margin-left: 25px; }
+        .main-nav a { text-decoration: none;
+            color: var(--text-primary); /* 深色导航链接 */
+            font-size: 1rem; padding: 5px 0; position: relative; transition: color var(--hover-delay) ease;
+        }
+        .main-nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -3px; left: 0; background-color: var(--primary-color); transition: width var(--hover-delay) ease; }
+        .main-nav a:hover, .main-nav a:focus { color: var(--primary-color); }
+        .main-nav a:hover::after, .main-nav a:focus::after { width: 100%; }
+
+        /* 6.1 语言切换器样式 */
+        .language-switcher { margin-left: 30px; }
+        #lang-select {
+            background-color: var(--background-card); /* 白色背景 */
+            color: var(--text-primary); /* 深色文字 */
+            border: 1px solid var(--border-color); /* 浅灰边框 */
+            padding: 5px 8px;
+            border-radius: 4px; font-size: 0.9rem; cursor: pointer;
+            transition: border-color var(--hover-delay) ease;
+        }
+        #lang-select:hover, #lang-select:focus { border-color: var(--primary-color); outline: none; }
+        #lang-select option { background-color: var(--background-card); color: var(--text-primary); }
+
+        /* 7. 主内容区 (Main Content) */
+        main { padding-top: calc(var(--header-height-desktop) + 20px); }
+
+        /* 7.1 英雄区域 (Hero Section) */
+        #hero {
+             display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left;
+             padding-top: 0; /* 保持为 0 */
+             min-height: calc(80vh - var(--header-height-desktop)); /* 调整最小高度，避免过高 */
+        }
+        #hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem);
+            color: var(--text-primary); /* 深色标题 */
+            margin-bottom: 15px; line-height: 1.1;
+        }
+        #hero h1 .highlight { color: var(--primary-color); }
+        #hero .subtitle { font-size: 1.5rem;
+            color: var(--text-secondary); /* 次要文字颜色 */
+            margin-bottom: 30px; max-width: 600px;
+        }
+        .cta-button {
+            display: inline-block; padding: 12px 25px; border: 1px solid var(--primary-color);
+            color: var(--primary-color); background-color: transparent; border-radius: 4px;
+            text-decoration: none; font-size: 1rem; font-weight: 500; /* 加一点字重 */
+            transition: background-color var(--hover-delay) ease, color var(--hover-delay) ease, transform var(--hover-delay) ease;
+            cursor: pointer;
+        }
+        .cta-button:hover, .cta-button:focus {
+             /* 悬停时变为实心按钮 */
+             background-color: var(--primary-color);
+             color: var(--text-on-accent); /* 白色文字 */
+             transform: translateY(-2px); /* 轻微上移 */
+             box-shadow: 0 4px 8px var(--shadow-color-light);
+        }
+
+        /* 7.2 关于我们 (About Section) */
+        #about p { color: var(--text-secondary); max-width: 700px; margin: 0 auto 20px; text-align: center; font-size: 1.1rem; }
+
+        /* 7.3 研究领域 (Research Section) */
+        #research .research-focus-content {
+            max-width: 800px; margin: 30px auto 0; padding: 35px;
+            background-color: var(--background-card); /* 白色卡片背景 */
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--shadow-color-light); /* 浅色阴影 */
+            text-align: left;
+            border: 1px solid var(--border-color); /* 加个细边框 */
+        }
+        #research .research-focus-content h3 {
+            font-size: 1.9rem; color: var(--primary-color); margin-bottom: 20px;
+            text-align: center;
+        }
+        #research .research-focus-content h3::before {
+            content: '⚛️'; margin-right: 10px; font-size: 1.7rem; vertical-align: middle;
+        }
+        #research .research-focus-content p {
+            color: var(--text-secondary); font-size: 1.1rem; line-height: 1.7; margin-bottom: 18px;
+        }
+        #research .research-focus-content p:last-of-type { margin-bottom: 0; }
+
+        /* 7.4 联系我们 (Contact Section) */
+        #contact p { text-align: center; color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px; }
+        #contact .contact-info { text-align: center; font-size: 1.1rem;
+            color: var(--text-primary); /* 深色文字 */
+        }
+        #contact .contact-info a { color: var(--primary-color); text-decoration: none; border-bottom: 1px dashed var(--primary-color); transition: color var(--hover-delay), border-bottom-color var(--hover-delay); }
+        #contact .contact-info a:hover {
+            color: var(--secondary-accent-color); /* 悬停时用稍深的绿色 */
+            border-bottom-color: var(--secondary-accent-color);
+        }
+
+        /* 8. 页脚 (Footer) */
+        .site-footer { text-align: center; padding: 30px 0; /* 增加页脚 padding */
+            border-top: 1px solid var(--border-color); /* 浅灰分隔线 */
+            font-size: 0.9rem; color: var(--text-secondary);
+            background-color: var(--background-card); /* 页脚给个白色背景 */
+        }
+
+        /* 9. 响应式设计 */
+        @media (max-width: 900px) {
+            .site-header { height: auto; padding-top: 10px; padding-bottom: 10px; }
+            .header-container { flex-direction: column; align-items: center; }
+            .main-nav { margin-top: 15px; width: 100%; }
+            .main-nav ul { justify-content: center; flex-wrap: wrap; width: 100%; }
+            .main-nav li { margin: 5px 10px; }
+            .language-switcher { margin-left: 0; margin-top: 10px; }
+            main { padding-top: calc(var(--header-height-mobile) + 20px); } /* 保持不变 */
+            #hero { align-items: center; text-align: center; padding-top: 0; padding-bottom: 40px; min-height: auto; /* 移动端取消最小高度 */ }
+            #hero .subtitle { margin-left: auto; margin-right: auto; }
+            section h2 { font-size: 2rem; }
+            #research .research-focus-content { padding: 25px; }
+            #research .research-focus-content h3 { font-size: 1.6rem; }
+            #research .research-focus-content p { font-size: 1rem; }
+        }
+        @media (max-width: 480px) {
+            .logo span { display: none; }
+            .logo-icon { margin-right: 0; }
+            .main-nav a { font-size: 0.9rem; }
+            .main-nav li { margin: 5px 8px; }
+            #hero h1 { font-size: 2rem; }
+            #hero .subtitle { font-size: 1.2rem; }
+            .cta-button { padding: 10px 20px; font-size: 0.9rem; }
+            main { padding-top: calc(var(--header-height-mobile) + 10px); } /* 保持不变 */
+            #research .research-focus-content h3 { font-size: 1.4rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 页头 -->
+    <header class="site-header" id="site-header"> <!-- 添加 ID 以便 JS 选择 -->
+        <div class="header-container">
+            <a href="#hero" class="logo">
+                <div class="logo-icon"></div>
+                <span data-lang-key="logoText">Quantum Computing Lab</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#about" data-lang-key="navAbout">About Us</a></li>
+                    <li><a href="#research" data-lang-key="navResearch">Our Research</a></li>
+                    <li><a href="#contact" data-lang-key="navContact">Contact</a></li>
+                    <li class="language-switcher">
+                        <select id="lang-select">
+                            <option value="en">English</option>
+                            <option value="zh-CN">简体中文</option>
+                            <option value="zh-TW">繁體中文</option>
+                            <option value="ru">Русский</option>
+                        </select>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <br>
+    <br>
+    <br>
+    <!-- 主内容区 -->
+    <main>
+        <!-- 英雄区域 -->
+        <section id="hero" class="container">
+            <h1 data-lang-key="heroTitle">Harnessing Quantum Power, <span class="highlight">Building Tomorrow</span></h1>
+            <p class="subtitle" data-lang-key="heroSubtitle">Pioneering the future of computation through groundbreaking quantum research and development.</p>
+            <a href="#research" class="cta-button" data-lang-key="heroCta">Discover Our Focus</a>
+        </section>
+
+        <!-- 关于我们 -->
+        <section id="about" class="container">
+            <h2 data-lang-key="aboutTitle">About Us</h2>
+            <p data-lang-key="aboutP1">Our Quantum Computing Lab brings together leading physicists, computer scientists, and engineers dedicated to unlocking the potential of quantum mechanics for computation. We aim to solve problems previously thought unsolvable.</p>
+            <p data-lang-key="aboutP2">Collaboration, innovation, and rigorous scientific inquiry drive our quest to build fault-tolerant quantum computers and develop impactful quantum algorithms.</p>
+        </section>
+
+        <!-- 研究领域 - 单一焦点 -->
+        <section id="research" class="container">
+            <h2 data-lang-key="researchTitle">Our Research Focus</h2>
+            <div class="research-focus-content">
+                <h3 data-lang-key="researchFocusTitle">Fault-Tolerant Quantum Computing</h3>
+                <p data-lang-key="researchFocusDesc1">Quantum bits (qubits) are notoriously fragile and susceptible to environmental noise, leading to errors in computation. Our primary research focuses on designing and implementing quantum error correction codes and fault-tolerant architectures.</p>
+                <p data-lang-key="researchFocusDesc2">We investigate novel qubit modalities, develop sophisticated control techniques, and create theoretical frameworks to protect quantum information and enable reliable, large-scale quantum computation. This is crucial for realizing the true potential of quantum algorithms in fields like drug discovery, materials science, and complex system simulation.</p>
+            </div>
+        </section>
+
+        <!-- 联系我们 -->
+        <section id="contact" class="container">
+            <h2 data-lang-key="contactTitle">Contact Us</h2>
+            <p data-lang-key="contactP1">Interested in collaborating, joining our team, or learning more about our quantum computing research? We'd love to hear from you.</p>
+            <div class="contact-info">
+                <p><span data-lang-key="contactEmailLabel">Email</span>: <a href="mailto:quantum@futuretechlab.xyz">quantum@futuretechlab.xyz</a></p>
+                <p><span data-lang-key="contactAddressLabel">Address</span>: Quantum Wing, Future Tech Park</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="site-footer">
+        <div class="container">
+            <p data-lang-key="footerText">© 2024 Quantum Computing Lab. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript (语言切换逻辑保持不变, 滚动效果微调) -->
+    <script>
+        // 1. 翻译文本存储 (保持不变)
+        const translations = {
+            pageTitle: { en: "Quantum Computing Lab - Shaping the Quantum Future", 'zh-CN': "量子计算实验室 - 塑造量子未来", 'zh-TW': "量子計算實驗室 - 塑造量子未來", ru: "Лаборатория квантовых вычислений - Формируя квантовое будущее" },
+            logoText: { en: "Quantum Computing Lab", 'zh-CN': "量子计算实验室", 'zh-TW': "量子計算實驗室", ru: "Квантовая Лаборатория" },
+            navAbout: { en: "About Us", 'zh-CN': "关于我们", 'zh-TW': "關於我們", ru: "О нас" },
+            navResearch: { en: "Our Research", 'zh-CN': "我们的研究", 'zh-TW': "我們的研究", ru: "Наши исследования" },
+            navContact: { en: "Contact", 'zh-CN': "联系我们", 'zh-TW': "聯繫我們", ru: "Контакты" },
+            heroTitle: { en: 'Harnessing Quantum Power, <span class="highlight">Building Tomorrow</span>', 'zh-CN': '驾驭量子力量，<span class="highlight">构建明天</span>', 'zh-TW': '駕馭量子力量，<span class="highlight">構建明天</span>', ru: 'Укрощая Квантовую Мощь, <span class="highlight">Строим Завтра</span>' },
+            heroSubtitle: { en: "Pioneering the future of computation through groundbreaking quantum research and development.", 'zh-CN': "通过开创性的量子研究与开发，引领计算的未来。", 'zh-TW': "透過開創性的量子研究與開發，引領計算的未來。", ru: "Открываем будущее вычислений с помощью новаторских квантовых исследований и разработок." },
+            heroCta: { en: "Discover Our Focus", 'zh-CN': "了解我们的焦点", 'zh-TW': "了解我們的焦點", ru: "Узнайте о нашем фокусе" },
+            aboutTitle: { en: "About Us", 'zh-CN': "关于我们", 'zh-TW': "關於我們", ru: "О нас" },
+            aboutP1: { en: "Our Quantum Computing Lab brings together leading physicists, computer scientists, and engineers dedicated to unlocking the potential of quantum mechanics for computation. We aim to solve problems previously thought unsolvable.", 'zh-CN': "我们的量子计算实验室汇集了顶尖的物理学家、计算机科学家和工程师，致力于释放量子力学在计算方面的潜力。我们的目标是解决以前认为无法解决的问题。", 'zh-TW': "我們的量子計算實驗室匯集了頂尖的物理學家、計算機科學家和工程師，致力於釋放量子力學在計算方面的潛力。我們的目標是解決以前認為無法解決的問題。", ru: "Наша лаборатория квантовых вычислений объединяет ведущих физиков, информатиков и инженеров, посвятивших себя раскрытию потенциала квантовой механики для вычислений. Мы стремимся решать проблемы, ранее считавшиеся неразрешимыми." },
+            aboutP2: { en: "Collaboration, innovation, and rigorous scientific inquiry drive our quest to build fault-tolerant quantum computers and develop impactful quantum algorithms.", 'zh-CN': "协作、创新和严谨的科学探究驱动着我们构建容错量子计算机和开发有影响力的量子算法的追求。", 'zh-TW': "協作、創新和嚴謹的科學探究驅動著我們構建容錯量子計算機和開發有影響力的量子算法的追求。", ru: "Сотрудничество, инновации и строгие научные исследования движут нашим стремлением создавать отказоустойчивые квантовые компьютеры и разрабатывать эффективные квантовые алгоритмы." },
+            researchTitle: { en: "Our Research Focus", 'zh-CN': "我们的研究焦点", 'zh-TW': "我們的研究焦點", ru: "Фокус наших исследований" },
+            researchFocusTitle: { en: "Fault-Tolerant Quantum Computing", 'zh-CN': "容错量子计算", 'zh-TW': "容錯量子計算", ru: "Отказоустойчивые квантовые вычисления" },
+            researchFocusDesc1: { en: "Quantum bits (qubits) are notoriously fragile and susceptible to environmental noise, leading to errors in computation. Our primary research focuses on designing and implementing quantum error correction codes and fault-tolerant architectures.", 'zh-CN': "量子比特（qubit）极其脆弱且易受环境噪声影响，导致计算错误。我们的主要研究重点是设计和实现量子纠错码及容错架构。", 'zh-TW': "量子位元（qubit）極其脆弱且易受環境噪聲影響，導致計算錯誤。我們的主要研究重點是設計和實現量子糾錯碼及容錯架構。", ru: "Квантовые биты (кубиты) общеизвестно хрупки и подвержены влиянию окружающего шума, что приводит к ошибкам в вычислениях. Наши основные исследования сосредоточены на разработке и внедрении кодов квантовой коррекции ошибок и отказоустойчивых архитектур." },
+            researchFocusDesc2: { en: "We investigate novel qubit modalities, develop sophisticated control techniques, and create theoretical frameworks to protect quantum information and enable reliable, large-scale quantum computation. This is crucial for realizing the true potential of quantum algorithms in fields like drug discovery, materials science, and complex system simulation.", 'zh-CN': "我们研究新颖的量子比特模式，开发复杂的控制技术，并创建理论框架来保护量子信息，实现可靠的大规模量子计算。这对于在药物发现、材料科学和复杂系统模拟等领域实现量子算法的真正潜力至关重要。", 'zh-TW': "我們研究新穎的量子位元模式，開發複雜的控制技術，並創建理論框架來保護量子信息，實現可靠的大規模量子計算。這對於在藥物發現、材料科學和複雜系統模擬等領域實現量子算法的真正潛力至關重要。", ru: "Мы исследуем новые модальности кубитов, разрабатываем сложные методы управления и создаем теоретические основы для защиты квантовой информации и обеспечения надежных крупномасштабных квантовых вычислений. Это крайне важно для реализации истинного потенциала квантовых алгоритмов в таких областях, как разработка лекарств, материаловедение и моделирование сложных систем." },
+            contactTitle: { en: "Contact Us", 'zh-CN': "联系我们", 'zh-TW': "聯繫我們", ru: "Свяжитесь с нами" },
+            contactP1: { en: "Interested in collaborating, joining our team, or learning more about our quantum computing research? We'd love to hear from you.", 'zh-CN': "有兴趣合作、加入我们的团队或了解更多关于我们的量子计算研究吗？我们很乐意收到您的来信。", 'zh-TW': "有興趣合作、加入我們的團隊或了解更多關於我們的量子計算研究嗎？我們很樂意收到您的來信。", ru: "Заинтересованы в сотрудничестве, присоединении к нашей команде или хотите узнать больше о наших исследованиях в области квантовых вычислений? Мы будем рады услышать вас." },
+            contactEmailLabel: { en: "Email", 'zh-CN': "邮箱", 'zh-TW': "郵箱", ru: "Эл. почта" },
+            contactAddressLabel: { en: "Address", 'zh-CN': "地址", 'zh-TW': "地址", ru: "Адрес" },
+            footerText: { en: "© 2024 Quantum Computing Lab. All rights reserved.", 'zh-CN': "© 2024 量子计算实验室. 保留所有权利.", 'zh-TW': "© 2024 量子計算實驗室. 保留所有權利.", ru: "© 2024 Лаборатория квантовых вычислений. Все права защищены." }
+        };
+
+        // 2. 获取需要的 DOM 元素 (不变)
+        const langSelect = document.getElementById('lang-select');
+        const translatableElements = document.querySelectorAll('[data-lang-key]');
+        const htmlElement = document.documentElement;
+
+        // 3. 语言切换函数 (不变)
+        function changeLanguage(lang) {
+            if (!translations.pageTitle[lang]) {
+                console.warn(`Language "${lang}" not found in translations. Falling back to 'en'.`);
+                lang = 'en';
+            }
+            htmlElement.setAttribute('lang', lang);
+            translatableElements.forEach(element => {
+                const key = element.getAttribute('data-lang-key');
+                if (translations[key] && translations[key][lang]) {
+                    if (element.tagName === 'TITLE') {
+                        document.title = translations[key][lang];
+                    } else {
+                        element.innerHTML = translations[key][lang];
+                    }
+                } else {
+                    console.warn(`Translation key "${key}" not found for language "${lang}".`);
+                    if (translations[key] && translations[key]['en']) {
+                         element.innerHTML = translations[key]['en'];
+                    } else {
+                         element.innerHTML = key;
+                    }
+                }
+            });
+            langSelect.value = lang;
+            try {
+                localStorage.setItem('preferredLanguage', lang);
+            } catch (e) {
+                console.warn("Could not save language preference to localStorage.", e);
+            }
+        }
+
+        // 4. 初始化语言 (不变)
+        function initializeLanguage() {
+            let preferredLang = 'en';
+            try {
+                const savedLang = localStorage.getItem('preferredLanguage');
+                if (savedLang && translations.pageTitle[savedLang]) {
+                    preferredLang = savedLang;
+                } else {
+                    const browserLang = navigator.language || navigator.userLanguage;
+                    const baseLang = browserLang.split('-')[0];
+                    const fullLang = browserLang;
+                    if (fullLang === 'zh-CN') preferredLang = 'zh-CN';
+                    else if (fullLang === 'zh-TW' || fullLang === 'zh-HK') preferredLang = 'zh-TW';
+                    else if (baseLang === 'ru') preferredLang = 'ru';
+                }
+            } catch (e) {
+                console.warn("Could not access localStorage or navigator language.", e);
+            }
+            changeLanguage(preferredLang);
+        }
+
+        // 5. 添加事件监听器 (不变)
+        langSelect.addEventListener('change', (event) => {
+            changeLanguage(event.target.value);
+        });
+
+        // 6. 页面加载完成后初始化语言 (不变)
+        document.addEventListener('DOMContentLoaded', initializeLanguage);
+
+        // --- 其他 JS (导航栏滚动效果) ---
+        let lastScrollTop = 0;
+        const header = document.getElementById('site-header'); // 使用 ID 选择
+        const headerHeightDesktop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height-desktop'), 10) || 70;
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // 添加/移除 scrolled 类，用于控制 Header 样式变化
+            if (scrollTop > 50) { // 滚动超过 50px 时改变样式
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            // Header 隐藏/显示逻辑 (保持不变)
+            let currentHeaderHeight = header.offsetHeight;
+            if (scrollTop > lastScrollTop && scrollTop > currentHeaderHeight) {
+                 if (window.innerWidth > 900) {
+                     if (scrollTop > headerHeightDesktop) {
+                         header.style.top = `-${currentHeaderHeight}px`;
+                     }
+                 } else {
+                     // 移动端可以简化，滚动向下就隐藏
+                     header.style.top = `-${currentHeaderHeight}px`;
+                 }
+            } else {
+                header.style.top = '0';
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+        console.log("Light green theme website loaded!");
+
+    </script>
+
+</body>
+</html>
