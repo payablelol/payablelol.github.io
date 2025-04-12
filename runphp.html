@@ -3,181 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP 代码运行器 (前端模拟)</title>
+    <title>在线 PHP 运行器 (前端界面模拟 - 优化版)</title>
+
+    <!-- CodeMirror 核心 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
+    <!-- CodeMirror 主题 CSS (选择一个适合浅色背景的主题，例如 'base16-light' 或 'default') -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/base16-light.min.css">
+    <!-- 或者使用默认主题 -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/default.min.css"> -->
+
+
     <style>
+        /* 1. CSS 变量定义 - 浅绿色护眼主题 */
+        :root {
+            --primary-color: #34d399; /* 柔和翠绿 (Accent) */
+            --secondary-accent-color: #10b981; /* 稍深的翠绿 */
+            --background-body: #f0fff4; /* Honeydew (非常浅的绿色背景) */
+            --background-header: rgba(255, 255, 255, 0.9); /* 白色半透明 Header */
+            --background-container: #ffffff; /* 容器/卡片背景 */
+            --background-editor: #f8f9fa; /* 编辑器背景色 */
+            --background-output: #2d3748; /* 输出区域深色背景 */
+            --text-primary: #2d3748; /* 深蓝灰色 (主要文字) */
+            --text-secondary: #718096; /* 灰石色 (次要文字) */
+            --text-output: #e2e8f0; /* 输出区域浅色文字 */
+            --text-on-accent: #ffffff; /* 主色调按钮上的白色文字 */
+            --border-color: #e5e7eb; /* 浅灰色边框 */
+            --shadow-color-light: rgba(45, 55, 72, 0.1); /* 浅色主题的阴影 */
+            --hover-delay: 0.15s;
+            --header-height-desktop: 65px; /* 稍微减小 Header 高度 */
+        }
+
+        /* 2. 基本重置与全局样式 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
+            color: var(--text-primary);
+            background-color: var(--background-body);
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 40px); /* Full height minus padding */
+            min-height: 100vh; /* 保证 body 至少和视口一样高 */
+            overflow-x: hidden;
         }
 
-        .container {
+        /* 3. 布局容器 */
+        .page-wrapper {
             display: flex;
             flex-direction: column;
-            flex-grow: 1; /* Take remaining height */
-            gap: 15px; /* Space between elements */
+            flex: 1; /* 占据父容器（body）的剩余空间 */
         }
 
-        h1 {
-            text-align: center;
-            color: #007bff;
-            margin-bottom: 15px;
-        }
-
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        #php-code {
-            width: 100%;
-            height: 40%; /* Adjust height as needed */
-            flex-grow: 1; /* Allow textarea to grow */
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 10px;
-            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            resize: vertical; /* Allow vertical resize */
-            box-sizing: border-box; /* Include padding and border in element's total width and height */
-        }
-
-        .controls {
+        .main-container {
             display: flex;
-            justify-content: flex-end; /* Align button to the right */
-        }
-
-        #run-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #28a745; /* Green button */
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        #run-button:hover {
-            background-color: #218838;
-        }
-
-        #output-container {
-            flex-grow: 1; /* Take remaining height */
-            height: 40%; /* Adjust height as needed */
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            background-color: #e9ecef;
+            flex: 1; /* 占据 page-wrapper 的剩余空间 */
+            overflow: hidden;
             padding: 15px;
-            overflow-y: auto; /* Add scroll if content overflows */
-            box-sizing: border-box;
+            gap: 15px;
         }
 
+        .panel { /* 编辑器和输出区域的通用面板样式 */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-container);
+            border: 1px solid var(--border-color);
+            border-radius: 6px; /* 稍大圆角 */
+            box-shadow: 0 2px 5px var(--shadow-color-light);
+            overflow: hidden; /* 确保内部内容不溢出 */
+        }
+
+        .panel-header {
+            padding: 10px 15px; /* 调整内边距 */
+            background-color: #f8f9fa; /* 统一用浅灰背景 */
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+         .panel-header h2 {
+             margin: 0;
+             font-size: 1rem;
+             font-weight: 600; /* 稍粗标题 */
+             color: var(--text-primary);
+         }
+
+        /* 4. 页头 */
+        .site-header {
+            background-color: var(--background-header);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            transition: top 0.3s, background-color 0.3s, box-shadow 0.3s, border-bottom-color 0.3s;
+            height: var(--header-height-desktop);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid transparent;
+            flex-shrink: 0;
+            position: sticky; /* 改为 sticky，更现代 */
+            top: 0;
+        }
+        .site-header.scrolled {
+             background-color: rgba(255, 255, 255, 0.95);
+             box-shadow: 0 2px 4px var(--shadow-color-light);
+             border-bottom-color: var(--border-color);
+        }
+        .header-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: center; /* 居中标题 */
+            align-items: center;
+        }
+        .header-content h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* 5. CodeMirror 编辑器 */
+        .editor-wrapper { /* 包裹 CodeMirror 的容器 */
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .CodeMirror {
+            flex: 1 !important;
+            height: 100% !important; /* 确保占满父容器高度 */
+            border: none;
+            font-size: 14px;
+            background-color: var(--background-editor); /* 编辑器背景 */
+        }
+        /* 调整 CodeMirror 主题颜色以更好适应 */
+        .cm-s-base16-light.CodeMirror { background: var(--background-editor); color: var(--text-primary); }
+        .cm-s-base16-light .CodeMirror-gutters { background: var(--background-editor); border-right: 1px solid #ddd; }
+        .cm-s-base16-light .CodeMirror-linenumber { color: #aaa; }
+        .cm-s-base16-light .CodeMirror-cursor { border-left: 1px solid var(--text-primary); }
+        /* 你可以根据选择的主题进一步微调颜色 */
+
+
+        /* 6. 运行按钮 */
+        #run-button {
+            padding: 6px 16px; /* 调整按钮大小 */
+            font-size: 0.9rem;
+            font-weight: 500;
+            background-color: var(--primary-color);
+            color: var(--text-on-accent);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s, opacity 0.2s;
+        }
+        #run-button:hover {
+            background-color: var(--secondary-accent-color);
+        }
+        #run-button:disabled {
+            background-color: #adb5bd; /* 禁用时灰色 */
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* 7. 输出区域 */
         #output {
-            white-space: pre-wrap; /* Preserve whitespace and wrap lines */
-            word-wrap: break-word; /* Break long words */
+            flex: 1;
+            padding: 12px 15px; /* 增加内边距 */
             font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
             font-size: 14px;
-            color: #495057;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background-color: var(--background-output);
+            color: var(--text-output);
+            overflow-y: auto;
+            margin: 0;
+            border-bottom-left-radius: 6px; /* 匹配父容器圆角 */
+            border-bottom-right-radius: 6px;
         }
-         #output .error {
-             color: #dc3545; /* Red for errors */
-             font-weight: bold;
-         }
-         #output .info {
-             color: #17a2b8; /* Blue for info messages */
-             font-style: italic;
-         }
+        #output.error { color: #f87171; } /* 错误信息用红色 */
+        #output.warning { color: #facc15; } /* 警告信息用黄色 */
 
+        /* 8. 页脚 */
+        .site-footer {
+            background-color: #f1f5f9; /* 页脚用稍深的灰色 */
+            color: var(--text-secondary);
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        /* 9. 响应式设计 */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                height: auto; /* 高度自适应 */
+                overflow: visible; /* 允许内容滚动 */
+            }
+            .panel {
+                 min-height: 300px; /* 保证最小高度 */
+                 flex-basis: auto; /* 取消固定基础高度 */
+            }
+            .site-header {
+                /* 移动端可以考虑非 sticky 或调整 */
+                 position: static; /* 或者保持 sticky 但确保内容不被遮挡 */
+                 height: auto;
+                 padding: 10px 0;
+            }
+            .header-content h1 { font-size: 1.1rem; }
+            main { padding-top: 0; } /* 如果 header 不是 sticky/fixed */
+        }
     </style>
 </head>
 <body>
+    <div class="page-wrapper">
+        <!-- 页头 -->
+        <header class="site-header" id="site-header">
+            <div class="header-content">
+                <h1>在线 PHP 运行器 (前端界面模拟)</h1>
+            </div>
+        </header>
 
-    <h1>PHP 代码运行器 (前端模拟)</h1>
+        <!-- 主要内容区：编辑器 + 输出 -->
+        <div class="main-container">
+            <!-- 编辑器面板 -->
+            <div class="panel editor-panel">
+                <div class="panel-header">
+                     <h2>PHP 代码</h2>
+                     <button id="run-button" title="模拟运行 PHP 代码">运行 (模拟)</button>
+                </div>
+                <div class="editor-wrapper">
+                    <textarea id="php-code-textarea" spellcheck="false"><?php
 
-    <div class="container">
-        <label for="php-code">输入 PHP 代码 (需要包含 `<?php` 标签):</label>
-        <textarea id="php-code" spellcheck="false"><?php
+// 这是一个 PHP 代码模拟运行器前端界面
+// 在这里输入你的 PHP 代码
 
-echo "你好，世界! Hello, World!\n";
-echo "当前时间是：" . date("Y-m-d H:i:s");
+echo "Hello from the PHP Simulator!\n";
+echo "Current simulated time: " . date("Y-m-d H:i:s"); // 这行不会真的执行 PHP 的 date()
 
-// 尝试产生一个错误
-// echo $undefinedVariable;
+$message = "This is a test message.";
+echo "\nMessage: " . $message;
+
+// 尝试一些数组
+$items = ['apple', 'banana', 'cherry'];
+print_r($items); // print_r 也不会真的执行
 
 ?></textarea>
+                </div>
+            </div>
 
-        <div class="controls">
-            <button id="run-button">运行代码</button>
+            <!-- 输出面板 -->
+            <div class="panel output-panel">
+                 <div class="panel-header">
+                     <h2>输出</h2>
+                     <!-- 可以加个清空按钮 -->
+                     <!-- <button id="clear-button" title="清空输出">清空</button> -->
+                </div>
+                <pre id="output">点击“运行”按钮来模拟执行 PHP 代码。</pre>
+            </div>
         </div>
 
-        <label for="output-container">输出结果:</label>
-        <div id="output-container">
-            <pre><code id="output">点击“运行代码”按钮将代码发送到服务器执行 (此为模拟)。</code></pre>
-        </div>
+        <!-- 页脚 -->
+        <footer class="site-footer">
+            <p><strong>重要提示：</strong>此页面仅为前端界面模拟，无法真正执行 PHP 代码。需要后端服务器支持才能运行。</p>
+        </footer>
     </div>
 
+    <!-- CodeMirror JS 文件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/php/php.min.js"></script>
+    <!-- CodeMirror 附加功能 (可选) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/edit/closebrackets.min.js"></script>
+
     <script>
-        const codeInput = document.getElementById('php-code');
+        // --- DOM Element Selection ---
+        const codeTextarea = document.getElementById('php-code-textarea');
         const runButton = document.getElementById('run-button');
-        const outputElement = document.getElementById('output');
+        const outputArea = document.getElementById('output');
+        const siteHeader = document.getElementById('site-header');
 
-        runButton.addEventListener('click', () => {
-            const phpCode = codeInput.value;
-
-            // 1. 清空之前的输出并显示加载状态
-            outputElement.textContent = '正在发送代码到服务器并等待结果...';
-            outputElement.className = 'info'; // Set info style
-
-            // 2. **模拟** 发送代码到后端 (实际应用中需要替换)
-            // 在真实的实现中，你会使用 fetch API 将 phpCode 发送到你的后端 PHP 脚本
-            /*
-            fetch('/api/run-php.php', { // <-- 替换成你的后端脚本 URL
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json', // 或者 'application/x-www-form-urlencoded'
-                },
-                body: JSON.stringify({ code: phpCode }) // 发送 JSON 数据
-                // 或者 body: 'code=' + encodeURIComponent(phpCode) // 发送表单数据
-            })
-            .then(response => {
-                if (!response.ok) {
-                    // 如果服务器返回错误状态 (如 4xx, 5xx)
-                    throw new Error(`服务器错误: ${response.status} ${response.statusText}`);
-                }
-                return response.text(); // 获取服务器返回的文本输出
-            })
-            .then(data => {
-                // 3. 显示从服务器获取的真实结果
-                outputElement.textContent = data;
-                outputElement.className = ''; // Reset style
-            })
-            .catch(error => {
-                // 4. 显示错误信息
-                console.error('运行 PHP 代码时出错:', error);
-                outputElement.textContent = `运行出错:\n${error.message}\n\n(请检查浏览器控制台和后端服务器日志获取详细信息)`;
-                outputElement.className = 'error'; // Set error style
-            });
-            */
-
-            // --- 以下是纯前端模拟，无实际执行 ---
-            // 为了演示，我们设置一个短暂的延迟，然后显示一条消息
-            // 实际应用中应删除此 setTimeout 部分，并取消上面 fetch 的注释
-            setTimeout(() => {
-                 outputElement.textContent = `(模拟) 后端服务器需要接收以下代码并执行：\n\n${phpCode}\n\n然后将 PHP 的输出返回到这里显示。\n\n**警告：在服务器上执行任意代码具有极高的安全风险！必须采取严格的安全措施！**`;
-                 outputElement.className = 'info';
-            }, 1000); // 模拟 1 秒的网络延迟
-            // --- 模拟结束 ---
-
+        // --- CodeMirror Initialization ---
+        const editor = CodeMirror.fromTextArea(codeTextarea, {
+            lineNumbers: true,
+            mode: "php",
+            // theme: "default", // 或者使用 base16-light
+            theme: "base16-light",
+            indentUnit: 4,
+            smartIndent: true,
+            tabSize: 4,
+            indentWithTabs: false,
+            electricChars: true,
+            matchBrackets: true,       // 需要 matchbrackets.js 插件
+            autoCloseBrackets: true,   // 需要 closebrackets.js 插件
+            lineWrapping: true
         });
-    </script>
 
+        // --- Event Listeners ---
+
+        // Run Button Click Handler
+        runButton.addEventListener('click', () => {
+            const phpCode = editor.getValue(); // Get code from CodeMirror
+
+            // Update UI: Disable button, show loading state
+            runButton.disabled = true;
+            runButton.textContent = '运行中...';
+            outputArea.textContent = '⏳ 正在处理 (模拟中)...\n';
+            outputArea.className = ''; // Reset output area style (remove error/warning classes)
+
+            // --- Backend Interaction Placeholder ---
+            // In a real application, send phpCode to your backend API here using fetch()
+            // const backendUrl = '/api/run-php'; // Example backend endpoint
+            // fetch(backendUrl, { /* ... fetch options ... */ })
+            //   .then(response => response.json())
+            //   .then(data => { /* Update outputArea with data.output or data.error */ })
+            //   .catch(error => { /* Handle fetch error */ })
+            //   .finally(() => { /* Re-enable button */ });
+
+            // --- Frontend Simulation Logic ---
+            // Simulate network delay and processing time
+            setTimeout(() => {
+                let simulatedOutput = `----------------------------------------\n`;
+                simulatedOutput += ` PHP Code Received (Not Executed):\n`;
+                simulatedOutput += `----------------------------------------\n`;
+                simulatedOutput += `${phpCode}\n`;
+                simulatedOutput += `----------------------------------------\n`;
+                simulatedOutput += ` Simulation Result:\n`;
+                simulatedOutput += `----------------------------------------\n`;
+
+                // Very basic attempt to mimic echo output (for demonstration only)
+                const echoMatches = phpCode.matchAll(/echo\s*["'](.*?)["'];?/g);
+                let foundEcho = false;
+                for (const match of echoMatches) {
+                    simulatedOutput += `[Simulated Echo]: ${match[1]}\n`;
+                    foundEcho = true;
+                }
+                if (!foundEcho) {
+                    simulatedOutput += "(No simple 'echo \"string\";' found to simulate output)\n";
+                }
+
+                simulatedOutput += `\n⚠️ **警告:** 以上输出为前端模拟，PHP 代码并未在服务器上实际执行。\n`;
+
+                outputArea.textContent = simulatedOutput;
+                outputArea.classList.add('warning'); // Add warning style
+
+                // Re-enable button
+                runButton.disabled = false;
+                runButton.textContent = '运行 (模拟)';
+
+            }, 1000); // Simulate 1 second delay
+        });
+
+        // Header Scroll Effect Handler
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 50) {
+                siteHeader.classList.add('scrolled');
+            } else {
+                siteHeader.classList.remove('scrolled');
+            }
+            // Optional: Hide header on scroll down (uncomment if needed)
+            /*
+            let currentHeaderHeight = siteHeader.offsetHeight;
+            if (scrollTop > lastScrollTop && scrollTop > currentHeaderHeight) {
+                siteHeader.style.top = `-${currentHeaderHeight}px`;
+            } else {
+                siteHeader.style.top = '0';
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            */
+        }, false);
+
+        // --- Initial Console Message ---
+        console.log("PHP Runner Frontend Simulation Initialized.");
+        console.warn("Remember: PHP code execution requires a backend server.");
+
+    </script>
 </body>
 </html>
