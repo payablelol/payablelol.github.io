@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付宝付款</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            min-height: 100vh;
+        }
+        
+        /* Mobile View Styles */
+        .mobile-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+        }
+        
+        .back-button {
+            color: #0e74ff;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .alipay-logo {
+            width: 32px;
+            height: 32px;
+            background-color: #1677ff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .header-text {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .more-options {
+            margin-left: auto;
+            font-size: 24px;
+            color: #666;
+        }
+        
+        .payment-info {
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .customer-service {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .amount {
+            font-size: 44px;
+            font-weight: 500;
+            margin: 20px 0;
+        }
+        
+        .pay-button {
+            background-color: #1677ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 18px;
+            width: 100%;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        
+        .download-text {
+            color: #1677ff;
+            font-size: 16px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border-top: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav-item {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .cancel-button {
+            background-color: #f5f5f5;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        /* Desktop View Styles */
+        .desktop-header {
+            background-color: #f5f5f5;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .greeting {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .desktop-view {
+            display: flex;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #e0e0e0;
+            background-color: white;
+        }
+        
+        .desktop-sidebar {
+            width: 200px;
+            background-color: #f5f5f5;
+            padding: 20px 0;
+            text-align: center;
+            border-right: 1px solid #e0e0e0;
+        }
+        
+        .desktop-content {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .transaction-info {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .product-info {
+            display: flex;
+            margin: 10px 0;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .price-info {
+            text-align: right;
+            font-size: 24px;
+            color: #ff6700;
+            margin: 15px 0;
+        }
+        
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        
+        .qr-info {
+            text-align: center;
+        }
+        
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            border: 1px solid #eee;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-form {
+            border-top: 1px solid #eee;
+            padding: 20px;
+        }
+        
+        .form-title {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .form-button {
+            background-color: #1677ff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .security-logos {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .security-logos img {
+            height: 30px;
+            margin: 0 5px;
+        }
+        
+        .icp {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Toggle visibility based on screen size */
+        .mobile-view {
+            display: none;
+        }
+        
+        .desktop-container {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-view {
+                display: block;
+            }
+            
+            .desktop-container {
+                display: none;
+            }
+        }
+
+        .payment-success {
+            color: #666;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        /* Toggle between different views */
+        #view1, #view2, #view3, #view4 {
+            display: none;
+        }
+        
+        #view1 {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile View Templates -->
+    <div class="mobile-view">
+        <!-- View 1: Mobile Payment Screen -->
+        <div id="view1">
+            <div class="container">
+                <div class="mobile-header">
+                    <div class="back-button">←</div>
+                    <div class="alipay-logo">支</div>
+                    <div class="header-text">支付宝付款</div>
+                    <div class="more-options">⋯</div>
+                </div>
+                
+                <div class="payment-info">
+                    <div class="customer-service">17745551445 (H)售后客服 KF.744.CN</div>
+                    <div class="amount">¥ 22.80</div>
+                    
+                    <button class="pay-button" onclick="showView('view4')">打开支付宝APP付款</button>
+                    <div class="download-text" onclick="showView('view2')">下载支付宝APP付款</div>
+                </div>
+                
+                <div class="bottom-nav">
+                    <div class="nav-item" onclick="showView('view3')">我的客服</div>
+                    <div class="nav-item">问题反馈</div>
+                    <div class="nav-item">下载支付宝</div>
+                    <div class="nav-item">取消</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- View 4: Payment Complete Screen -->
+        <div id="view4">
+            <div class="container">
+                <div class="mobile-header">
+                    <div class="back-button">←</div>
+                    <div class="alipay-logo">支</div>
+                    <div class="header-text">支付宝付款</div>
+                    <div class="more-options">⋯</div>
+                </div>
+                
+                <div class="payment-info">
+                    <div class="customer-service">17745551445 (H)售后客服 KF.744.CN</div>
+                    <div class="amount">¥ 22.80</div>
+                    
+                    <button class="pay-button">打开支付宝APP付款</button>
+                    <div class="download-text">下载支付宝APP付款</div>
+                    
+                    <div class="payment-success">已支付完成返回查看订单</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Desktop View Templates -->
+    <div class="desktop-container">
+        <!-- View 2: Desktop QR Code Payment Screen -->
+        <div id="view2">
+            <div class="desktop-header">
+                <div class="greeting">你好，欢迎使用支付宝付款！</div>
+                <div class="support">帮助问题</div>
+            </div>
+            
+            <div class="desktop-view">
+                <div class="desktop-sidebar">
+                    <div class="alipay-logo" style="margin: 0 auto;">支</div>
+                    <div style="margin-top: 10px;">我的收银台</div>
+                    
+                    <div style="margin-top: 100px;">
+                        <p>试试手机支付宝</p>
+                        <button style="background-color: #1677ff; color: white; border: none; padding: 5px 10px; border-radius: 3px; margin-top: 10px;">扫一扫付款 ></button>
+                    </div>
+                </div>
+                
+                <div class="desktop-content">
+                    <div class="transaction-info">
+                        <div>正在使用即时到账交易 [?]</div>
+                        <div style="color: #ff6700;">9.80 元</div>
+                    </div>
+                    
+                    <div class="product-info">
+                        <div>新 极 品</div>
+                        <div style="margin-left: 10px; color: #666;">收款方：波河区天堂软件注销处</div>
+                    </div>
+                    
+                    <div style="text-align: right;">
+                        <button style="background-color: #f5f5f5; border: none; padding: 5px 10px; border-radius: 3px; font-size: 12px;">订单详情</button>
+                    </div>
+                    
+                    <div class="qr-container">
+                        <div class="qr-info">
+                            <div style="margin-bottom: 10px;">扫一扫付款 (元)</div>
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">9.80</div>
+                            
+                            <div class="qr-code">
+                                <div style="width: 150px; height: 150px; background-color: #fff; display: flex; justify-content: center; align-items: center;">
+                                    <svg width="100" height="100" viewBox="0 0 100 100">
+                                        <rect x="10" y="10" width="80" height="80" stroke="black" fill="none" />
+                                        <text x="50" y="50" text-anchor="middle" dominant-baseline="middle">支</text>
+                                        <text x="50" y="70" text-anchor="middle" font-size="10">QR Code</text>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 10px; display: flex; justify-content: center;">
+                                <div style="margin-right: 15px;">
+                                    <div style="border: 1px solid #eee; padding: 5px; color: #ff6700;">打开手机支付宝</div>
+                                </div>
+                                <div>
+                                    <div style="border: 1px solid #eee; padding: 5px; color: #ff6700;">扫一扫付款</div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                                或使用银行卡支付
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="security-logos">
+                <img src="/api/placeholder/60/30" alt="VeriSign" />
+                <img src="/api/placeholder/60/30" alt="PCI" />
+                <img src="/api/placeholder/60/30" alt="Verified by Visa" />
+                <img src="/api/placeholder/60/30" alt="MasterCard SecureCode" />
+                <img src="/api/placeholder/60/30" alt="JCB" />
+            </div>
+            
+            <div class="icp">
+                ICP证: 沪B2-20190046
+            </div>
+        </div>
+        
+        <!-- View 3: Desktop Login Screen -->
+        <div id="view3">
+            <div class="desktop-header">
+                <div class="greeting">你好，欢迎使用支付宝付款！</div>
+                <div class="support">帮助问题</div>
+            </div>
+            
+            <div class="desktop-view">
+                <div class="desktop-sidebar">
+                    <div class="alipay-logo" style="margin: 0 auto;">支</div>
+                    <div style="margin-top: 10px;">我的收银台</div>
+                    
+                    <div style="margin-top: 100px;">
+                        <p>试试手机支付宝</p>
+                        <button style="background-color: #1677ff; color: white; border: none; padding: 5px 10px; border-radius: 3px; margin-top: 10px;">扫一扫付款 ></button>
+                    </div>
+                </div>
+                
+                <div class="desktop-content">
+                    <div class="transaction-info">
+                        <div>正在使用即时到账交易 [?]</div>
+                        <div style="color: #ff6700;">9.80 元</div>
+                    </div>
+                    
+                    <div class="product-info">
+                        <div>新 极 品</div>
+                        <div style="margin-left: 10px; color: #666;">收款方：波河区天堂软件注销处</div>
+                    </div>
+                    
+                    <div class="login-form">
+                        <div class="form-title">登录支付宝账户付款 <span style="color: #1677ff; font-size: 12px;">新用户注册</span></div>
+                        
+                        <div class="input-group">
+                            <div class="form-label">账户名：</div>
+                            <input type="text" class="form-input" placeholder="手机号码/邮箱">
+                        </div>
+                        
+                        <div class="input-group">
+                            <div class="form-label">支付密码：</div>
+                            <input type="password" class="form-input">
+                            <div style="text-align: right; font-size: 12px; color: #1677ff; margin-top: 5px;">忘记密码？</div>
+                        </div>
+                        
+                        <button class="form-button">下一步</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="security-logos">
+                <img src="/api/placeholder/60/30" alt="VeriSign" />
+                <img src="/api/placeholder/60/30" alt="PCI" />
+                <img src="/api/placeholder/60/30" alt="Verified by Visa" />
+                <img src="/api/placeholder/60/30" alt="MasterCard SecureCode" />
+                <img src="/api/placeholder/60/30" alt="JCB" />
+            </div>
+            
+            <div class="icp">
+                ICP证: 沪B2-20190046
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showView(viewId) {
+            // Hide all views
+            document.getElementById('view1').style.display = 'none';
+            document.getElementById('view2').style.display = 'none';
+            document.getElementById('view3').style.display = 'none';
+            document.getElementById('view4').style.display = 'none';
+            
+            // Show selected view
+            document.getElementById(viewId).style.display = 'block';
+            
+            // Toggle container classes based on view
+            if (viewId === 'view2' || viewId === 'view3') {
+                document.querySelector('.mobile-view').style.display = 'none';
+                document.querySelector('.desktop-container').style.display = 'block';
+            } else {
+                document.querySelector('.mobile-view').style.display = 'block';
+                document.querySelector('.desktop-container').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
