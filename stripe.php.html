@@ -1,0 +1,289 @@
+<?php
+
+/**
+ * 支付方式详细信息数组
+ *
+ * 每个支付方式的键是其名称（可能包含中文或英文）。
+ * 每个值是一个关联数组，包含以下信息：
+ * - description_en: 英文描述
+ * - description_zh: 中文描述
+ * - official_website: 官方网站链接 (可能为 null)
+ * - registration_link: 注册或信息页面链接 (可能为 null)
+ * - payment_info_link: 支付入口或信息页面链接 (可能为 null)
+ * - notes: 补充说明 (可能为 null)
+ */
+$payment_methods_detailed_info = [
+    "信用卡/银行卡" => [
+        "description_en" => "Traditional credit and debit cards including Visa, Mastercard, American Express, etc.",
+        "description_zh" => "传统的信用卡和借记卡，包括Visa、Mastercard、American Express等。",
+        "official_website" => null, // 通用类别，无单一官网
+        "registration_link" => null, // 通过发卡行申请
+        "payment_info_link" => null, // 在商户结账页面使用
+        "notes" => "全球通用，具体品牌如 Visa, Mastercard, Amex 等有各自官网。"
+    ],
+    "Cartes Bancaires" => [
+        "description_en" => "A French banking card system used for credit and debit transactions in France.",
+        "description_zh" => "法国银行卡系统，用于法国的信用卡和借记卡交易。",
+        "official_website" => "https://www.cartes-bancaires.com/",
+        "registration_link" => null, // 通常由法国银行发行
+        "payment_info_link" => "https://www.cartes-bancaires.com/", // 信息网站
+        "notes" => "主要在法国使用。"
+    ],
+    "Pay By Bank" => [
+        "description_en" => "A method enabling direct bank transfers, often via open banking platforms.",
+        "description_zh" => "一种支持直接银行转账的方法，通常通过开放银行平台实现。",
+        "official_website" => null, // 概念性，依赖具体实现 (如 Open Banking UK, Plaid)
+        "registration_link" => null, // 用户使用自己的银行账户
+        "payment_info_link" => null, // 在商户结账时选择银行进行授权
+        "notes" => "基于开放银行（Open Banking）技术。"
+    ],
+    "Przelewy24" => [
+        "description_en" => "A popular Polish online payment system facilitating bank transfers.",
+        "description_zh" => "一种流行的波兰在线支付系统，方便银行转账。",
+        "official_website" => "https://www.przelewy24.pl/",
+        "registration_link" => "https://www.przelewy24.pl/", // 主要是商家注册
+        "payment_info_link" => "https://www.przelewy24.pl/", // 用户在结账时选择此方式跳转
+        "notes" => "主要在波兰使用。"
+    ],
+    "Sofort" => [
+        "description_en" => "A European online banking transfer system, now part of Klarna's services.",
+        "description_zh" => "一种欧洲在线银行转账系统，现在是 Klarna 服务的一部分。",
+        "official_website" => "https://www.klarna.com/sofort/", // 已并入 Klarna
+        "registration_link" => "https://www.klarna.com/sofort/", // 信息页面
+        "payment_info_link" => "https://www.klarna.com/sofort/", // 用户在结账时选择此方式跳转
+        "notes" => "在多个欧洲国家可用，现为 Klarna 旗下。"
+    ],
+    "TWINT" => [
+        "description_en" => "A Swiss mobile payment solution for instant payments via smartphones.",
+        "description_zh" => "一种瑞士移动支付解决方案，可通过智能手机进行即时支付。",
+        "official_website" => "https://www.twint.ch/",
+        "registration_link" => "https://www.twint.ch/en/private-customers/twint-app-download/", // 下载 App
+        "payment_info_link" => "https://www.twint.ch/", // 通过 App 支付
+        "notes" => "主要在瑞士使用。"
+    ],
+    "Afterpay / Clearpay" => [
+        "description_en" => "Buy Now, Pay Later service allowing deferred payments at checkout.",
+        "description_zh" => "“先买后付”服务，允许在结账时延期付款。",
+        "official_website" => "https://www.afterpay.com/", // (Afterpay) / https://www.clearpay.co.uk/ (Clearpay UK)
+        "registration_link" => "https://www.afterpay.com/", // 注册入口在官网
+        "payment_info_link" => "https://portal.afterpay.com/login", // 登录管理分期付款
+        "notes" => "先买后付 (BNPL) 服务。Afterpay 和 Clearpay 是同一公司在不同地区的品牌。"
+    ],
+    "Klarna" => [
+        "description_en" => "A leading Buy Now, Pay Later service that also offers direct payment options.",
+        "description_zh" => "一种领先的“先买后付”服务，还提供直接付款选项。",
+        "official_website" => "https://www.klarna.com/",
+        "registration_link" => "https://www.klarna.com/", // 注册入口在官网或 App
+        "payment_info_link" => "https://app.klarna.com/", // 登录管理支付
+        "notes" => "提供多种支付选项，包括 BNPL 和直接支付。"
+    ],
+    "BACS 直接借记" => [
+        "description_en" => "UK's direct debit system for automated bank payments.",
+        "description_zh" => "英国的直接借记系统，用于自动银行付款。",
+        "official_website" => "https://www.bacs.co.uk/", // 或 https://www.pay.uk/what-we-do/bacs/
+        "registration_link" => "https://www.pay.uk/how-do-i-set-up-a-direct-debit/", // 如何设置的信息
+        "payment_info_link" => null, // 通过授权商家扣款
+        "notes" => "主要用于英国的定期付款。"
+    ],
+    "SEPA 直接借记" => [
+        "description_en" => "The Single Euro Payments Area system for direct debits across Europe.",
+        "description_zh" => "单一欧元支付区系统，用于整个欧洲的直接借记。",
+        "official_website" => "https://www.europeanpaymentscouncil.eu/what-we-do/sepa-direct-debit",
+        "registration_link" => null, // 用户授权商家
+        "payment_info_link" => null, // 通过授权商家扣款
+        "notes" => "用于欧元区国家的直接借记。"
+    ],
+    "ACH 直接借记" => [
+        "description_en" => "Automated Clearing House system for direct debit transactions in the USA.",
+        "description_zh" => "美国自动清算所系统，用于直接借记交易。",
+        "official_website" => "https://www.nacha.org/", // 管理机构
+        "registration_link" => null, // 用户授权商家
+        "payment_info_link" => null, // 通过授权商家扣款
+        "notes" => "主要用于美国的直接借记和存款。"
+    ],
+    "银行存款" => [
+        "description_en" => "Traditional bank deposit method, including in-branch or online transfers.",
+        "description_zh" => "传统的银行存款方式，包括在分行或在线转账。",
+        "official_website" => null, // 取决于具体银行
+        "registration_link" => null, // 用户使用自己的银行账户
+        "payment_info_link" => null, // 通过银行网银或 App 操作
+        "notes" => "通用银行转账方式。"
+    ],
+    "Naver Pay" => [
+        "description_en" => "A South Korean digital wallet service integrated with Naver's ecosystem.",
+        "description_zh" => "韩国数字钱包服务，与 Naver 的生态系统集成。",
+        "official_website" => "https://pay.naver.com/",
+        "registration_link" => "https://nid.naver.com/nidlogin.login", // 需要 Naver 账户
+        "payment_info_link" => "https://pay.naver.com/", // 登录后管理
+        "notes" => "主要在韩国使用。"
+    ],
+    "Kakao Pay" => [
+        "description_en" => "A South Korean mobile payment and digital wallet service by Kakao.",
+        "description_zh" => "Kakao 的韩国移动支付和数字钱包服务。",
+        "official_website" => "https://www.kakaopay.com/",
+        "registration_link" => "https://www.kakaocorp.com/service/KakaoPay", // 信息页面，通过 KakaoTalk App 注册
+        "payment_info_link" => "https://www.kakaopay.com/", // 通过 App 支付
+        "notes" => "主要在韩国使用，集成在 KakaoTalk 中。"
+    ],
+    "Samsung Pay" => [
+        "description_en" => "Samsung's mobile wallet solution supporting both NFC and MST payments.",
+        "description_zh" => "三星的移动钱包解决方案，支持 NFC 和 MST 支付。",
+        "official_website" => "https://www.samsung.com/global/galaxy/samsung-pay/",
+        "registration_link" => null, // 在支持的三星设备上设置
+        "payment_info_link" => null, // 通过手机 App 支付
+        "notes" => "适用于三星设备，支持 NFC 和 MST 技术。"
+    ],
+    "Payco" => [
+        "description_en" => "A South Korean payment service offering digital wallet and online payment options.",
+        "description_zh" => "韩国支付服务，提供数字钱包和在线支付选项。",
+        "official_website" => "https://www.payco.com/",
+        "registration_link" => "https://id.payco.com/join.nhn", // 注册页面
+        "payment_info_link" => "https://www.payco.com/", // 登录后管理
+        "notes" => "主要在韩国使用。"
+    ],
+    "Apple Pay" => [
+        "description_en" => "Apple's mobile payment and digital wallet service integrated with iOS devices.",
+        "description_zh" => "Apple 的移动支付和数字钱包服务，与 iOS 设备集成。",
+        "official_website" => "https://www.apple.com/apple-pay/",
+        "registration_link" => null, // 在支持的 Apple 设备上通过 Wallet App 设置
+        "payment_info_link" => null, // 通过设备上的 Wallet App 支付
+        "notes" => "适用于 Apple 设备。"
+    ],
+    "Google Pay" => [
+        "description_en" => "Google's digital wallet and online payment system for Android and web.",
+        "description_zh" => "Google 的数字钱包和在线支付系统，适用于 Android 和网络。",
+        "official_website" => "https://pay.google.com/",
+        "registration_link" => "https://pay.google.com/about/", // 信息及 App 下载
+        "payment_info_link" => "https://pay.google.com/", // 登录管理
+        "notes" => "适用于 Android 设备和网页支付，部分地区也称为 Google Wallet。"
+    ],
+    "Link" => [
+        "description_en" => "A streamlined payment method, often associated with quick checkout experiences.",
+        "description_zh" => "一种简化的支付方式，通常与快速结账体验相关联。",
+        "official_website" => "https://link.co/", // 由 Stripe 提供支持
+        "registration_link" => "https://link.co/", // 在结账时保存信息即可注册
+        "payment_info_link" => "https://link.co/manage", // 管理已保存的信息
+        "notes" => "Stripe 的快速结账解决方案。"
+    ],
+    "PayPal" => [
+        "description_en" => "A globally recognized online payment platform supporting various transactions.",
+        "description_zh" => "全球公认的在线支付平台，支持各种交易。",
+        "official_website" => "https://www.paypal.com/",
+        "registration_link" => "https://www.paypal.com/signup",
+        "payment_info_link" => "https://www.paypal.com/signin", // 登录入口
+        "notes" => "全球广泛使用的电子钱包和支付平台。"
+    ],
+    "Revolut Pay" => [
+        "description_en" => "An online payment service from Revolut, known for international banking features.",
+        "description_zh" => "Revolut 的在线支付服务，以国际银行功能而闻名。",
+        "official_website" => "https://www.revolut.com/business/online-payments/revolut-pay/", // 商家信息页
+        "registration_link" => "https://www.revolut.com/", // 需要注册 Revolut 账户
+        "payment_info_link" => "https://app.revolut.com/", // 登录 Revolut 账户
+        "notes" => "Revolut 提供的支付方式。"
+    ],
+    "Bancontact" => [
+        "description_en" => "A Belgian payment network widely used for debit card transactions.",
+        "description_zh" => "比利时支付网络，广泛用于借记卡交易。",
+        "official_website" => "https://www.bancontact.com/",
+        "registration_link" => null, // 通常与比利时银行账户关联
+        "payment_info_link" => "https://www.bancontact.com/", // 信息网站，支付通过 App 或银行卡
+        "notes" => "比利时主要的借记卡支付方式。"
+    ],
+    "Eps" => [
+        "description_en" => "An Austrian online banking transfer method used for secure payments.",
+        "description_zh" => "奥地利在线银行转账方法，用于安全支付。",
+        "official_website" => "https://eps-ueberweisung.at/", // 现在似乎重定向到 PSA (Payment Services Austria)
+        "registration_link" => null, // 用户使用自己的奥地利银行账户
+        "payment_info_link" => null, // 在结账时选择银行跳转
+        "notes" => "奥地利的银行转账系统。"
+    ],
+    "iDEAL" => [
+        "description_en" => "A popular Dutch online banking payment system facilitating direct transfers.",
+        "description_zh" => "一种流行的荷兰在线银行支付系统，方便直接转账。",
+        "official_website" => "https://www.ideal.nl/",
+        "registration_link" => null, // 用户使用自己的荷兰银行账户
+        "payment_info_link" => "https://www.ideal.nl/en/consumers/what-is-ideal/", // 消费者信息
+        "notes" => "荷兰最常用的在线支付方式。"
+    ],
+    "FPX" => [
+        "description_en" => "A Malaysian online banking payment system enabling real-time transfers.",
+        "description_zh" => "马来西亚在线银行支付系统，支持实时转账。",
+        "official_website" => "https://paynet.my/personal-fpx.html", // 由 PayNet 运营
+        "registration_link" => null, // 用户使用自己的马来西亚银行账户
+        "payment_info_link" => "https://paynet.my/personal-fpx.html", // 信息页面
+        "notes" => "马来西亚的实时银行转账系统。"
+    ],
+    "giropay" => [
+        "description_en" => "A German online payment method for secure bank transfers.",
+        "description_zh" => "德国在线支付方式，用于安全的银行转账。",
+        "official_website" => "https://www.giropay.de/",
+        "registration_link" => null, // 用户使用自己的德国银行账户
+        "payment_info_link" => "https://www.giropay.de/kunden/online-ueberweisen.html", // 如何使用
+        "notes" => "德国的银行转账系统，与 paydirekt 合并。"
+    ],
+    "GrabPay" => [
+        "description_en" => "A Southeast Asian digital wallet and payment service by Grab.",
+        "description_zh" => "Grab 的东南亚数字钱包和支付服务。",
+        "official_website" => "https://www.grab.com/sg/pay/", // (新加坡示例，不同国家/地区有子站)
+        "registration_link" => null, // 通过 Grab App 注册和使用
+        "payment_info_link" => null, // 通过 Grab App 支付
+        "notes" => "主要在东南亚使用，集成在 Grab 应用中。"
+    ],
+    "Boleto" => [
+        "description_en" => "A Brazilian payment voucher system used for offline and online payments.",
+        "description_zh" => "巴西支付凭证系统，用于离线和在线支付。",
+        "official_website" => null, // 由巴西银行联合会 (FEBRABAN) 规范，无单一官网
+        "registration_link" => null, // 在结账时生成凭证
+        "payment_info_link" => null, // 在银行、ATM、彩票点或网银支付凭证
+        "notes" => "巴西流行的现金支付凭证方式。"
+    ],
+    "OXXO" => [
+        "description_en" => "A Mexican cash payment option where vouchers are paid at OXXO stores.",
+        "description_zh" => "墨西哥现金支付选项，可在 OXXO 便利店支付凭证。",
+        "official_website" => "https://www.oxxo.com/pagos-y-servicios", // OXXO 提供的服务页面
+        "registration_link" => null, // 在结账时生成凭证
+        "payment_info_link" => null, // 携带凭证到 OXXO 便利店支付
+        "notes" => "墨西哥流行的现金支付凭证方式，通过 OXXO 便利店网络。"
+    ],
+    "Multibanco" => [
+        "description_en" => "A Portuguese interbank network supporting various payment methods.",
+        "description_zh" => "葡萄牙银行间网络，支持各种支付方式。",
+        "official_website" => "https://www.multibanco.pt/", // 由 SIBS 运营
+        "registration_link" => null, // 使用葡萄牙银行卡或账户
+        "payment_info_link" => "https://www.multibanco.pt/", // 信息网站，支付通过 ATM 或网银使用 Reference
+        "notes" => "葡萄牙主要的银行网络，支持 ATM、POS 和在线支付（生成 Reference）。"
+    ],
+    "Alipay" => [
+        "description_en" => "A leading Chinese digital wallet and online payment platform (支付宝).",
+        "description_zh" => "中国领先的数字钱包和在线支付平台。",
+        "official_website" => "https://www.alipay.com/", // 国际版 / https://www.alipay.com/ (国内版信息可能不同)
+        "registration_link" => null, // 通过支付宝 App 注册
+        "payment_info_link" => null, // 通过支付宝 App 支付
+        "notes" => "中国最主要的移动支付方式之一 (支付宝)。"
+    ],
+    "WeChat Pay" => [
+        "description_en" => "WeChat's integrated digital wallet and payment service (微信支付).",
+        "description_zh" => "微信集成的数字钱包和支付服务。",
+        "official_website" => "https://pay.weixin.qq.com/", // 微信支付官网 (主要是商户信息)
+        "registration_link" => null, // 通过微信 App 开通和使用
+        "payment_info_link" => null, // 通过微信 App 支付
+        "notes" => "中国最主要的移动支付方式之一 (微信支付)，集成在微信 App 中。"
+    ]
+];
+
+// 你可以这样访问具体信息：
+// echo $payment_methods_detailed_info["PayPal"]["official_website"];
+// echo $payment_methods_detailed_info["支付宝"]["description_zh"]; // 注意：支付宝和微信支付的键在原始JS中是Alipay/WeChat Pay
+
+// 如果需要确保键名一致性（例如统一使用中文或英文），你可能需要调整数组的键。
+// 例如，将 Alipay 改为 支付宝:
+// if (isset($payment_methods_detailed_info["Alipay"])) {
+//     $payment_methods_detailed_info["支付宝"] = $payment_methods_detailed_info["Alipay"];
+//     unset($payment_methods_detailed_info["Alipay"]);
+// }
+// if (isset($payment_methods_detailed_info["WeChat Pay"])) {
+//     $payment_methods_detailed_info["微信支付"] = $payment_methods_detailed_info["WeChat Pay"];
+//     unset($payment_methods_detailed_info["WeChat Pay"]);
+// }
+
+?>
