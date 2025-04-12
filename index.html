@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang-key="pageTitle">Payment lab</title>
+    <title data-lang-key="pageTitle">Payment Lab</title>
     <style>
         /* 1. 基本重置与全局样式 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -82,9 +82,7 @@
             border-radius: 2px; animation: logo-pulse 2.5s infinite ease-in-out; opacity: 0.9; /* 浅色背景上可以更不透明 */
         }
         .logo-icon::before { top: 0; left: 0; animation-delay: 0s; background-color: var(--primary-color); }
-        /* 次要颜色改为浅灰色，与背景协调 */
         .logo-icon::after { bottom: 0; right: 0; animation-delay: -1.25s; background-color: #d1fae5; /* 非常浅的绿色 */ opacity: 0.7; }
-        /* 动画保持不变 */
         @keyframes logo-pulse { 0%, 100% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
 
         /* 6. 导航 (Navigation) */
@@ -117,30 +115,29 @@
         /* 7.1 英雄区域 (Hero Section) */
         #hero {
              display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left;
-             padding-top: 0; /* 保持为 0 */
-             min-height: calc(80vh - var(--header-height-desktop)); /* 调整最小高度，避免过高 */
+             padding-top: 0;
+             min-height: calc(80vh - var(--header-height-desktop));
         }
         #hero h1 { font-size: clamp(2.5rem, 5vw, 4.5rem);
-            color: var(--text-primary); /* 深色标题 */
+            color: var(--text-primary);
             margin-bottom: 15px; line-height: 1.1;
         }
         #hero h1 .highlight { color: var(--primary-color); }
         #hero .subtitle { font-size: 1.5rem;
-            color: var(--text-secondary); /* 次要文字颜色 */
+            color: var(--text-secondary);
             margin-bottom: 30px; max-width: 600px;
         }
         .cta-button {
             display: inline-block; padding: 12px 25px; border: 1px solid var(--primary-color);
             color: var(--primary-color); background-color: transparent; border-radius: 4px;
-            text-decoration: none; font-size: 1rem; font-weight: 500; /* 加一点字重 */
+            text-decoration: none; font-size: 1rem; font-weight: 500;
             transition: background-color var(--hover-delay) ease, color var(--hover-delay) ease, transform var(--hover-delay) ease;
             cursor: pointer;
         }
         .cta-button:hover, .cta-button:focus {
-             /* 悬停时变为实心按钮 */
              background-color: var(--primary-color);
-             color: var(--text-on-accent); /* 白色文字 */
-             transform: translateY(-2px); /* 轻微上移 */
+             color: var(--text-on-accent);
+             transform: translateY(-2px);
              box-shadow: 0 4px 8px var(--shadow-color-light);
         }
 
@@ -150,18 +147,18 @@
         /* 7.3 研究领域 (Research Section) */
         #research .research-focus-content {
             max-width: 800px; margin: 30px auto 0; padding: 35px;
-            background-color: var(--background-card); /* 白色卡片背景 */
+            background-color: var(--background-card);
             border-radius: 8px;
-            box-shadow: 0 5px 15px var(--shadow-color-light); /* 浅色阴影 */
+            box-shadow: 0 5px 15px var(--shadow-color-light);
             text-align: left;
-            border: 1px solid var(--border-color); /* 加个细边框 */
+            border: 1px solid var(--border-color);
         }
         #research .research-focus-content h3 {
             font-size: 1.9rem; color: var(--primary-color); margin-bottom: 20px;
             text-align: center;
         }
         #research .research-focus-content h3::before {
-            content: '⚛️'; margin-right: 10px; font-size: 1.7rem; vertical-align: middle;
+            content: '💰'; margin-right: 10px; font-size: 1.7rem; vertical-align: middle;
         }
         #research .research-focus-content p {
             color: var(--text-secondary); font-size: 1.1rem; line-height: 1.7; margin-bottom: 18px;
@@ -171,19 +168,19 @@
         /* 7.4 联系我们 (Contact Section) */
         #contact p { text-align: center; color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px; }
         #contact .contact-info { text-align: center; font-size: 1.1rem;
-            color: var(--text-primary); /* 深色文字 */
+            color: var(--text-primary);
         }
         #contact .contact-info a { color: var(--primary-color); text-decoration: none; border-bottom: 1px dashed var(--primary-color); transition: color var(--hover-delay), border-bottom-color var(--hover-delay); }
         #contact .contact-info a:hover {
-            color: var(--secondary-accent-color); /* 悬停时用稍深的绿色 */
+            color: var(--secondary-accent-color);
             border-bottom-color: var(--secondary-accent-color);
         }
 
         /* 8. 页脚 (Footer) */
-        .site-footer { text-align: center; padding: 30px 0; /* 增加页脚 padding */
-            border-top: 1px solid var(--border-color); /* 浅灰分隔线 */
+        .site-footer { text-align: center; padding: 30px 0;
+            border-top: 1px solid var(--border-color);
             font-size: 0.9rem; color: var(--text-secondary);
-            background-color: var(--background-card); /* 页脚给个白色背景 */
+            background-color: var(--background-card);
         }
 
         /* 9. 响应式设计 */
@@ -194,8 +191,8 @@
             .main-nav ul { justify-content: center; flex-wrap: wrap; width: 100%; }
             .main-nav li { margin: 5px 10px; }
             .language-switcher { margin-left: 0; margin-top: 10px; }
-            main { padding-top: calc(var(--header-height-mobile) + 20px); } /* 保持不变 */
-            #hero { align-items: center; text-align: center; padding-top: 0; padding-bottom: 40px; min-height: auto; /* 移动端取消最小高度 */ }
+            main { padding-top: calc(var(--header-height-mobile) + 20px); }
+            #hero { align-items: center; text-align: center; padding-top: 0; padding-bottom: 40px; min-height: auto; }
             #hero .subtitle { margin-left: auto; margin-right: auto; }
             section h2 { font-size: 2rem; }
             #research .research-focus-content { padding: 25px; }
@@ -210,7 +207,7 @@
             #hero h1 { font-size: 2rem; }
             #hero .subtitle { font-size: 1.2rem; }
             .cta-button { padding: 10px 20px; font-size: 0.9rem; }
-            main { padding-top: calc(var(--header-height-mobile) + 10px); } /* 保持不变 */
+            main { padding-top: calc(var(--header-height-mobile) + 10px); }
             #research .research-focus-content h3 { font-size: 1.4rem; }
         }
 
@@ -219,7 +216,7 @@
 <body>
 
     <!-- 页头 -->
-    <header class="site-header" id="site-header"> <!-- 添加 ID 以便 JS 选择 -->
+    <header class="site-header" id="site-header">
         <div class="header-container">
             <a href="#hero" class="logo">
                 <div class="logo-icon"></div>
@@ -228,7 +225,7 @@
             <nav class="main-nav">
                 <ul>
                     <li><a href="#about" data-lang-key="navAbout">About Us</a></li>
-                    <li><a href="#research" data-lang-key="navResearch">Our Research</a></li>
+                    <li><a href="#research" data-lang-key="navResearch">Our Payment Research</a></li>
                     <li><a href="#contact" data-lang-key="navContact">Contact</a></li>
                     <li class="language-switcher">
                         <select id="lang-select">
@@ -250,35 +247,35 @@
     <main>
         <!-- 英雄区域 -->
         <section id="hero" class="container">
-            <h1 data-lang-key="heroTitle">Payment lab, <span class="highlight">Building Tomorrow</span></h1>
-            <p class="subtitle" data-lang-key="heroSubtitle">Make the payment more comfortable</p>
+            <h1 data-lang-key="heroTitle">Payment Lab, <span class="highlight">Building Tomorrow</span></h1>
+            <p class="subtitle" data-lang-key="heroSubtitle">Empowering the future of financial transactions with ground-breaking payment solutions.</p>
             <a href="#research" class="cta-button" data-lang-key="heroCta">Discover Our Focus</a>
         </section>
 
         <!-- 关于我们 -->
         <section id="about" class="container">
             <h2 data-lang-key="aboutTitle">About Us</h2>
-            <p data-lang-key="aboutP1">Let payment become a habit of enjoyment</p>
-            <p data-lang-key="aboutP2">Collaboration and innovation</p>
+            <p data-lang-key="aboutP1">Payment Lab unites top business experts, software developers, and financial engineers dedicated to unlocking frictionless transactions for modern commerce.</p>
+            <p data-lang-key="aboutP2">Collaboration, innovation, and rigorous industry expertise drive our quest to build robust payment systems and cutting-edge solutions.</p>
         </section>
 
         <!-- 研究领域 - 单一焦点 -->
         <section id="research" class="container">
             <h2 data-lang-key="researchTitle">Our Research Focus</h2>
             <div class="research-focus-content">
-                <h3 data-lang-key="researchFocusTitle">Fault-Tolerant Quantum Computing</h3>
-                <p data-lang-key="researchFocusDesc1">Quantum bits (qubits) are notoriously fragile and susceptible to environmental noise, leading to errors in computation. Our primary research focuses on designing and implementing quantum error correction codes and fault-tolerant architectures.</p>
-                <p data-lang-key="researchFocusDesc2">We investigate novel qubit modalities, develop sophisticated control techniques, and create theoretical frameworks to protect quantum information and enable reliable, large-scale quantum computation. This is crucial for realizing the true potential of quantum algorithms in fields like drug discovery, materials science, and complex system simulation.</p>
+                <h3 data-lang-key="researchFocusTitle">Seamless Payment Integration</h3>
+                <p data-lang-key="researchFocusDesc1">Digital payments are notoriously complex and susceptible to transaction failures, leading to errors or delays. Our primary research focuses on designing robust payment networks and secure transaction protocols.</p>
+                <p data-lang-key="researchFocusDesc2">We investigate new digital currencies, develop advanced fraud detection techniques, and create frameworks to ensure reliable, large-scale payment processing. This is crucial for realizing the true potential of modern e-commerce in fields like retail, digital marketplaces, and subscription services.</p>
             </div>
         </section>
 
         <!-- 联系我们 -->
         <section id="contact" class="container">
             <h2 data-lang-key="contactTitle">Contact Us</h2>
-            <p data-lang-key="contactP1">Interested in collaborating, joining our team, or learning more about our quantum computing research? We'd love to hear from you.</p>
+            <p data-lang-key="contactP1">Interested in collaborating, joining our team, or learning more about our payment innovation? We'd love to hear from you.</p>
             <div class="contact-info">
-                <p><span data-lang-key="contactEmailLabel">Email</span>: <a href="mailto:quantum@futuretechlab.xyz">quantum@futuretechlab.xyz</a></p>
-                <p><span data-lang-key="contactAddressLabel">Address</span>: Quantum Wing, Future Tech Park</p>
+                <p><span data-lang-key="contactEmailLabel">Email</span>: <a href="mailto:payment@futuretechlab.xyz">payment@futuretechlab.xyz</a></p>
+                <p><span data-lang-key="contactAddressLabel">Address</span>: Payment Wing, Payment Tech Park</p>
             </div>
         </section>
     </main>
@@ -286,42 +283,142 @@
     <!-- 页脚 -->
     <footer class="site-footer">
         <div class="container">
-            <p data-lang-key="footerText">© 2024 Quantum Computing Lab. All rights reserved.</p>
+            <p data-lang-key="footerText">© 2024 Payment Lab. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- JavaScript (语言切换逻辑保持不变, 滚动效果微调) -->
+    <!-- JavaScript (语言切换逻辑不变, 仅更新文本) -->
     <script>
-        // 1. 翻译文本存储 (保持不变)
+        // 1. 翻译文本存储 (更新为 Payment Lab 主题)
         const translations = {
-            pageTitle: { en: "Quantum Computing Lab - Shaping the Quantum Future", 'zh-CN': "量子计算实验室 - 塑造量子未来", 'zh-TW': "量子計算實驗室 - 塑造量子未來", ru: "Лаборатория квантовых вычислений - Формируя квантовое будущее" },
-            logoText: { en: "Quantum Computing Lab", 'zh-CN': "量子计算实验室", 'zh-TW': "量子計算實驗室", ru: "Квантовая Лаборатория" },
-            navAbout: { en: "About Us", 'zh-CN': "关于我们", 'zh-TW': "關於我們", ru: "О нас" },
-            navResearch: { en: "Our Research", 'zh-CN': "我们的研究", 'zh-TW': "我們的研究", ru: "Наши исследования" },
-            navContact: { en: "Contact", 'zh-CN': "联系我们", 'zh-TW': "聯繫我們", ru: "Контакты" },
-            heroTitle: { en: 'Harnessing Quantum Power, <span class="highlight">Building Tomorrow</span>', 'zh-CN': '驾驭量子力量，<span class="highlight">构建明天</span>', 'zh-TW': '駕馭量子力量，<span class="highlight">構建明天</span>', ru: 'Укрощая Квантовую Мощь, <span class="highlight">Строим Завтра</span>' },
-            heroSubtitle: { en: "Pioneering the future of computation through groundbreaking quantum research and development.", 'zh-CN': "通过开创性的量子研究与开发，引领计算的未来。", 'zh-TW': "透過開創性的量子研究與開發，引領計算的未來。", ru: "Открываем будущее вычислений с помощью новаторских квантовых исследований и разработок." },
-            heroCta: { en: "Discover Our Focus", 'zh-CN': "了解我们的焦点", 'zh-TW': "了解我們的焦點", ru: "Узнайте о нашем фокусе" },
-            aboutTitle: { en: "About Us", 'zh-CN': "关于我们", 'zh-TW': "關於我們", ru: "О нас" },
-            aboutP1: { en: "Our Quantum Computing Lab brings together leading physicists, computer scientists, and engineers dedicated to unlocking the potential of quantum mechanics for computation. We aim to solve problems previously thought unsolvable.", 'zh-CN': "我们的量子计算实验室汇集了顶尖的物理学家、计算机科学家和工程师，致力于释放量子力学在计算方面的潜力。我们的目标是解决以前认为无法解决的问题。", 'zh-TW': "我們的量子計算實驗室匯集了頂尖的物理學家、計算機科學家和工程師，致力於釋放量子力學在計算方面的潛力。我們的目標是解決以前認為無法解決的問題。", ru: "Наша лаборатория квантовых вычислений объединяет ведущих физиков, информатиков и инженеров, посвятивших себя раскрытию потенциала квантовой механики для вычислений. Мы стремимся решать проблемы, ранее считавшиеся неразрешимыми." },
-            aboutP2: { en: "Collaboration, innovation, and rigorous scientific inquiry drive our quest to build fault-tolerant quantum computers and develop impactful quantum algorithms.", 'zh-CN': "协作、创新和严谨的科学探究驱动着我们构建容错量子计算机和开发有影响力的量子算法的追求。", 'zh-TW': "協作、創新和嚴謹的科學探究驅動著我們構建容錯量子計算機和開發有影響力的量子算法的追求。", ru: "Сотрудничество, инновации и строгие научные исследования движут нашим стремлением создавать отказоустойчивые квантовые компьютеры и разрабатывать эффективные квантовые алгоритмы." },
-            researchTitle: { en: "Our Research Focus", 'zh-CN': "我们的研究焦点", 'zh-TW': "我們的研究焦點", ru: "Фокус наших исследований" },
-            researchFocusTitle: { en: "Fault-Tolerant Quantum Computing", 'zh-CN': "容错量子计算", 'zh-TW': "容錯量子計算", ru: "Отказоустойчивые квантовые вычисления" },
-            researchFocusDesc1: { en: "Quantum bits (qubits) are notoriously fragile and susceptible to environmental noise, leading to errors in computation. Our primary research focuses on designing and implementing quantum error correction codes and fault-tolerant architectures.", 'zh-CN': "量子比特（qubit）极其脆弱且易受环境噪声影响，导致计算错误。我们的主要研究重点是设计和实现量子纠错码及容错架构。", 'zh-TW': "量子位元（qubit）極其脆弱且易受環境噪聲影響，導致計算錯誤。我們的主要研究重點是設計和實現量子糾錯碼及容錯架構。", ru: "Квантовые биты (кубиты) общеизвестно хрупки и подвержены влиянию окружающего шума, что приводит к ошибкам в вычислениях. Наши основные исследования сосредоточены на разработке и внедрении кодов квантовой коррекции ошибок и отказоустойчивых архитектур." },
-            researchFocusDesc2: { en: "We investigate novel qubit modalities, develop sophisticated control techniques, and create theoretical frameworks to protect quantum information and enable reliable, large-scale quantum computation. This is crucial for realizing the true potential of quantum algorithms in fields like drug discovery, materials science, and complex system simulation.", 'zh-CN': "我们研究新颖的量子比特模式，开发复杂的控制技术，并创建理论框架来保护量子信息，实现可靠的大规模量子计算。这对于在药物发现、材料科学和复杂系统模拟等领域实现量子算法的真正潜力至关重要。", 'zh-TW': "我們研究新穎的量子位元模式，開發複雜的控制技術，並創建理論框架來保護量子信息，實現可靠的大規模量子計算。這對於在藥物發現、材料科學和複雜系統模擬等領域實現量子算法的真正潛力至關重要。", ru: "Мы исследуем новые модальности кубитов, разрабатываем сложные методы управления и создаем теоретические основы для защиты квантовой информации и обеспечения надежных крупномасштабных квантовых вычислений. Это крайне важно для реализации истинного потенциала квантовых алгоритмов в таких областях, как разработка лекарств, материаловедение и моделирование сложных систем." },
-            contactTitle: { en: "Contact Us", 'zh-CN': "联系我们", 'zh-TW': "聯繫我們", ru: "Свяжитесь с нами" },
-            contactP1: { en: "Interested in collaborating, joining our team, or learning more about our quantum computing research? We'd love to hear from you.", 'zh-CN': "有兴趣合作、加入我们的团队或了解更多关于我们的量子计算研究吗？我们很乐意收到您的来信。", 'zh-TW': "有興趣合作、加入我們的團隊或了解更多關於我們的量子計算研究嗎？我們很樂意收到您的來信。", ru: "Заинтересованы в сотрудничестве, присоединении к нашей команде или хотите узнать больше о наших исследованиях в области квантовых вычислений? Мы будем рады услышать вас." },
-            contactEmailLabel: { en: "Email", 'zh-CN': "邮箱", 'zh-TW': "郵箱", ru: "Эл. почта" },
-            contactAddressLabel: { en: "Address", 'zh-CN': "地址", 'zh-TW': "地址", ru: "Адрес" },
-            footerText: { en: "© 2024 Quantum Computing Lab. All rights reserved.", 'zh-CN': "© 2024 量子计算实验室. 保留所有权利.", 'zh-TW': "© 2024 量子計算實驗室. 保留所有權利.", ru: "© 2024 Лаборатория квантовых вычислений. Все права защищены." }
+            pageTitle: {
+                en: "Payment Lab - Shaping the Payment Future",
+                'zh-CN': "支付实验室 - 塑造支付未来",
+                'zh-TW': "支付實驗室 - 塑造支付未來",
+                ru: "Лаборатория платежей - Формируя будущее платежей"
+            },
+            logoText: {
+                en: "Payment Lab",
+                'zh-CN': "支付实验室",
+                'zh-TW': "支付實驗室",
+                ru: "Платёжная лаборатория"
+            },
+            navAbout: {
+                en: "About Us",
+                'zh-CN': "关于我们",
+                'zh-TW': "關於我們",
+                ru: "О нас"
+            },
+            navResearch: {
+                en: "Our Payment Research",
+                'zh-CN': "我们的支付研究",
+                'zh-TW': "我們的支付研究",
+                ru: "Наши исследования в области платежей"
+            },
+            navContact: {
+                en: "Contact",
+                'zh-CN': "联系我们",
+                'zh-TW': "聯繫我們",
+                ru: "Контакты"
+            },
+            heroTitle: {
+                en: 'Empowering Payment Innovation, <span class="highlight">Building Tomorrow</span>',
+                'zh-CN': '赋能支付创新，<span class="highlight">构建明天</span>',
+                'zh-TW': '賦能支付創新，<span class="highlight">構建明天</span>',
+                ru: 'Расширяя возможности платежных инноваций, <span class="highlight">Строим Завтра</span>'
+            },
+            heroSubtitle: {
+                en: "Empowering the future of financial transactions with ground-breaking payment solutions.",
+                'zh-CN': "通过突破性的支付解决方案，赋能金融交易的未来。",
+                'zh-TW': "透過突破性的支付解決方案，賦能金融交易的未來。",
+                ru: "Расширяем будущее финансовых транзакций с помощью прорывных платежных решений."
+            },
+            heroCta: {
+                en: "Discover Our Focus",
+                'zh-CN': "了解我们的焦点",
+                'zh-TW': "了解我們的焦點",
+                ru: "Узнайте о нашем фокусе"
+            },
+            aboutTitle: {
+                en: "About Us",
+                'zh-CN': "关于我们",
+                'zh-TW': "關於我們",
+                ru: "О нас"
+            },
+            aboutP1: {
+                en: "Payment Lab unites top business experts, software developers, and financial engineers dedicated to unlocking frictionless transactions for modern commerce.",
+                'zh-CN': "支付实验室汇集了顶尖的业务专家、软件开发人员和金融工程师，致力于为现代商业实现无缝交易。",
+                'zh-TW': "支付實驗室匯集了頂尖的業務專家、軟體開發人員和金融工程師，致力於為現代商業實現無縫交易。",
+                ru: "Лаборатория платежей объединяет ведущих бизнес-экспертов, разработчиков ПО и финансовых инженеров, посвятивших себя созданию беспрепятственных транзакций для современной коммерции."
+            },
+            aboutP2: {
+                en: "Collaboration, innovation, and rigorous industry expertise drive our quest to build robust payment systems and cutting-edge solutions.",
+                'zh-CN': "协作、创新和严谨的行业专长推动我们构建可靠的支付系统和前沿解决方案。",
+                'zh-TW': "協作、創新和嚴謹的行業專長推動我們構建可靠的支付系統和前沿解決方案。",
+                ru: "Сотрудничество, инновации и глубокая профессиональная экспертиза направляют нас в создании надёжных платёжных систем и новейших решений."
+            },
+            researchTitle: {
+                en: "Our Research Focus",
+                'zh-CN': "我们的研究焦点",
+                'zh-TW': "我們的研究焦點",
+                ru: "Фокус наших исследований"
+            },
+            researchFocusTitle: {
+                en: "Seamless Payment Integration",
+                'zh-CN': "无缝支付集成",
+                'zh-TW': "無縫支付整合",
+                ru: "Бесшовная интеграция платежей"
+            },
+            researchFocusDesc1: {
+                en: "Digital payments are notoriously complex and susceptible to transaction failures, leading to errors or delays. Our primary research focuses on designing robust payment networks and secure transaction protocols.",
+                'zh-CN': "数字支付十分复杂且容易出现交易失败，导致错误或延迟。我们的主要研究集中在设计可靠的支付网络和安全的交易协议。",
+                'zh-TW': "數位支付相當複雜且容易出現交易失敗，導致錯誤或延遲。我們的主要研究集中在設計可靠的支付網路和安全的交易協定。",
+                ru: "Цифровые платежи часто бывают сложными и подверженными сбоям, что приводит к ошибкам или задержкам. Наши основные исследования сосредоточены на разработке надёжных платёжных сетей и безопасных протоколов транзакций."
+            },
+            researchFocusDesc2: {
+                en: "We investigate new digital currencies, develop advanced fraud detection techniques, and create frameworks to ensure reliable, large-scale payment processing. This is crucial for realizing the true potential of modern e-commerce in fields like retail, digital marketplaces, and subscription services.",
+                'zh-CN': "我们研究新的数字货币，开发先进的欺诈检测技术，并创建框架以确保可靠的大规模支付处理。这对于在零售、数字市场和订阅服务等领域释放现代电子商务的潜力至关重要。",
+                'zh-TW': "我們研究新的數位貨幣，開發先進的詐欺檢測技術，並創建框架以確保可靠的大規模支付處理。這對於在零售、數位市場和訂閱服務等領域釋放現代電子商務的潛力至關重要。",
+                ru: "Мы исследуем новые цифровые валюты, разрабатываем передовые методы обнаружения мошенничества и создаём структуры, гарантирующие надёжную, крупномасштабную обработку платежей. Это крайне важно, чтобы полностью раскрыть потенциал современной электронной коммерции в таких сферах, как розничная торговля, цифровые рынки и подписные сервисы."
+            },
+            contactTitle: {
+                en: "Contact Us",
+                'zh-CN': "联系我们",
+                'zh-TW': "聯繫我們",
+                ru: "Свяжитесь с нами"
+            },
+            contactP1: {
+                en: "Interested in collaborating, joining our team, or learning more about our payment innovation? We'd love to hear from you.",
+                'zh-CN': "有兴趣合作、加入我们的团队或了解更多关于我们支付创新的信息吗？我们非常期待您的来信。",
+                'zh-TW': "有興趣合作、加入我們的團隊或了解更多關於我們支付創新的資訊嗎？我們非常期待您的來信。",
+                ru: "Заинтересованы в сотрудничестве, присоединении к нашей команде или хотите узнать больше о наших инновациях в области платежей? Будем рады вас услышать."
+            },
+            contactEmailLabel: {
+                en: "Email",
+                'zh-CN': "邮箱",
+                'zh-TW': "郵箱",
+                ru: "Эл. почта"
+            },
+            contactAddressLabel: {
+                en: "Address",
+                'zh-CN': "地址",
+                'zh-TW': "地址",
+                ru: "Адрес"
+            },
+            footerText: {
+                en: "© 2024 Payment Lab. All rights reserved.",
+                'zh-CN': "© 2024 支付实验室. 保留所有权利.",
+                'zh-TW': "© 2024 支付實驗室. 保留所有權利.",
+                ru: "© 2024 Лаборатория платежей. Все права защищены."
+            }
         };
 
-        // 2. 获取需要的 DOM 元素 (不变)
+        // 2. 获取需要的 DOM 元素
         const langSelect = document.getElementById('lang-select');
         const translatableElements = document.querySelectorAll('[data-lang-key]');
         const htmlElement = document.documentElement;
 
-        // 3. 语言切换函数 (不变)
+        // 3. 语言切换函数 (保持逻辑不变)
         function changeLanguage(lang) {
             if (!translations.pageTitle[lang]) {
                 console.warn(`Language "${lang}" not found in translations. Falling back to 'en'.`);
@@ -353,7 +450,7 @@
             }
         }
 
-        // 4. 初始化语言 (不变)
+        // 4. 初始化语言
         function initializeLanguage() {
             let preferredLang = 'en';
             try {
@@ -374,30 +471,30 @@
             changeLanguage(preferredLang);
         }
 
-        // 5. 添加事件监听器 (不变)
+        // 5. 添加事件监听器
         langSelect.addEventListener('change', (event) => {
             changeLanguage(event.target.value);
         });
 
-        // 6. 页面加载完成后初始化语言 (不变)
+        // 6. 页面加载完成后初始化语言
         document.addEventListener('DOMContentLoaded', initializeLanguage);
 
         // --- 其他 JS (导航栏滚动效果) ---
         let lastScrollTop = 0;
-        const header = document.getElementById('site-header'); // 使用 ID 选择
+        const header = document.getElementById('site-header');
         const headerHeightDesktop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height-desktop'), 10) || 70;
 
         window.addEventListener('scroll', function() {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
             // 添加/移除 scrolled 类，用于控制 Header 样式变化
-            if (scrollTop > 50) { // 滚动超过 50px 时改变样式
+            if (scrollTop > 50) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
 
-            // Header 隐藏/显示逻辑 (保持不变)
+            // Header 隐藏/显示逻辑 (不变)
             let currentHeaderHeight = header.offsetHeight;
             if (scrollTop > lastScrollTop && scrollTop > currentHeaderHeight) {
                  if (window.innerWidth > 900) {
@@ -405,7 +502,6 @@
                          header.style.top = `-${currentHeaderHeight}px`;
                      }
                  } else {
-                     // 移动端可以简化，滚动向下就隐藏
                      header.style.top = `-${currentHeaderHeight}px`;
                  }
             } else {
@@ -414,9 +510,8 @@
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
 
-        console.log("Light green theme website loaded!");
-
+        console.log("Light green theme Payment Lab website loaded!");
     </script>
 
 </body>
-</html>
+    </html>
