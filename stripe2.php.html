@@ -1,0 +1,246 @@
+<?php
+
+/**
+ * 包含所有从 HTML/JS 提取的 Stripe 支付方式信息。
+ * 结构：
+ * [
+ *    'category_key' => [ // 类别键 (credit_card, debit_card, non_bank)
+ *        'method_identifier_key' => [ // 支付方式标识符 (通常是中文或英文名)
+ *            'en_name' => 'English Name',    // 英文名称
+ *            'zh_name' => '中文名称',        // 中文名称
+ *            'en_desc' => 'English Description', // 英文描述
+ *            'zh_desc' => '中文描述'         // 中文描述
+ *        ],
+ *        // ... 同类别下的其他支付方式
+ *    ],
+ *    // ... 其他类别
+ * ]
+ */
+$payment_methods_info = [
+
+    //=========================
+    // 信用卡 (Credit Card)
+    //=========================
+    'credit_card' => [
+        '信用卡/银行卡' => [
+            'en_name' => 'Credit/Debit Card', // 根据上下文推断的通用英文名
+            'zh_name' => '信用卡/银行卡',
+            'en_desc' => 'Traditional credit and debit cards including Visa, Mastercard, American Express, etc.',
+            'zh_desc' => '传统的信用卡和借记卡，包括Visa、Mastercard、American Express等。'
+        ],
+    ],
+
+    //=========================
+    // 借记卡 (Debit Card)
+    //=========================
+    'debit_card' => [
+        'Cartes Bancaires' => [
+            'en_name' => 'Cartes Bancaires',
+            'zh_name' => 'Cartes Bancaires', // JS 未提供明确中文名
+            'en_desc' => 'A French banking card system used for credit and debit transactions in France.',
+            'zh_desc' => '法国银行卡系统，用于法国的信用卡和借记卡交易。'
+        ],
+        'BACS 直接借记' => [
+            'en_name' => 'BACS Direct Debit', // 根据 JS getEnglishMethod 逻辑
+            'zh_name' => 'BACS 直接借记',
+            'en_desc' => "UK's direct debit system for automated bank payments.",
+            'zh_desc' => '英国的直接借记系统，用于自动银行付款。'
+        ],
+        'SEPA 直接借记' => [
+            'en_name' => 'SEPA Direct Debit', // 根据 JS getEnglishMethod 逻辑
+            'zh_name' => 'SEPA 直接借记',
+            'en_desc' => 'The Single Euro Payments Area system for direct debits across Europe.',
+            'zh_desc' => '单一欧元支付区系统，用于整个欧洲的直接借记。'
+        ],
+        'ACH 直接借记' => [
+            'en_name' => 'ACH Direct Debit', // 根据 JS getEnglishMethod 逻辑
+            'zh_name' => 'ACH 直接借记',
+            'en_desc' => 'Automated Clearing House system for direct debit transactions in the USA.',
+            'zh_desc' => '美国自动清算所系统，用于直接借记交易。'
+        ],
+    ],
+
+    //=========================
+    // 非银行卡 (Non-Bank)
+    //=========================
+    'non_bank' => [
+        'Pay By Bank' => [
+            'en_name' => 'Pay By Bank',
+            'zh_name' => 'Pay By Bank', // JS 未提供明确中文名
+            'en_desc' => 'A method enabling direct bank transfers, often via open banking platforms.',
+            'zh_desc' => '一种支持直接银行转账的方法，通常通过开放银行平台实现。'
+        ],
+        'Przelewy24' => [
+            'en_name' => 'Przelewy24',
+            'zh_name' => 'Przelewy24', // JS 未提供明确中文名
+            'en_desc' => 'A popular Polish online payment system facilitating bank transfers.',
+            'zh_desc' => '一种流行的波兰在线支付系统，方便银行转账。'
+        ],
+        'Sofort' => [
+            'en_name' => 'Sofort',
+            'zh_name' => 'Sofort', // JS 未提供明确中文名
+            'en_desc' => "A European online banking transfer system, now part of Klarna's services.",
+            'zh_desc' => '一种欧洲在线银行转账系统，现在是 Klarna 服务的一部分。'
+        ],
+        'TWINT' => [
+            'en_name' => 'TWINT',
+            'zh_name' => 'TWINT', // JS 未提供明确中文名
+            'en_desc' => 'A Swiss mobile payment solution for instant payments via smartphones.',
+            'zh_desc' => '一种瑞士移动支付解决方案，可通过智能手机进行即时支付。'
+        ],
+        'Afterpay / Clearpay' => [
+            'en_name' => 'Afterpay / Clearpay',
+            'zh_name' => 'Afterpay / Clearpay', // JS 未提供明确中文名
+            'en_desc' => 'Buy Now, Pay Later service allowing deferred payments at checkout.',
+            'zh_desc' => '“先买后付”服务，允许在结账时延期付款。'
+        ],
+        'Klarna' => [
+            'en_name' => 'Klarna',
+            'zh_name' => 'Klarna', // JS 未提供明确中文名
+            'en_desc' => 'A leading Buy Now, Pay Later service that also offers direct payment options.',
+            'zh_desc' => '一种领先的“先买后付”服务，还提供直接付款选项。'
+        ],
+        '银行存款' => [
+            'en_name' => '银行存款', // JS 未提供明确英文名
+            'zh_name' => '银行存款',
+            'en_desc' => 'Traditional bank deposit method, including in-branch or online transfers.',
+            'zh_desc' => '传统的银行存款方式，包括在分行或在线转账。'
+        ],
+        'Naver Pay' => [
+            'en_name' => 'Naver Pay',
+            'zh_name' => 'Naver Pay', // JS 未提供明确中文名
+            'en_desc' => "A South Korean digital wallet service integrated with Naver's ecosystem.",
+            'zh_desc' => '韩国数字钱包服务，与 Naver 的生态系统集成。'
+        ],
+        'Kakao Pay' => [
+            'en_name' => 'Kakao Pay',
+            'zh_name' => 'Kakao Pay', // JS 未提供明确中文名
+            'en_desc' => 'A South Korean mobile payment and digital wallet service by Kakao.',
+            'zh_desc' => 'Kakao 的韩国移动支付和数字钱包服务。'
+        ],
+        'Samsung Pay' => [
+            'en_name' => 'Samsung Pay',
+            'zh_name' => 'Samsung Pay', // JS 未提供明确中文名
+            'en_desc' => "Samsung's mobile wallet solution supporting both NFC and MST payments.",
+            'zh_desc' => '三星的移动钱包解决方案，支持 NFC 和 MST 支付。'
+        ],
+        'Payco' => [
+            'en_name' => 'Payco',
+            'zh_name' => 'Payco', // JS 未提供明确中文名
+            'en_desc' => 'A South Korean payment service offering digital wallet and online payment options.',
+            'zh_desc' => '韩国支付服务，提供数字钱包和在线支付选项。'
+        ],
+        'Apple Pay' => [
+            'en_name' => 'Apple Pay',
+            'zh_name' => 'Apple Pay', // JS 未提供明确中文名
+            'en_desc' => "Apple's mobile payment and digital wallet service integrated with iOS devices.",
+            'zh_desc' => 'Apple 的移动支付和数字钱包服务，与 iOS 设备集成。'
+        ],
+        'Google Pay' => [
+            'en_name' => 'Google Pay',
+            'zh_name' => 'Google Pay', // JS 未提供明确中文名
+            'en_desc' => "Google's digital wallet and online payment system for Android and web.",
+            'zh_desc' => 'Google 的数字钱包和在线支付系统，适用于 Android 和网络。'
+        ],
+        'Link' => [
+            'en_name' => 'Link',
+            'zh_name' => 'Link', // JS 未提供明确中文名
+            'en_desc' => 'A streamlined payment method, often associated with quick checkout experiences.',
+            'zh_desc' => '一种简化的支付方式，通常与快速结账体验相关联。'
+        ],
+        'PayPal' => [
+            'en_name' => 'PayPal',
+            'zh_name' => 'PayPal', // JS 未提供明确中文名
+            'en_desc' => 'A globally recognized online payment platform supporting various transactions.',
+            'zh_desc' => '全球公认的在线支付平台，支持各种交易。'
+        ],
+        'Revolut Pay' => [
+            'en_name' => 'Revolut Pay',
+            'zh_name' => 'Revolut Pay', // JS 未提供明确中文名
+            'en_desc' => 'An online payment service from Revolut, known for international banking features.',
+            'zh_desc' => 'Revolut 的在线支付服务，以国际银行功能而闻名。'
+        ],
+        'Bancontact' => [
+            'en_name' => 'Bancontact',
+            'zh_name' => 'Bancontact', // JS 未提供明确中文名
+            'en_desc' => 'A Belgian payment network widely used for debit card transactions.',
+            'zh_desc' => '比利时支付网络，广泛用于借记卡交易。'
+        ],
+        'Eps' => [
+            'en_name' => 'Eps',
+            'zh_name' => 'Eps', // JS 未提供明确中文名
+            'en_desc' => 'An Austrian online banking transfer method used for secure payments.',
+            'zh_desc' => '奥地利在线银行转账方法，用于安全支付。'
+        ],
+        'iDEAL' => [
+            'en_name' => 'iDEAL',
+            'zh_name' => 'iDEAL', // JS 未提供明确中文名
+            'en_desc' => 'A popular Dutch online banking payment system facilitating direct transfers.',
+            'zh_desc' => '一种流行的荷兰在线银行支付系统，方便直接转账。'
+        ],
+        'FPX' => [
+            'en_name' => 'FPX',
+            'zh_name' => 'FPX', // JS 未提供明确中文名
+            'en_desc' => 'A Malaysian online banking payment system enabling real-time transfers.',
+            'zh_desc' => '马来西亚在线银行支付系统，支持实时转账。'
+        ],
+        'giropay' => [
+            'en_name' => 'giropay',
+            'zh_name' => 'giropay', // JS 未提供明确中文名
+            'en_desc' => 'A German online payment method for secure bank transfers.',
+            'zh_desc' => '德国在线支付方式，用于安全的银行转账。'
+        ],
+        'GrabPay' => [
+            'en_name' => 'GrabPay',
+            'zh_name' => 'GrabPay', // JS 未提供明确中文名
+            'en_desc' => 'A Southeast Asian digital wallet and payment service by Grab.',
+            'zh_desc' => 'Grab 的东南亚数字钱包和支付服务。'
+        ],
+        'Boleto' => [
+            'en_name' => 'Boleto',
+            'zh_name' => 'Boleto', // JS 未提供明确中文名
+            'en_desc' => 'A Brazilian payment voucher system used for offline and online payments.',
+            'zh_desc' => '巴西支付凭证系统，用于离线和在线支付。'
+        ],
+        'OXXO' => [
+            'en_name' => 'OXXO',
+            'zh_name' => 'OXXO', // JS 未提供明确中文名
+            'en_desc' => 'A Mexican cash payment option where vouchers are paid at OXXO stores.',
+            'zh_desc' => '墨西哥现金支付选项，可在 OXXO 便利店支付凭证。'
+        ],
+        'Multibanco' => [
+            'en_name' => 'Multibanco',
+            'zh_name' => 'Multibanco', // JS 未提供明确中文名
+            'en_desc' => 'A Portuguese interbank network supporting various payment methods.',
+            'zh_desc' => '葡萄牙银行间网络，支持各种支付方式。'
+        ],
+        'Alipay' => [
+            'en_name' => 'Alipay', // 根据 JS getEnglishMethod 逻辑
+            'zh_name' => '支付宝',   // 根据 JS getChineseMethod 逻辑
+            'en_desc' => 'A leading Chinese digital wallet and online payment platform (支付宝).',
+            'zh_desc' => '中国领先的数字钱包和在线支付平台。'
+        ],
+        'WeChat Pay' => [
+            'en_name' => 'WeChat Pay', // 根据 JS getEnglishMethod 逻辑
+            'zh_name' => '微信支付',     // 根据 JS getChineseMethod 逻辑
+            'en_desc' => "WeChat's integrated digital wallet and payment service (微信支付).",
+            'zh_desc' => '微信集成的数字钱包和支付服务。'
+        ]
+    ]
+];
+
+// 示例：如何在 PHP 中访问这些数据
+// 获取 SEPA 直接借记的英文名称
+// echo $payment_methods_info['debit_card']['SEPA 直接借记']['en_name']; // 输出: SEPA Direct Debit
+
+// 获取支付宝的中文描述
+// echo $payment_methods_info['non_bank']['Alipay']['zh_desc'];       // 输出: 中国领先的数字钱包和在线支付平台。
+
+// 遍历所有非银行卡支付方式的中文名
+/*
+foreach ($payment_methods_info['non_bank'] as $method_key => $details) {
+    echo $details['zh_name'] . "<br>";
+}
+*/
+
+?>
