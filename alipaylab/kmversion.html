@@ -1,1 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全支付</title>
+    <style>
+        :root {
+            --primary-color: #1677ff;
+            --secondary-color: #f0f2f5;
+            --text-color: #333333;
+            --border-color: #e8e8e8;
+            --success-color: #52c41a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .header .logo {
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .payment-details {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .payment-details .amount {
+            font-size: 32px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .payment-details .description {
+            color: #666;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .form-section {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px 12px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .input-group .icon {
+            padding: 0 12px;
+            color: #999;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0e68d9;
+        }
+
+        .payment-methods {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+        }
+
+        .method-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .method-item {
+            padding: 10px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .method-item.active {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: rgba(24, 144, 255, 0.05);
+        }
+
+        .method-item:hover {
+            border-color: var(--primary-color);
+        }
+
+        .security-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            color: #999;
+            font-size: 12px;
+            gap: 5px;
+        }
+
+        .security-info svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+
+            .methods-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(24, 144, 255, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(24, 144, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(24, 144, 255, 0);
+            }
+        }
+
+        .btn:active {
+            animation: pulse 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>确认付款</h1>
+            <div class="logo">支</div>
+        </div>
+
+        <div class="payment-details">
+            <div class="amount">¥88.88</div>
+            <div class="description">订单号: 2025040315937294</div>
+            <div class="description">商家名称: 科技商城</div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-group">
+                <label>支付方式</label>
+                <div class="payment-methods">
+                    <div class="methods-grid">
+                        <div class="method-item active">
+                            余额支付
+                        </div>
+                        <div class="method-item">
+                            花呗
+                        </div>
+                        <div class="method-item">
+                            银行卡
+                        </div>
+                        <div class="method-item">
+                            信用卡
+                        </div>
+                        <div class="method-item">
+                            储蓄卡
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>支付密码</label>
+                <div class="input-group">
+                    <input type="password" placeholder="请输入6位数字密码" maxlength="6" pattern="[0-9]{6}">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                            <path d="M12 17a1 1 0 100-2 1 1 0 000 2z" fill="currentColor" stroke="none"></path>
+                            <path d="M12 12V9"></path>
+                            <circle cx="12" cy="12" r="10"></circle>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn">立即付款</button>
+        </div>
+
+        <div class="security-info">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            安全支付保障
+        </div>
+    </div>
+
+    <script>
+        // 切换支付方式
+        document.querySelectorAll('.method-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.method-item').forEach(el => {
+                    el.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+        // 模拟提交表单
+        document.querySelector('.btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const password = document.querySelector('input[type="password"]').value;
+            if (!password || password.length !== 6 || !/^\d{6}$/.test(password)) {
+                alert('请输入6位数字支付密码');
+                return;
+            }
+            alert('支付请求已提交，这里会跳转到结果页面');
+        });
+    </script>
+</body>
+</html>
 
