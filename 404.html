@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found (404) - Your Website Name</title>
+    <!-- Link to your site's main stylesheet -->
+    <!-- IMPORTANT: Replace '/css/style.css' with the correct path to YOUR CSS file -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Optional: Add specific styles for the 404 page if needed -->
+    <style>
+        /* You can add specific overrides or styles for the 404 page here */
+        .error-container {
+            max-width: 700px; /* Or your site's standard content width */
+            margin: 50px auto; /* Center it with some top margin */
+            padding: 30px;
+            text-align: center;
+            /* Add background/border if your main CSS doesn't handle it */
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .error-container h1 {
+            color: #cc0000; /* Or use your theme's error color */
+            font-size: 3em;
+        }
+         /* Style the link like a button if desired (might be in your main CSS) */
+        .error-container .button-link {
+            display: inline-block;
+            padding: 12px 25px;
+            margin-top: 20px;
+            background-color: #007bff; /* Your theme's primary color */
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .error-container .button-link:hover {
+            background-color: #0056b3; /* Darker shade */
+        }
+    </style>
+</head>
+<body>
+    <!-- Optional: Include your standard site header here if possible -->
+    <!-- <header>...</header> -->
+
+    <main>
+        <div class="error-container">
+            <h1>404</h1>
+            <h2>Page Not Found</h2>
+            <p>We're sorry, but the page you requested could not be located.</p>
+            <p>Perhaps you typed the URL incorrectly, or the page has been moved or deleted.</p>
+            <p>You can try:</p>
+            <ul>
+                <li>Checking the URL for typos.</li>
+                <li>Returning to the <a href="/">homepage</a>.</li>
+                <!-- Optional: Add link to sitemap or contact page -->
+                <!-- <li>Visiting our <a href="/sitemap">sitemap</a>.</li> -->
+                <!-- <li><a href="/contact">Contacting us</a> if you believe this is an error.</li> -->
+            </ul>
+            <a href="/" class="button-link">Go to Homepage</a>
+        </div>
+    </main>
+
+    <!-- Optional: Include your standard site footer here if possible -->
+    <!-- <footer>...</footer> -->
+
+</body>
+</html>
