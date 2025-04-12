@@ -2,33 +2,304 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PHP in HTML Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDU Domain Availability Checker (via JS/PHP)</title>
     <style>
-        body { font-family: sans-serif; }
-        .php-output { color: blue; font-weight: bold; }
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 60px); /* Adjust width considering the .edu span */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: inline-block; /* Align with span */
+        }
+        .domain-suffix {
+            display: inline-block;
+            padding: 10px 0 10px 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            min-height: 50px;
+            white-space: pre-wrap; /* Preserve line breaks from PHP output */
+            word-wrap: break-word;
+        }
+        .loader {
+             font-style: italic;
+             color: #666;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+         .success {
+            color: #28a745;
+            font-weight: bold;
+        }
     </style>
+    <!-- 1. Include the php-wasm library -->
+    <script src="https://cdn.jsdelivr.net/npm/php-wasm/php-wasm.js"></script>
 </head>
 <body>
 
-    <h1>Welcome!</h1>
-    <p>This is standard HTML content.</p>
+<div class="container">
+    <h1>EDU Domain Availability Checker</h1>
+    <p>Check the technical availability of a .edu domain name. Note: Eligibility rules apply for registration.</p>
 
-    <?php
-        // This is PHP code block
-        $visitor_ip = $_SERVER['REMOTE_ADDR'];
-        $current_time = date('Y-m-d H:i:s');
+    <form id="domain-form">
+        <label for="domain-prefix">Domain Prefix:</label>
+        <div>
+            <input type="text" id="domain-prefix" name="domain-prefix" required placeholder="e.g., stanford">
+            <span class="domain-suffix">.edu</span>
+        </div>
+        <button type="submit" id="check-button" disabled>Loading PHP Engine...</button>
+    </form>
 
-        echo "<p>Your IP address is: <span class='php-output'>" . htmlspecialchars($visitor_ip) . "</span></p>";
-        echo "<p>The current server time is: <span class='php-output'>" . $current_time . "</span></p>";
-    ?>
+    <div id="result">
+        <p class="loader">Please wait for the PHP engine to load...</p>
+    </div>
+</div>
 
-    <p>This is more standard HTML content after the PHP block.</p>
+<script>
+    const domainForm = document.getElementById('domain-form');
+    const domainPrefixInput = document.getElementById('domain-prefix');
+    const resultDiv = document.getElementById('result');
+    const checkButton = document.getElementById('check-button');
+    let php; // Variable to hold the loaded PHP instance
 
-    <?php
-        // Another PHP block
-        $randomNumber = rand(1, 100);
-        echo "<p>Here's a random number: <span class='php-output'>" . $randomNumber . "</span></p>";
-    ?>
+    // 2. Load the PHP engine (asynchronously)
+    PhpWasm.load('8.0') // You can specify a PHP version
+        .then((loadedPhp) => {
+            php = loadedPhp;
+            console.log('PHP Engine Loaded Successfully (Version 8.0)');
+            resultDiv.innerHTML = '<p>PHP engine loaded. Enter a domain prefix and click check.</p>';
+            checkButton.disabled = false; // Enable the button
+            checkButton.textContent = 'Check Availability';
+        })
+        .catch(error => {
+            console.error("Fatal Error: Failed to load PHP Wasm:", error);
+            resultDiv.innerHTML = `<p class="error">Error loading PHP engine. Cannot perform checks. Please check browser console for details.</p>`;
+            checkButton.textContent = 'Engine Load Failed';
+            checkButton.disabled = true;
+        });
+
+    // 3. Handle form submission
+    domainForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default HTML form submission
+
+        if (!php) {
+            resultDiv.innerHTML = '<p class="error">PHP engine is not ready yet. Please wait.</p>';
+            return;
+        }
+
+        const domainPrefix = domainPrefixInput.value.trim().toLowerCase();
+
+        // Basic client-side validation
+        if (!domainPrefix) {
+            resultDiv.innerHTML = '<p class="error">Please enter a domain prefix.</p>';
+            return;
+        }
+        if (!/^[a-z0-9][a-z0-9\-]*[a-z0-9]$/.test(domainPrefix) || domainPrefix.includes('--')) {
+             // Basic check: starts/ends with letter/number, contains only letters/numbers/hyphens, no double hyphens
+            resultDiv.innerHTML = '<p class="error">Invalid domain prefix format. Use only letters, numbers, and hyphens (not at start/end, no consecutive hyphens).</p>';
+            return;
+        }
+
+        const fullDomain = domainPrefix + '.edu';
+        resultDiv.innerHTML = `<p class="loader">Checking ${fullDomain}...</p>`;
+        checkButton.disabled = true; // Disable button during check
+        checkButton.textContent = 'Checking...';
+
+        // 4. Define the PHP code to execute as a string template
+        // We will replace {{DOMAIN_PREFIX_PLACEHOLDER}} with the actual prefix
+        const phpCodeTemplate = `<?php
+            error_reporting(0); // Suppress PHP warnings/errors from direct output, handle manually
+
+            $domainPrefix = '{{DOMAIN_PREFIX_PLACEHOLDER}}';
+            $domainToCheck = $domainPrefix . '.edu';
+            $whoisServer = "whois.educause.edu"; // Official WHOIS for .edu
+            $port = 43;
+            $timeout = 15; // Increased timeout slightly
+            $output = '';
+            $errorMsg = '';
+            $isAvailable = null; // null: uncertain, true: available, false: unavailable
+
+            // Server-side validation (redundant but good practice)
+            if (empty($domainPrefix)) {
+                echo "Error: Domain prefix was empty.\n";
+                exit;
+            }
+            if (!preg_match('/^[a-z0-9][a-z0-9\\-]*[a-z0-9]$/i', $domainPrefix) || strpos($domainPrefix, '--') !== false) {
+                 echo "Error: Invalid domain prefix format passed to PHP.\n";
+                 exit;
+            }
+
+            // Use @ to suppress connection errors, check the return value instead
+            $fp = @fsockopen($whoisServer, $port, $errno, $errstr, $timeout);
+
+            if (!$fp) {
+                $errorMsg = "Error: Could not connect to WHOIS server ($whoisServer). [$errno] $errstr\n";
+                $errorMsg .= "This might be a temporary network issue or a browser sandbox restriction.\n";
+            } else {
+                // Send the domain query
+                fputs($fp, $domainToCheck . "\\r\\n"); // Note the double backslash for JS string literal
+                stream_set_timeout($fp, $timeout); // Set timeout for reading response
+
+                // Read the response
+                $startTime = time();
+                while (!feof($fp) && (time() - $startTime) < $timeout) {
+                    $line = fgets($fp, 512);
+                    if ($line === false) { // Check for read error or timeout explicitly
+                         break;
+                    }
+                    $output .= $line;
+                }
+                fclose($fp);
+
+                // Check if read timed out
+                 if (!feof($fp) && (time() - $startTime) >= $timeout) {
+                     $errorMsg .= "Warning: Read operation timed out while getting WHOIS response. Result might be incomplete.\n";
+                 }
+
+
+                // Analyze the response (specific to whois.educause.edu)
+                if (empty(trim($output)) && !$errorMsg) {
+                     $errorMsg .= "Error: Received empty response from WHOIS server. Status uncertain.\n";
+                } elseif (stripos($output, "No Match") !== false) {
+                    // Common indicator for availability on EDUCAUSE WHOIS
+                    $isAvailable = true;
+                } elseif (stripos($output, "Domain Name: " . $domainToCheck) !== false || stripos($output, "Registrant:") !== false) {
+                     // If it finds the domain name explicitly listed or registrant info, it's likely registered
+                     $isAvailable = false;
+                 } else {
+                     // Ambiguous result - could be an error message from the server, or unexpected format
+                     $errorMsg .= "Notice: Could not definitively determine status from WHOIS response. It might be registered or an error occurred.\n";
+                 }
+            }
+
+            // --- Output Results ---
+            if (!empty($errorMsg)) {
+                echo "--- Status Check Log ---\n";
+                echo $errorMsg;
+                echo "------------------------\n\n";
+            }
+
+            if ($isAvailable === true) {
+                echo "Result: The domain " . htmlspecialchars($domainToCheck) . " appears to be technically AVAILABLE based on WHOIS lookup.\n\n";
+                echo "Reminder: Registration requires meeting strict .EDU eligibility criteria.\n";
+            } elseif ($isAvailable === false) {
+                echo "Result: The domain " . htmlspecialchars($domainToCheck) . " is likely REGISTERED or otherwise unavailable.\n";
+                // Optionally include part of the raw output for context (be careful with sensitive info if any)
+                // echo "\n--- Raw WHOIS Snippet ---\n" . htmlspecialchars(substr($output, 0, 300)) . "...\n";
+            } else {
+                 echo "Result: Could not determine the status for " . htmlspecialchars($domainToCheck) . ".\n";
+                 if (empty($errorMsg)) { // If no specific error was logged before
+                     echo "Please check the connection or try again later.\n";
+                 }
+            }
+
+        ?>`;
+
+        // Replace the placeholder safely (basic sanitation already done)
+        const finalPhpCode = phpCodeTemplate.replace('{{DOMAIN_PREFIX_PLACEHOLDER}}', domainPrefix);
+
+        // 5. Execute the PHP code using php-wasm
+        php.run(finalPhpCode)
+            .then(result => {
+                let outputText = '';
+                let errorText = '';
+
+                // php-wasm result object structure can vary slightly, check common properties
+                if (result && typeof result.stdout === 'string') {
+                    outputText = result.stdout;
+                } else if (typeof result === 'string') { // Fallback for simpler output
+                     outputText = result;
+                } else {
+                     outputText = 'No standard output received from PHP execution.';
+                     console.log("Raw PHP execution result:", result);
+                }
+
+                if (result && typeof result.stderr === 'string' && result.stderr.trim() !== '') {
+                    errorText = result.stderr;
+                    console.error("PHP stderr:", errorText);
+                     // Prepend PHP errors/warnings to the output for visibility
+                     outputText = `--- PHP Engine Messages ---\n${errorText}\n-------------------------\n\n${outputText}`;
+                }
+
+                // Display the result - determine success/failure for styling
+                resultDiv.innerHTML = ''; // Clear previous content
+                const resultParagraph = document.createElement('p');
+                resultParagraph.textContent = outputText.trim();
+
+                if (outputText.includes(" appears to be technically AVAILABLE")) {
+                     resultParagraph.className = 'success';
+                } else if (outputText.includes(" is likely REGISTERED") || outputText.includes("Error:")) {
+                     resultParagraph.className = 'error'; // Style errors and registered as non-success
+                }
+
+                resultDiv.appendChild(resultParagraph);
+
+            })
+            .catch(error => {
+                console.error("Error executing PHP code via php-wasm:", error);
+                resultDiv.innerHTML = `<p class="error">JavaScript Error: Failed to execute PHP check. ${error.message || error}</p>`;
+            })
+            .finally(() => {
+                // Re-enable the button regardless of success or failure
+                checkButton.disabled = false;
+                checkButton.textContent = 'Check Availability';
+            });
+    });
+
+</script>
 
 </body>
 </html>
