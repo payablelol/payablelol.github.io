@@ -1,0 +1,75 @@
+<?php
+
+$eth_wallet_guide = [
+    '原理' => [
+        '钱包是什么' => '钱包管理一对密钥（私钥+公钥），根据私钥生成地址。ETH实际存放在区块链上，钱包用于签名和发起交易。',
+        '核心组成' => [
+            '私钥' => '用于签名交易，是唯一凭证，丢失即丢失资产。',
+            '公钥' => '由私钥推导，用于生成钱包地址。',
+            '地址' => '公钥Keccak-256哈希后部分截取，格式如0x...。',
+            '助记词' => '12/24个英文单词，可恢复私钥，便于记忆和备份。'
+        ],
+        '工作流程' => [
+            '1. 生成私钥/助记词 → 生成公钥 → 生成地址',
+            '2. 通过节点查询余额',
+            '3. 用私钥签名交易',
+            '4. 广播交易到区块链网络',
+            '5. 等待区块确认'
+        ]
+    ],
+    '与节点/交易所交互原理' => [
+        '节点交互' => [
+            '说明' => '通过JSON-RPC接口与以太坊节点交互，如查询余额、发送交易等。',
+            '节点类型' => ['本地节点（Geth/Parity）', '云服务节点（Infura、Alchemy等）']
+        ],
+        '交易所交互' => [
+            '说明' => '钱包只需将ETH转到交易所充值地址，交易所监控该地址确认到账后进行入账。'
+        ]
+    ],
+    '代码实现（Node.js，ethers.js为例）' => [
+        '安装依赖' => 'npm install ethers',
+        '生成钱包' => <<<CODE
+const { ethers } = require("ethers");
+const wallet = ethers.Wallet.createRandom();
+console.log("助记词:", wallet.mnemonic.phrase);
+console.log("私钥:", wallet.privateKey);
+console.log("公钥:", wallet.publicKey);
+console.log("地址:", wallet.address);
+CODE,
+        '连接节点' => <<<CODE
+const provider = new ethers.JsonRpcProvider("https://mainnet.infura.io/v3/你的项目ID");
+async function getBalance(address) {
+    const balance = await provider.getBalance(address);
+    console.log(ethers.formatEther(balance), "ETH");
+}
+getBalance("0x你的钱包地址");
+CODE,
+        '发送交易' => <<<CODE
+const wallet = new ethers.Wallet("你的私钥", provider);
+async function sendETH(to, amountEth) {
+    const tx = {
+        to: to,
+        value: ethers.parseEther(amountEth),
+    };
+    const txResponse = await wallet.sendTransaction(tx);
+    console.log("交易已广播，hash:", txResponse.hash);
+    await txResponse.wait();
+    console.log("交易已被打包进区块！");
+}
+sendETH("0x对方地址", "0.01");
+CODE
+    ],
+    '和交易所交互简述' => [
+        '说明' => '只需把ETH转到交易所提供的充值地址，交易所监听链上确认到账即可，无需关心交易所内部账本。'
+    ],
+    '是否真正连接区块链' => [
+        '说明' => '只要provider连接的是主网节点（如Infura、Alchemy、自己搭建的Geth等），就是直接连了以太坊主网。所有操作都在真实区块链上进行。'
+    ],
+    '参考资料' => [
+        'ethers.js官方文档' => 'https://docs.ethers.org/',
+        '以太坊白皮书' => 'https://ethereum.org/zh/whitepaper/',
+        'Infura官网' => 'https://infura.io/'
+    ]
+];
+
+?>
