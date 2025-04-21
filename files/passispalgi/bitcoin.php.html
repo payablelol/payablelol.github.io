@@ -1,4 +1,4 @@
-$bitcoin_wallet = array("项目简介"=>array(
+$bitcoin_wallet=array("项目简介"=>array(
     "核心能力"=>array(
         "创建比特币地址（支持P2PKH、P2SH、SegWit等格式）",
         "生成和管理私钥、公钥",
@@ -14,7 +14,7 @@ $bitcoin_wallet = array("项目简介"=>array(
         "离线签名",
         "区块链工具开发"
     )
-), "搭建步骤"=>array(
+),"搭建步骤"=>array(
     "依赖安装"=>"composer require bitwasp/bitcoin",
     "生成密钥与地址"=>array(
         "代码"=>'$network = NetworkFactory::bitcoin(); $privFactory = new PrivateKeyFactory(); $privateKey = $privFactory->generateCompressed(); $publicKey = $privateKey->getPublicKey(); $address = $publicKey->getAddress()->getAddress($network);',
@@ -32,15 +32,19 @@ $bitcoin_wallet = array("项目简介"=>array(
         "说明"=>"通过节点RPC或第三方API广播原始交易",
         "代码"=>'$ch = curl_init("https://blockstream.info/api/tx"); curl_setopt($ch, CURLOPT_POSTFIELDS, $hex); curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/plain")); curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); $txid = curl_exec($ch); curl_close($ch);'
     )
-), "比特币原理"=>array(
+),"比特币原理"=>array(
     "密钥与地址"=>"私钥随机生成，公钥由私钥计算，地址为公钥哈希",
     "交易与UTXO"=>"采用未花费输出模型，每笔交易的输出可作为新输入",
     "签名与安全"=>"交易必须用私钥签名，网络验证签名后打包进区块",
     "区块链结构"=>"区块链由区块组成，每个区块含若干交易，通过共识机制维护安全"
-), "与交易所交互原理"=>array(
+),"与交易所交互原理"=>array(
     "API交互"=>"交易所通过RESTful API进行余额、行情、充提等操作",
     "提币流程"=>"用户提交钱包地址，交易所生成并广播链上交易",
     "充币流程"=>"用户向交易所提供地址转账，交易所监听到账后增加余额"
-), "是否真正连了区块链"=>array(
+),"是否真正连了区块链"=>array(
     "说明"=>"bitcoin-php本身不直接连接区块链，需结合本地节点或第三方API与链交互，实现余额、UTXO、交易广播等功能"
+),"相关工具与链接"=>array(
+    "GoUrl.io"=>"https://gourl.io/",
+    "bitaddress.org"=>"https://www.bitaddress.org/",
+    "bitaddress.org离线版"=>"https://www.bitaddress.org/bitaddress.org-v3.3.0-SHA256-dec17c07685e1870960903d8f58090475b25af946fe95a734f88408cef4aa194.html"
 ));
