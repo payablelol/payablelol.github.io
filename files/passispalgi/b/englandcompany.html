@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>英国公司年审提醒 | UK Company Annual Review Reminder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #edf6e0;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2e7d32;
+    }
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+    th, td {
+      border: 1px solid #2e7d32;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #4caf50;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background-color: #f1f8e9;
+    }
+    a {
+      color: #2e7d32;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .form-container {
+      width: 90%;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      border-radius: 5px;
+      text-align: center;
+    }
+    input[type="text"] {
+      width: calc(100% - 20px);
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #a5d6a7;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+    .language-selector {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    .language-btn {
+      padding: 5px 10px;
+      margin-left: 5px;
+      background-color: #81c784;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .language-btn.active {
+      background-color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <div class="language-selector">
+    <button id="zh-btn" class="language-btn active" onclick="changeLanguage('zh')">中文</button>
+    <button id="en-btn" class="language-btn" onclick="changeLanguage('en')">English</button>
+  </div>
+
+  <h1 id="main-title">英国公司年审提醒</h1>
+  
+  <!-- 操作提醒表格 -->
+  <table>
+    <thead>
+      <tr>
+        <th id="col-number">序号</th>
+        <th id="col-operation">操作名称</th>
+        <th id="col-frequency">频率</th>
+        <th id="col-details">详细说明</th>
+        <th id="col-link">链接</th>
+        <th id="col-reminder">提醒状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td id="op-address">续费地址</td>
+        <td id="freq-annual-1">每年</td>
+        <td id="detail-address">检查并更新注册公司的地址信息</td>
+        <td><a href="http://example.com/address" target="_blank" id="link-details-1">详情</a></td>
+        <td><input type="checkbox" id="reminder1"></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td id="op-fee">年审费用支付</td>
+        <td id="freq-annual-2">每年</td>
+        <td id="detail-fee">支付13英镑的年审费用</td>
+        <td><a href="http://example.com/annual-fee" target="_blank" id="link-details-2">详情</a></td>
+        <td><input type="checkbox" id="reminder2"></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td id="op-tax">税务申报</td>
+        <td id="freq-biannual">每两年</td>
+        <td id="detail-tax">完成一次全面的税务申报</td>
+        <td><a href="http://example.com/tax-declaration" target="_blank" id="link-details-3">详情</a></td>
+        <td><input type="checkbox" id="reminder3"></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h2 id="links-title">注册英国公司相关链接</h2>
+  
+  <!-- 注册英国公司相关链接表格 -->
+  <table>
+    <thead>
+      <tr>
+        <th id="col-number-2">序号</th>
+        <th id="col-name">链接名称</th>
+        <th id="col-url">链接地址</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td id="link-name-1">英国政府官网</td>
+        <td><a href="https://www.gov.uk" target="_blank">https://www.gov.uk</a></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td id="link-name-2">Companies House</td>
+        <td><a href="https://www.gov.uk/government/organisations/companies-house" target="_blank">https://www.gov.uk/government/organisations/companies-house</a></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td id="link-name-3">注册新公司</td>
+        <td><a href="https://www.gov.uk/register-a-company" target="_blank">https://www.gov.uk/register-a-company</a></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td id="link-name-4">英国税务及海关总署</td>
+        <td><a href="https://www.gov.uk/government/organisations/hm-revenue-customs" target="_blank">https://www.gov.uk/government/organisations/hm-revenue-customs</a></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <div class="form-container">
+    <form id="reminderForm" onsubmit="return false;">
+      <input type="text" id="emailInput" placeholder="请输入目标邮箱" />
+      <br>
+      <button type="button" id="email-btn" onclick="sendEmailReminder()">发送提醒邮件</button>
+      <br><br>
+      <input type="text" id="phoneInput" placeholder="请输入目标手机号码" />
+      <br>
+      <button type="button" id="sms-btn" onclick="sendSMSReminder()">发送短信提醒</button>
+    </form>
+  </div>
+  
+  <script>
+    // Language data
+    const languageData = {
+      'zh': {
+        'main-title': '英国公司年审提醒',
+        'col-number': '序号',
+        'col-operation': '操作名称',
+        'col-frequency': '频率',
+        'col-details': '详细说明',
+        'col-link': '链接',
+        'col-reminder': '提醒状态',
+        'op-address': '续费地址',
+        'freq-annual-1': '每年',
+        'detail-address': '检查并更新注册公司的地址信息',
+        'link-details-1': '详情',
+        'op-fee': '年审费用支付',
+        'freq-annual-2': '每年',
+        'detail-fee': '支付13英镑的年审费用',
+        'link-details-2': '详情',
+        'op-tax': '税务申报',
+        'freq-biannual': '每两年',
+        'detail-tax': '完成一次全面的税务申报',
+        'link-details-3': '详情',
+        'links-title': '注册英国公司相关链接',
+        'col-number-2': '序号',
+        'col-name': '链接名称',
+        'col-url': '链接地址',
+        'link-name-1': '英国政府官网',
+        'link-name-2': 'Companies House',
+        'link-name-3': '注册新公司',
+        'link-name-4': '英国税务及海关总署',
+        'email-placeholder': '请输入目标邮箱',
+        'email-btn': '发送提醒邮件',
+        'phone-placeholder': '请输入目标手机号码',
+        'sms-btn': '发送短信提醒',
+        'reminder-subject': '年审提醒通知',
+        'reminder-intro': '请注意，您的公司需要进行以下操作：\n',
+        'reminder-1': '1. 续费地址更新\n',
+        'reminder-2': '2. 年审费用支付（支付13英镑）\n',
+        'reminder-3': '3. 税务申报（每两年完成一次）\n',
+        'reminder-end': '\n请及时完成相关操作。',
+        'alert-select': '请先在表格中勾选至少一个操作！',
+        'alert-email': '请输入目标邮箱地址！',
+        'alert-phone': '请输入目标手机号码！'
+      },
+      'en': {
+        'main-title': 'UK Company Annual Review Reminder',
+        'col-number': 'No.',
+        'col-operation': 'Operation',
+        'col-frequency': 'Frequency',
+        'col-details': 'Details',
+        'col-link': 'Link',
+        'col-reminder': 'Reminder',
+        'op-address': 'Address Renewal',
+        'freq-annual-1': 'Annual',
+        'detail-address': 'Check and update the registered company address information',
+        'link-details-1': 'Details',
+        'op-fee': 'Annual Fee Payment',
+        'freq-annual-2': 'Annual',
+        'detail-fee': 'Pay £13 annual review fee',
+        'link-details-2': 'Details',
+        'op-tax': 'Tax Declaration',
+        'freq-biannual': 'Every Two Years',
+        'detail-tax': 'Complete a comprehensive tax declaration',
+        'link-details-3': 'Details',
+        'links-title': 'UK Company Registration Links',
+        'col-number-2': 'No.',
+        'col-name': 'Link Name',
+        'col-url': 'URL',
+        'link-name-1': 'UK Government Website',
+        'link-name-2': 'Companies House',
+        'link-name-3': 'Register a New Company',
+        'link-name-4': 'HM Revenue & Customs',
+        'email-placeholder': 'Enter email address',
+        'email-btn': 'Send Email Reminder',
+        'phone-placeholder': 'Enter phone number',
+        'sms-btn': 'Send SMS Reminder',
+        'reminder-subject': 'Annual Review Reminder',
+        'reminder-intro': 'Please note that your company needs to complete the following operations:\n',
+        'reminder-1': '1. Address Renewal\n',
+        'reminder-2': '2. Annual Fee Payment (£13)\n',
+        'reminder-3': '3. Tax Declaration (Every Two Years)\n',
+        'reminder-end': '\nPlease complete these tasks promptly.',
+        'alert-select': 'Please select at least one operation in the table first!',
+        'alert-email': 'Please enter an email address!',
+        'alert-phone': 'Please enter a phone number!'
+      }
+    };
+
+    // Function to change language
+    function changeLanguage(lang) {
+      // Update active button
+      document.getElementById('zh-btn').classList.remove('active');
+      document.getElementById('en-btn').classList.remove('active');
+      document.getElementById(lang + '-btn').classList.add('active');
+      
+      // Update all text elements
+      for (const [id, text] of Object.entries(languageData[lang])) {
+        const element = document.getElementById(id);
+        if (element) {
+          if (element.tagName === 'INPUT' && element.type === 'text') {
+            element.placeholder = text;
+          } else {
+            element.textContent = text;
+          }
+        }
+      }
+      
+      // Update placeholders specifically
+      document.getElementById('emailInput').placeholder = languageData[lang]['email-placeholder'];
+      document.getElementById('phoneInput').placeholder = languageData[lang]['phone-placeholder'];
+      
+      // Store the current language preference
+      localStorage.setItem('preferredLanguage', lang);
+    }
+    
+    function getReminderBody() {
+      const lang = localStorage.getItem('preferredLanguage') || 'zh';
+      const check1 = document.getElementById("reminder1").checked;
+      const check2 = document.getElementById("reminder2").checked;
+      const check3 = document.getElementById("reminder3").checked;
+      let body = languageData[lang]['reminder-intro'];
+      
+      if(check1) body += languageData[lang]['reminder-1'];
+      if(check2) body += languageData[lang]['reminder-2'];
+      if(check3) body += languageData[lang]['reminder-3'];
+      
+      body += languageData[lang]['reminder-end'];
+      return body;
+    }
+    
+    function sendEmailReminder(){
+      const lang = localStorage.getItem('preferredLanguage') || 'zh';
+      const email = document.getElementById("emailInput").value.trim();
+      const check1 = document.getElementById("reminder1").checked;
+      const check2 = document.getElementById("reminder2").checked;
+      const check3 = document.getElementById("reminder3").checked;
+      
+      if(!check1 && !check2 && !check3){
+        alert(languageData[lang]['alert-select']);
+        return;
+      }
+      
+      if(email === ""){
+        alert(languageData[lang]['alert-email']);
+        return;
+      }
+      
+      const subject = encodeURIComponent(languageData[lang]['reminder-subject']);
+      const body = encodeURIComponent(getReminderBody());
+      window.location.href = "mailto:" + email + "?subject=" + subject + "&body=" + body;
+    }
+    
+    function sendSMSReminder(){
+      const lang = localStorage.getItem('preferredLanguage') || 'zh';
+      const phone = document.getElementById("phoneInput").value.trim();
+      const check1 = document.getElementById("reminder1").checked;
+      const check2 = document.getElementById("reminder2").checked;
+      const check3 = document.getElementById("reminder3").checked;
+      
+      if(!check1 && !check2 && !check3){
+        alert(languageData[lang]['alert-select']);
+        return;
+      }
+      
+      if(phone === ""){
+        alert(languageData[lang]['alert-phone']);
+        return;
+      }
+      
+      const body = encodeURIComponent(getReminderBody());
+      window.location.href = "sms:" + phone + "?body=" + body;
+    }
+    
+    // On page load, check for language preference or set default
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedLanguage = localStorage.getItem('preferredLanguage') || 'zh';
+      changeLanguage(savedLanguage);
+    });
+  </script>
+</body>
+</html>

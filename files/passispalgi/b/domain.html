@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain Registrars</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+      margin: 20px;
+      color: #343a40;
+    }
+    .container {
+      max-width: 1200px; /* Increased max-width for wider tables */
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px; /* Increased margin */
+      font-size: 2.5em; /* Increased font size */
+      border-bottom: 2px solid #343a40;
+      padding-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
+    th, td {
+      padding: 15px; /* Increased padding */
+      border: 1px solid #dee2e6;
+      text-align: left;
+    }
+    th {
+      background-color: #343a40;
+      color: #fff;
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #f8f9fa; /* Lighter even row color */
+    }
+    td:nth-child(4) {  /* Notes column */
+        max-width: 300px; /* Limit notes column width */
+        word-wrap: break-word; /* Allow long words to break */
+    }
+    @media (max-width: 768px) {
+      th, td { padding: 10px; font-size: 0.9em; }
+      h1 { font-size: 1.8em; }
+      td:nth-child(4) { max-width: 200px; } /* Smaller max-width on mobile */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Domain Registrars</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Registrar</th>
+          <th>Method</th>
+          <th>Price Range</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!--  Data will be inserted here by JavaScript  -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const all_domain_registrars = {
+    "GoDaddy":{
+    "url":"",
+    "method":"在GoDaddy网站搜索想要的域名，加入购物车，付款并设置自动续费。",
+    "price_range":"价格低至0.99,.com 域名大约22.17/年,有首年折扣。",
+    "notes":"全球最大的域名注册商，提供域名搜索、注册、建站工具等。价格可能因续费而上涨。"
+    },
+    "Namecheap":{
+    "url":"",
+    "method":"在Namecheap网站搜索域名，选择加入购物车，付款。提供24/7客服支持。",
+    "price_range":".com 域名0.99 起,.net 和.org 域名大约 6− 15,新顶级域名 10− 25。",
+    "notes":"提供便宜的域名注册，有许多促销活动，管理超过1800万个域名。"
+    },
+    "NameSilo":{
+    "url":"",
+    "method":"在NameSilo网站搜索并注册域名，支持支付宝付款，提供免费隐私保护。",
+    "price_range":"新注册和续费价格实在，大约55-60元人民币。",
+    "notes":"没有套路的服务商，新注册和续费价格一致，隐私保护免费。"
+    },
+    "Dynadot":{
+    "url":"",
+    "method":"在Dynadot网站搜索域名，支持中文界面和支付宝付款。",
+    "price_range":"新注册域名活动较多,.com域名大约6.99美元，续费为原价。",
+    "notes":"提供域名注册和交易平台，有中文站和支付宝付款。"
+    },
+    "Cloudflare":{
+    "url":"",
+    "method":"在Cloudflare Registrar购买或转入域名，提供自动续费和安全保护。",
+    "price_range":"提供成本价域名，没有加价和额外续费。",
+    "notes":"低成本域名注册商，没有加价，提供自动续费和安全保护。"
+    },
+    "Hostinger":{
+    "url":"",
+    "method":"在Hostinger网站搜索域名，提供便宜的域名注册和免费域名（需购买特定套餐）。",
+    "price_range":"域名价格低至₱59.00(菲律宾比索),.com,.online,.shop 等有优惠。",
+    "notes":"提供便宜的域名注册，购买特定套餐可获得免费域名。"
+    },
+    "阿里云":{
+    "url":"",
+    "method":"在阿里云万网搜索和注册域名，提供域名注册、转入和续费服务。",
+    "price_range":"提供详细的域名后缀和价格列表。",
+    "notes":"中国最大的云服务商之一，提供域名和云服务。"
+    },
+    "腾讯云":{
+    "url":"",
+    "method":"在腾讯云DNSPod搜索和注册域名，提供DNS解析和SSL证书服务。",
+    "price_range":"提供各种域名后缀的注册，价格不一。",
+    "notes":"提供域名注册、DNS解析和SSL证书服务。"
+    },
+    "爱名网":{
+    "url":"无",
+    "method":"提供.CN域名注册",
+    "price_range":".CN域名是比较便宜的15-18元左右",
+    "notes":"国内老牌域名注册商"
+    },
+    "Google Domains":{
+    "url":"",
+    "method":"在 Google Domains 搜索并注册域名，界面简洁，易于管理。",
+    "price_range":"价格透明，.com 域名大约12/年。",
+    "notes":"提供免费的隐私保护，可以与 Google Workspace 集成。"
+    },
+    "Porkbun":{
+    "url":"",
+    "method":"在 Porkbun 网站搜索并注册域名，提供免费的 WHOIS 隐私保护、SSL 证书和电子邮件转发。",
+    "price_range":".com 域名首年优惠价大约4.15,续费10.37/年。",
+    "notes":"以其古怪的品牌和具有竞争力的价格而闻名。"
+    },
+    "Gandi":{
+    "url":"",
+    "method":"在 Gandi 网站搜索并注册域名,提供两个免费的邮箱。",
+    "price_range":".com 域名大约15.50/年。",
+    "notes":"提供企业级服务，注重隐私和安全。"
+    },
+    "Hover":{
+    "url":"",
+    "method":"在 Hover 网站搜索并注册域名，界面简洁，专注于域名注册。",
+    "price_range":".com 域名大约14.99/年，续费价格也相同。",
+    "notes":"提供免费的 WHOIS 隐私保护，界面简洁，易于使用。"
+    },
+    "IONOS":{
+    "url":"",
+    "method":"在 IONOS 网站搜索并注册域名，提供域名和网站托管服务。",
+    "price_range":".com 域名首年1,之后20/年。",
+    "notes":"欧洲最大的网络托管公司，提供多种域名和网络服务。"
+    },
+    "Domain.com":{
+    "url":"",
+    "method":"在 Domain.com 网站搜索并注册域名，提供域名和网站托管服务。",
+    "price_range":".com 域名 12.99/年,如果购买网站托管计划，首年免费。",
+    "notes":"如果你需要同时购买域名和主机服务，Bluehost是个不错的选择。"
+    },
+    "Shopify":{
+    "url":"",
+    "method":"如果你打算建立一个在线商店，Shopify是最好的域名注册商。建立网站时，便利性是非常重要的。",
+    "price_range":"价格为每年11美元（约77元人民币）起。续订价格与第一年购买价格一致，不会收取续订费。",
+    "notes":"最适合电商企业,最佳的电商功能。Shopify提供创建在线商店所需的一切。"
+    },
+    "Network Solutions":{
+    "url":"",
+    "method":"在Network Solutions网站搜索域名，加入购物车并完成付款流程。",
+    "price_range":".com域名约 18.99，续费约 8.99- 12.95/年，购买托管服务可获得免费域名。",
+    "notes":"知名主机提供商，提供域名与托管捆绑服务，适合需要一站式解决方案的用户。"
+    },
+    "Web.com":{
+    "url":"",
+    "method":"在Web.com网站搜索域名，提供域名建站一体化服务。",
+    "price_range":".com域名首年约 10−15，续费约 38/年。",
+    "notes":"提供从域名到建站的完整服务，但续费价格偏高。"
+    },
+    "Name.com":{
+    "url":"",
+    "method":"在Name.com网站搜索并注册域名，界面简洁直观。",
+    "price_range":".com域名约 12.99− 14.99/年，定期有促销活动。",
+    "notes":"用户界面友好，提供域名、网站建设、托管等全方位服务。"
+    },
+    "ResellerClub":{
+    "url":"",
+    "method":"主要面向域名转销商，但个人也可注册账户购买域名。",
+    "price_range":"批发价格比零售价低15-30%，具体取决于购买量。",
+    "notes":"全球最大的域名批发平台之一，适合计划大量注册域名或成为域名转销商的用户。"
+    },
+    "NameBright":{
+    "url":"",
+    "method":"在NameBright网站搜索域名，提供免费WHOIS隐私保护。",
+    "price_range":".com域名约 8.88− 12.98/年。",
+    "notes":"价格实惠，免费提供隐私保护，无隐藏费用。"
+    },
+    "西部数码":{
+    "url":"",
+    "method":"在西部数码网站搜索域名，支持多种支付方式。",
+    "price_range":".com域名约65-80元/年，.cn域名约29-38元/年。",
+    "notes":"国内知名域名注册商，提供稳定可靠的服务，适合需要中文服务的用户。"
+    },
+    "22.cn":{
+    "url":"",
+    "method":"在22.cn网站搜索域名，支持支付宝等多种支付方式。",
+    "price_range":".com域名约69-79元/年，经常有特价活动。",
+    "notes":"国内知名域名注册商，价格较为实惠，提供中文服务。"
+    },
+    "Rebel.com":{
+    "url":"",
+    "method":"在Rebel.com网站搜索域名，注册流程简单直观，提供免费WHOIS隐私保护。",
+    "price_range":".com域名约 12-14/年，批量注册有优惠。",
+    "notes":"适合大量域名注册和管理，提供API接口和批量操作工具。"
+    },
+    "domain.com.au":{
+    "url":"",
+    "method":"在domain.com.au网站注册澳大利亚域名(.au)，需符合澳大利亚域名注册要求。",
+    "price_range":".com.au域名约AU 39起，根据域名价值不同定价不同。",
+    "notes":"专门提供过期域名抢注服务，适合希望获取特定过期域名的用户。"
+    },
+    "iwantmyname":{
+    "url":"",
+    "method":"在iwantmyname网站搜索域名，界面简洁，注册流程简单。",
+    "price_range":".com域名约 12-15/年，DNS服务另计费。",
+    "notes":"专注于提供高性能DNS服务的域名注册商，适合对DNS性能要求较高的网站。"
+    },
+    "Domain Cost Club":{
+    "url":"",
+    "method":"加入会员后享受批发价注册域名，年费 8.99起。",
+    "price_range":"会员可以批发价注册域名，.com域名约 8-10/年。",
+    "notes":"会员制域名注册服务，适合需要经常注册多个域名的用户。"
+    },
+    "Moniker":{
+    "url":"",
+    "method":"在Moniker网站搜索并注册域名，专注于域名投资和管理。",
+    "price_range":".com域名约 10-14/年，新顶级域名价格不一。",
+    "notes":"由知名域名投资者Frank Schilling创立，提供专业的域名管理和市场服务。"
+    },
+    "Sav.com":{
+    "url":"",
+    "method":"在Sav.com搜索过期域名或二手域名进行购买。",
+    "price_range":"从 10-15/年，批量注册有优惠。",
+    "notes":"提供强大的API和批量管理工具，适合域名专业人士和转销商。"
+    },
+    "Encirca":{
+    "url":"",
+    "method":"在Encirca注册企业级域名，提供品牌保护和域名组合管理。",
+    "price_range":"企业级定价，需咨询销售。",
+    "notes":"专注于企业域名管理和品牌保护服务，适合大型企业和机构。"
+    },
+    "Netim":{
+    "url":"",
+    "method":"在Netim网站搜索并注册域名，欧洲知名注册商，支持多语言。",
+    "price_range":".com域名约€12-15/年，欧洲本地域名有优势价格。",
+    "notes":"法国域名注册商，在欧洲地区服务良好，支持多种欧洲国家域名。"
+    },
+    "Instra":{
+    "url":"",
+    "method":"在Instra网站注册国际域名，支持多种国家和地区域名。",
+    "price_range":".com域名约 14-16/年，另需支付DNS服务订阅费。",
+    "notes":"专注于提供简单易用的DNS管理工具，适合开发者和小型企业。"
+    },
+    "123-reg":{
+    "url":"",
+    "method":"在123-reg网站注册域名，英国最大域名注册商之一。",
+    "price_range":".com域名约£11-14/年，.co.uk域名约£6-9/年。",
+    "notes":"英国最大的域名注册商，适合英国和欧洲用户注册和管理域名。"
+    },
+    "One.com":{
+    "url":"",
+    "method":"在One.com注册域名，同时提供网站托管和邮箱服务。",
+    "price_range":"域名价格包含在托管套餐中，起价约€2.99/月。",
+    "notes":"欧洲流行的网络托管服务提供商，提供域名、托管、邮箱一体化服务。"
+    },
+    "全速云":{
+    "url":"",
+    "method":"在全速云平台搜索并注册域名，提供多种国内外域名后缀。",
+    "price_range":".com域名约50-70元/年，.cn域名约30-40元/年。",
+    "notes":"国内云服务提供商，提供域名注册和云服务一体化解决方案。"
+    },
+    "Freenom":{
+    "url":"",
+    "method":"在Freenom网站搜索并注册免费域名，提供免费域名注册服务（如.tk,.ml,.ga,.cf,.gq）。",
+    "price_range":"免费域名（部分区域），付费域名视具体情况而定。",
+    "notes":"专注于提供免费域名注册服务，适合预算有限的小型项目和初创企业。"
+    },
+    "BigRock":{
+    "url":"",
+    "method":"在BigRock网站搜索并注册域名，界面友好，支持多种支付方式。",
+    "price_range":".com 域名起价约₹449/年，视域名后缀而定。",
+    "notes":"印度知名域名注册商，提供域名注册、主机和电子邮件服务，支持一站式解决方案。"
+    },
+    "Dotster":{
+    "url":"",
+    "method":"在Dotster网站搜索并注册域名，提供域名、主机和邮件服务。",
+    "price_range":".com 域名起价约14.95/年。",
+    "notes":"提供综合的域名和网站服务，适合个人和中小企业。"
+    }
+    };
+
+    const tableBody = document.querySelector('tbody');
+
+    for (const registrar in all_domain_registrars) {
+      if (all_domain_registrars.hasOwnProperty(registrar)) {
+        const registrarData = all_domain_registrars[registrar];
+        const row = document.createElement('tr');
+
+        const registrarCell = document.createElement('td');
+        registrarCell.textContent = registrar;
+        row.appendChild(registrarCell);
+
+        const methodCell = document.createElement('td');
+        methodCell.textContent = registrarData.method;
+        row.appendChild(methodCell);
+
+        const priceRangeCell = document.createElement('td');
+        priceRangeCell.textContent = registrarData.price_range;
+        row.appendChild(priceRangeCell);
+
+        const notesCell = document.createElement('td');
+        notesCell.textContent = registrarData.notes;
+        row.appendChild(notesCell);
+
+        tableBody.appendChild(row);
+      }
+    }
+  </script>
+</body>
+</html>

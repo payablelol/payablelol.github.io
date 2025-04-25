@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stripe Payment Methods / 支付方式</title>
+  <style>
+    /* (Styles remain the same as in the previous corrected version) */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+      margin: 20px;
+      color: #343a40;
+    }
+    .container {
+      max-width: 1200px; /* Increased max-width for the new column */
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2em;
+      border-bottom: 2px solid #343a40;
+      padding-bottom: 10px;
+    }
+    .intro {
+      margin-bottom: 20px;
+      font-size: 1em;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .form-container {
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px; /* Add margin to separate sections */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #dee2e6;
+      text-align: left;
+    }
+    th {
+      background-color: #343a40;
+      color: #fff;
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #f1f1f1;
+    }
+    @media (max-width: 768px) {
+      th, td { padding: 8px 10px; font-size: 0.9em; }
+      h1 { font-size: 1.8em; }
+      .cookie-textarea { font-size: 0.8em; }
+    }
+    .translate-button, .add-button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    .translate-button:hover, .add-button:hover, .remove-button:hover, .cookie-actions button:hover {
+      background-color: #0056b3;
+    }
+    .button-container{
+        text-align: center;
+    }
+    .hidden { display: none; }
+    .remove-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+    .input-group {
+      margin-bottom: 10px;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .input-group input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    #paymentMethodCount {
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-top: 10px;
+        text-align: center;
+    }
+    #cookieDisplay {
+      margin-top: 20px;
+      padding: 10px;
+    }
+    .cookie-actions {
+        margin-top: 5px;
+        text-align: center;
+    }
+    .cookie-actions button {
+        margin: 5px;
+        padding: 8px 12px;
+        font-size: 0.9em;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #28a745;
+        color: white;
+    }
+    .cookie-textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .actions-cell {
+        text-align: center;
+    }
+    .add-form-buttons {
+        text-align: center;
+    }
+    .add-form-buttons button {
+        margin: 0 5px;
+    }
+    .link-cell a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    .link-cell a:hover {
+        text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><span class="en">Stripe Payment Methods</span><span class="zh hidden">支付方式</span></h1>
+    <div class="button-container">
+        <button class="translate-button" onclick="toggleLanguage()">Translate / 翻译</button>
+        <button class="add-button" onclick="showAddForm()"><span class="en">Add Payment Method</span><span class="zh hidden">添加支付方式</span></button>
+    </div>
+
+    <div class="intro">
+      <p>
+        <span class="en">Manage the list of payment methods accepted.</span>
+        <span class="zh hidden">管理可接受的支付方式列表。</span>
+      </p>
+    </div>
+
+    <div id="addForm" class="form-container hidden">
+      <h2><span class="en">Add New Payment Method</span><span class="zh hidden">添加新的支付方式</span></h2>
+      <div class="input-group">
+        <label for="newMethodEn"><span class="en">Payment Method (English)</span><span class="zh hidden">支付方式 (英文)</span>:</label>
+        <input type="text" id="newMethodEn">
+      </div>
+      <div class="input-group">
+        <label for="newMethodZh"><span class="en">Payment Method (Chinese)</span><span class="zh hidden">支付方式 (中文)</span>:</label>
+        <input type="text" id="newMethodZh">
+      </div>
+      <div class="input-group">
+        <label for="newDescriptionEn"><span class="en">Description (English)</span><span class="zh hidden">描述 (英文)</span>:</label>
+        <input type="text" id="newDescriptionEn">
+      </div>
+      <div class="input-group">
+        <label for="newDescriptionZh"><span class="en">Description (Chinese)</span><span class="zh hidden">描述 (中文)</span>:</label>
+        <input type="text" id="newDescriptionZh">
+      </div>
+      <div class="input-group">
+        <label for="newLink"><span class="en">Link</span><span class="zh hidden">链接</span>:</label>
+        <input type="text" id="newLink" placeholder="https://example.com">
+      </div>
+      <div class="add-form-buttons">
+        <button class="add-button" onclick="addPaymentMethod()">
+          <span class="en">Add</span><span class="zh hidden">添加</span>
+        </button>
+        <button class="translate-button" onclick="hideAddForm()">
+          <span class="en">Cancel</span><span class="zh hidden">取消</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-container">
+        <table>
+            <thead>
+                <tr>
+                    <th><span class="en">Payment Method</span><span class="zh hidden">支付方式</span></th>
+                    <th><span class="en">Description</span><span class="zh hidden">描述</span></th>
+                    <th><span class="en">Link</span><span class="zh hidden">链接</span></th>
+                    <th class="actions-cell"><span class="en">Actions</span><span class="zh hidden">操作</span></th>
+                </tr>
+            </thead>
+            <tbody id="paymentTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="paymentMethodCount"></div>
+
+    <div id="cookieDisplay" class="form-container">
+        <h3><span class="en">Cookie Information</span><span class="zh hidden">Cookie 信息</span></h3>
+        <textarea id="cookieValue" class="cookie-textarea"></textarea>
+        <div class="cookie-actions">
+            <button onclick="updateFromTextArea()"><span class="en">Update from Text</span><span class="zh hidden">从文本更新</span></button>
+            <button onclick="clearCookie()"><span class="en">Clear Cookie</span><span class="zh hidden">清除 Cookie</span></button>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    let payment_methods_info = {};
+    let currentLanguage = 'en';
+    let paymentMethodCount = 0;
+    const cookieName = "stripperPaymentMethods";
+
+    // --- Cookie Functions ---
+    function setCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=/`;
+    }
+
+    function getCookie(name) {
+      const nameEQ = name + "=";
+      const ca = document.cookie.split(';');
+      for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) {
+          return decodeURIComponent(c.substring(nameEQ.length, c.length));
+        }
+      }
+      return null;
+    }
+
+    function clearCookie() {
+        setCookie(cookieName, "", -1);
+        payment_methods_info = {};
+        renderTable();
+        updateCookieDisplay();
+        updatePaymentMethodCount();
+    }
+
+    function loadFromCookie() {
+      const cookieValue = getCookie(cookieName);
+      if (cookieValue) {
+        try {
+          payment_methods_info = JSON.parse(cookieValue);
+        } catch (error) {
+          console.error("Error parsing cookie:", error);
+          clearCookie();
+        }
+      } else {
+        // Initialize with the provided payment methods and links
+        payment_methods_info = {
+          "PayPal": { description: "Online payment platform.", link: "https://www.paypal.com" },
+          "Stripe": { description: "Payment processing platform for online businesses.", link: "https://stripe.com" },
+          "Square": { description: "Payment processing and point-of-sale solutions.", link: "https://squareup.com" },
+          "Amazon Pay": { description: "Online payment service by Amazon.", link: "https://pay.amazon.com" },
+          "Apple Pay": { description: "Mobile payment and digital wallet service by Apple.", link: "https://www.apple.com/apple-pay" },
+          "Google Pay": { description: "Digital wallet platform and online payment system by Google.", link: "https://pay.google.com" },
+          "AliPay": { description: "Chinese digital wallet and online payment platform (支付宝).", link: "https://www.alipay.com" },
+          "WeChat Pay": { description: "WeChat's integrated digital wallet and payment service (微信支付).", link: "https://pay.weixin.qq.com" },
+          "MasterCard": { description: "Credit/Debit Card", link: "https://www.mastercard.com" },
+          "Visa": { description: "Credit/Debit Card", link: "https://www.visa.com" },
+          "American Express": { description: "Credit/Debit Card", link: "https://www.americanexpress.com" },
+          "Discover": { description: "Credit/Debit Card", link: "https://www.discover.com" },
+          "Diners Club": { description: "Credit/Debit Card", link: "https://www.dinersclub.com" },
+          "UnionPay": { description: "Credit/Debit Card", link: "https://www.unionpayintl.com" },
+          "JCB": { description: "Credit/Debit Card", link: "https://www.global.jcb" },
+          "Klarna": { description: "Buy Now, Pay Later service.", link: "https://www.klarna.com" },
+          "Afterpay": { description: "Buy Now, Pay Later service.", link: "https://www.afterpay.com" },
+          "Sezzle": { description: "Buy Now, Pay Later service.", link: "https://sezzle.com" },
+          "Skrill": { description: "Digital wallet for online payments and money transfers.", link: "https://www.skrill.com" },
+          "Neteller": { description: "Digital wallet for online payments and money transfers.", link: "https://www.neteller.com" },
+          "Zelle": { description: "US-based digital payment network.", link: "https://www.zellepay.com" },
+          "Venmo": { description: "Mobile payment service owned by PayPal.", link: "https://venmo.com" },
+          "Cash App": { description: "Mobile payment service by Square.", link: "https://cash.app" },
+          "Payoneer": { description: "Cross-border payment platform.", link: "https://www.payoneer.com" },
+          "Samsung Pay": { description: "Mobile payment and digital wallet service by Samsung.", link: "https://www.samsung.com/us/samsung-pay" },
+          "Xoom": { description: "PayPal service for sending money internationally.", link: "https://www.xoom.com" },
+          "iDEAL": { description: "Dutch online banking payment system.", link: "https://www.ideal.nl" },
+          "Giropay": { description: "German online payment method.", link: "https://www.giropay.de" },
+          "Sofort": { description: "European online banking transfer system (Klarna).", link: "https://www.klarna.com/sofort" },
+          "Bancontact": { description: "Belgian payment network.", link: "https://www.bancontact.com" },
+          "Przelewy24": { description: "Polish online payment system.", link: "https://www.przelewy24.pl" },
+          "Trustly": { description: "Online banking payment method.", link: "https://www.trustly.com" },
+          "Interac": { description: "Canadian debit card system.", link: "https://www.interac.ca" },
+          "Mollie": { description: "Payment service provider.", link: "https://www.mollie.com" },
+          "Adyen": { description: "Payment service provider.", link: "https://www.adyen.com" },
+          "Worldpay": { description: "Payment processing company.", link: "https://www.worldpay.com" },
+          "2Checkout": { description: "Payment processing platform.", link: "https://www.2checkout.com" },
+          "Authorize.Net": { description: "Payment gateway service provider.", link: "https://www.authorize.net" },
+          "BlueSnap": { description: "Payment processing platform.", link: "https://home.bluesnap.com" },
+          "Braintree": { description: "Payment processing platform (PayPal).", link: "https://www.braintreepayments.com" },
+          "Checkout.com": { description: "Payment processing platform.", link: "https://www.checkout.com" },
+          "Paysafe": { description: "Payment processing company.", link: "https://www.paysafe.com" },
+          "PayU": { description: "Payment service provider.", link: "https://corporate.payu.com" },
+          "Razorpay": { description: "Indian payment gateway.", link: "https://razorpay.com" },
+          "Paytm": { description: "Indian digital wallet and payment platform.", link: "https://paytm.com" },
+          "Mobikwik": { description: "Indian digital wallet.", link: "https://www.mobikwik.com" },
+          "PhonePe": { description: "Indian digital payments platform.", link: "https://www.phonepe.com" },
+          "BillDesk": { description: "Indian online payment gateway.", link: "https://www.billdesk.com" },
+          "Payza": { description: "Online payment platform.", link: "https://www.payza.com" },
+          "Dwolla": { description: "US-based payment network.", link: "https://www.dwolla.com" },
+          "GoCardless": { description: "Direct debit payment processor.", link: "https://gocardless.com" },
+          "Faster Payments": { description: "UK real-time payment system.", link: "https://www.fasterpayments.org.uk" },
+          "ACH Transfer": { description: "US electronic funds transfer system.", link: "https://www.nacha.org" },
+          "Wire Transfer": { description: "Electronic transfer of funds.", link: "https://www.federalreserve.gov/paymentsystems/fedwire_about.htm" },
+          "Cartes Bancaires": {description: "French bank card system for credit and debit card transactions in France.", link: "https://www.cartes-bancaires.com"},
+          "Pay By Bank": {description: "A method that supports direct bank transfers, often through open banking platforms.", link: "https://www.paybybankapp.co.uk/"},
+          "TWINT": {description: "A Swiss mobile payment solution that allows instant payments via smartphones.", link: "https://www.twint.ch/en/"},
+          "Afterpay / Clearpay": {description: "Buy Now, Pay Later service that allows deferred payments at checkout.", link: "https://www.afterpay.com"},
+          "BACS Direct Debit": {description: "UK's direct debit system for automated bank payments.", link: "https://www.bacs.co.uk/"},
+          "SEPA Direct Debit": {description: "Single Euro Payments Area system for direct debits across Europe.", link: "https://www.europeanpaymentscouncil.eu/what-we-do/sepa-payment-schemes/sepa-direct-debit-schemes"},
+          "ACH Direct Debit": {description: "US Automated Clearing House system for direct debit transactions.", link: "https://www.nacha.org"},
+          "Bank Deposit": {description: "Traditional bank deposit method, including in-branch or online transfers.", link: ""},  /* No general link, as it depends on the specific bank */
+          "Naver Pay": {description: "South Korean digital wallet service integrated with Naver's ecosystem.", link: "https://pay.naver.com/about"},
+          "Kakao Pay": {description: "Kakao's South Korean mobile payment and digital wallet service.", link: "https://www.kakaopay.com/"},
+          "Payco": {description: "South Korean payment service offering digital wallet and online payment options.", link: "https://www.payco.com/"},
+          "Link": {description: "A streamlined payment method, often associated with fast checkout experiences.", link: "https://link.co/"},
+          "Revolut Pay": {description: "Revolut's online payment service, known for international banking features.", link: "https://www.revolut.com/revolut-pay/"},
+          "Eps": {description: "Austrian online banking transfer method for secure payments.", link: "https://www.eps-ueberweisung.at/"},
+          "FPX": {description: "Malaysian online banking payment system supporting real-time transfers.", link: "https://www.paynet.my/personal-fpx.html"},
+          "GrabPay": {description: "Grab's Southeast Asian digital wallet and payment service.", link: "https://www.grab.com/my/pay/"},
+          "Boleto": {description: "Brazilian payment voucher system for offline and online payments.", link: "https://www.bcb.gov.br/en/financialstability/paymentarrangements"},  /* Official link to Central Bank of Brazil, which regulates Boleto */
+          "OXXO": {description: "Mexican cash payment option, allowing payment of vouchers at OXXO convenience stores.", link: "https://www.oxxo.com/"},
+          "Multibanco": {description: "Portuguese interbank network supporting various payment methods.", link: "https://www.multibanco.pt/en/"}
+        };
+        setCookie(cookieName, JSON.stringify(payment_methods_info), 365);
+      }
+    }
+
+    function updateCookie() {
+        setCookie(cookieName, JSON.stringify(payment_methods_info), 365);
+        updateCookieDisplay();
+    }
+
+    function updateCookieDisplay() {
+        const cookieValue = getCookie(cookieName);
+        document.getElementById('cookieValue').value = cookieValue || "No cookie found.";
+    }
+
+    function updateFromTextArea() {
+        const textAreaValue = document.getElementById('cookieValue').value;
+        try {
+            payment_methods_info = JSON.parse(textAreaValue);
+            updateCookie();
+            renderTable();
+            updatePaymentMethodCount();
+            alert('Cookie updated successfully!');
+        } catch (error) {
+            console.error("Error parsing JSON from textarea:", error);
+            alert('Invalid JSON.  Please check the format.');
+        }
+    }
+
+    function createTableRow(method, data) {
+      const row = document.createElement('tr');
+      const methodCell = document.createElement('td');
+      const descCell = document.createElement('td');
+      const linkCell = document.createElement('td');
+      linkCell.classList.add('link-cell');
+      const actionsCell = document.createElement('td');
+      actionsCell.classList.add('actions-cell');
+
+      const methodEn = document.createElement('span');
+      methodEn.classList.add('en');
+      methodEn.textContent = getEnglishMethod(method);
+
+      const methodZh = document.createElement('span');
+      methodZh.classList.add('zh', 'hidden');
+      methodZh.textContent = getChineseMethod(method);
+
+      methodCell.appendChild(methodEn);
+      methodCell.appendChild(methodZh);
+
+      const descEn = document.createElement('span');
+      descEn.classList.add('en');
+      descEn.textContent = data.description;
+
+      const descZh = document.createElement('span');
+      descZh.classList.add('zh', 'hidden');
+      descZh.textContent = getChineseDescription(method);
+
+      descCell.appendChild(descEn);
+      descCell.appendChild(descZh);
+
+      if (data.link) {
+        const link = document.createElement('a');
+        link.href = data.link;
+        // Use a safer way to shorten the link, handling potential null/undefined
+        link.textContent = data.link ? data.link.replace(/^https?:\/\/(www\.)?/, '') : '';
+        link.target = "_blank"; // Open in a new tab
+        linkCell.appendChild(link);
+      }
+
+
+      const removeButton = document.createElement('button');
+      removeButton.classList.add('remove-button');
+      removeButton.innerHTML = `<span class="en">Remove</span><span class="zh hidden">移除</span>`;
+      removeButton.onclick = () => removePaymentMethod(method, row);
+      actionsCell.appendChild(removeButton);
+
+      row.appendChild(methodCell);
+      row.appendChild(descCell);
+      row.appendChild(linkCell);
+      row.appendChild(actionsCell);
+      return row;
+    }
+    function getEnglishMethod(method) {
+        const methodParts = method.split(" ");
+        if (methodParts.length > 1 && method.includes("直接借记")) {
+            return methodParts.slice(0, -2).join(" ") + " Direct Debit";
+        } else if (method.includes("支付宝") || method.includes("微信支付")) {
+            return methodParts[0];
+        }
+        return method;
+    }
+
+    function getChineseMethod(method) {
+        const methodParts = method.split(" ");
+        if (methodParts.length > 1 && method.includes("直接借记")) {
+            return method;
+        } else if (method.includes("支付宝")) {
+            return "支付宝";
+        } else if (method.includes("微信支付")) {
+            return "微信支付";
+        }
+        return method;
+    }
+    function getChineseDescription(method) {
+        switch (method) {
+            case "信用卡/银行卡": return "传统的信用卡和借记卡，包括Visa、Mastercard、American Express等。";
+            case "Cartes Bancaires": return "法国银行卡系统，用于法国的信用卡和借记卡交易。";
+            case "Pay By Bank": return "一种支持直接银行转账的方法，通常通过开放银行平台实现。";
+            case "Przelewy24": return "一种流行的波兰在线支付系统，方便银行转账。";
+            case "Sofort": return "一种欧洲在线银行转账系统，现在是 Klarna 服务的一部分。";
+            case "TWINT": return "一种瑞士移动支付解决方案，可通过智能手机进行即时支付。";
+            case "Afterpay / Clearpay": return "“先买后付”服务，允许在结账时延期付款。";
+            case "Klarna": return "一种领先的“先买后付”服务，还提供直接付款选项。";
+            case "BACS 直接借记": return "英国的直接借记系统，用于自动银行付款。";
+            case "SEPA 直接借记": return "单一欧元支付区系统，用于整个欧洲的直接借记。";
+            case "ACH 直接借记": return "美国自动清算所系统，用于直接借记交易。";
+            case "银行存款": return "传统的银行存款方式，包括在分行或在线转账。";
+            case "Naver Pay": return "韩国数字钱包服务，与 Naver 的生态系统集成。";
+            case "Kakao Pay": return "Kakao 的韩国移动支付和数字钱包服务。";
+            case "Samsung Pay": return "三星的移动钱包解决方案，支持 NFC 和 MST 支付。";
+            case "Payco": return "韩国支付服务，提供数字钱包和在线支付选项。";
+            case "Apple Pay": return "Apple 的移动支付和数字钱包服务，与 iOS 设备集成。";
+            case "Google Pay": return "Google 的数字钱包和在线支付系统，适用于 Android 和网络。";
+            case "Link": return "一种简化的支付方式，通常与快速结账体验相关联。";
+            case "PayPal": return "全球公认的在线支付平台，支持各种交易。";
+            case "Revolut Pay": return "Revolut 的在线支付服务，以国际银行功能而闻名。";
+            case "Bancontact": return "比利时支付网络，广泛用于借记卡交易。";
+            case "Eps": return "奥地利在线银行转账方法，用于安全支付。";
+            case "iDEAL": return "一种流行的荷兰在线银行支付系统，方便直接转账。";
+            case "FPX": return "马来西亚在线银行支付系统，支持实时转账。";
+            case "giropay": return "德国在线支付方式，用于安全的银行转账。";
+            case "GrabPay": return "Grab 的东南亚数字钱包和支付服务。";
+            case "Boleto": return "巴西支付凭证系统，用于离线和在线支付。";
+            case "OXXO": return "墨西哥现金支付选项，可在 OXXO 便利店支付凭证。";
+            case "Multibanco": return "葡萄牙银行间网络，支持各种支付方式。";
+            case "Alipay": return "中国领先的数字钱包和在线支付平台。";
+            case "WeChat Pay": return "微信集成的数字钱包和支付服务。";
+            case "Stripe": return "在线业务的支付处理平台。";
+            case "Square": return "支付处理和销售点解决方案。";
+            case "Amazon Pay": return "亚马逊提供的在线支付服务。";
+            case "AliPay": return "中国数字钱包和在线支付平台。";
+            case "WeChat Pay": return "微信集成的数字钱包和支付服务。";
+            case "MasterCard": return "信用卡/借记卡";
+            case "Visa": return "信用卡/借记卡";
+            case "American Express": return "信用卡/借记卡";
+            case "Discover": return "信用卡/借记卡";
+            case "Diners Club": return "信用卡/借记卡";
+            case "UnionPay": return "信用卡/借记卡";
+            case "JCB": return "信用卡/借记卡";
+            case "Sezzle": return "先买后付服务。";
+            case "Skrill": return "用于在线支付和转账的数字钱包。";
+            case "Neteller": return "用于在线支付和转账的数字钱包。";
+            case "Zelle": return "美国数字支付网络。";
+            case "Venmo": return "PayPal 旗下的移动支付服务。";
+            case "Cash App": return "Square 提供的移动支付服务。";
+            case "Payoneer": return "跨境支付平台。";
+            case "Xoom": return "PayPal 的国际汇款服务。";
+            case "Mollie": return "支付服务提供商。";
+            case "Adyen": return "支付服务提供商。";
+            case "Worldpay": return "支付处理公司。";
+            case "2Checkout": return "支付处理平台。";
+            case "Authorize.Net": return "支付网关服务提供商。";
+            case "BlueSnap": return "支付处理平台。";
+            case "Braintree": return "支付处理平台 (PayPal)。";
+            case "Checkout.com": return "支付处理平台。";
+            case "Paysafe": return "支付处理公司。";
+            case "PayU": return "支付服务提供商。";
+            case "Razorpay": return "印度支付网关。";
+            case "Paytm": return "印度数字钱包和支付平台。";
+            case "Mobikwik": return "印度数字钱包。";
+            case "PhonePe": return "印度数字支付平台。";
+            case "BillDesk": return "印度在线支付网关。";
+            case "Payza": return "在线支付平台。";
+            case "Dwolla": return "美国支付网络。";
+            case "GoCardless": return "直接借记支付处理器。";
+            case "Faster Payments": return "英国实时支付系统。";
+            case "ACH Transfer": return "美国电子资金转账系统。";
+            case "Wire Transfer": return "电子资金转账。";
+
+            default: return "";
+        }
+    }
+
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === 'en' ? 'zh' : 'en';
+      const enElements = document.querySelectorAll('.en');
+      const zhElements = document.querySelectorAll('.zh');
+
+      enElements.forEach(el => el.classList.toggle('hidden', currentLanguage === 'zh'));
+      zhElements.forEach(el => el.classList.toggle('hidden', currentLanguage === 'en'));
+      updatePaymentMethodCount();
+    }
+
+    function showAddForm() {
+      document.getElementById('addForm').classList.remove('hidden');
+    }
+    function hideAddForm() {
+      document.getElementById('addForm').classList.add('hidden');
+    }
+
+    function addPaymentMethod() {
+      const newMethodEn = document.getElementById('newMethodEn').value.trim();
+      const newMethodZh = document.getElementById('newMethodZh').value.trim();
+      const newDescriptionEn = document.getElementById('newDescriptionEn').value.trim();
+      const newDescriptionZh = document.getElementById('newDescriptionZh').value.trim();
+      const newLink = document.getElementById('newLink').value.trim();
+
+      if (!newMethodEn || !newMethodZh || !newDescriptionEn) {
+        alert('Please fill in all required fields (English Method, Chinese Method, and English Description).');
+        return;
+      }
+        const combinedMethodName = newMethodZh;  // Use Chinese name as the key
+        payment_methods_info[combinedMethodName] = {
+            description: newDescriptionEn,
+            link: newLink
+        };
+
+      document.getElementById('newMethodEn').value = '';
+      document.getElementById('newMethodZh').value = '';
+      document.getElementById('newDescriptionEn').value = '';
+      document.getElementById('newDescriptionZh').value = '';
+      document.getElementById('newLink').value = '';
+
+      updateCookie();
+      renderTable();
+      hideAddForm();
+    }
+
+    function removePaymentMethod(method, row) {
+        delete payment_methods_info[method];
+        updateCookie();
+        renderTable();
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('paymentTableBody');
+        tbody.innerHTML = '';
+        paymentMethodCount = 0;
+        for (const method in payment_methods_info) {
+            if (payment_methods_info.hasOwnProperty(method)) {
+                tbody.appendChild(createTableRow(method, payment_methods_info[method]));
+                paymentMethodCount++;
+            }
+        }
+        updatePaymentMethodCount();
+    }
+    function updatePaymentMethodCount() {
+        const countElement = document.getElementById('paymentMethodCount');
+        if (currentLanguage === 'en') {
+            countElement.textContent = `Total Payment Methods: ${paymentMethodCount}`;
+        } else {
+            countElement.textContent = `支付方式总数：${paymentMethodCount}`;
+        }
+    }
+
+    loadFromCookie();
+    renderTable();
+    updateCookieDisplay();
+    updatePaymentMethodCount();
+
+  </script>
+</body>
+</html>

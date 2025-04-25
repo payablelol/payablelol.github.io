@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Important for responsiveness -->
+  <title>Stripe Payment Methods / 支付方式</title>
+  <style>
+    /* (Same styles as previous response - well-structured and cross-browser compatible) */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+      margin: 20px;
+      color: #343a40;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2em;
+      border-bottom: 2px solid #343a40;
+      padding-bottom: 10px;
+    }
+    .intro {
+      margin-bottom: 20px;
+      font-size: 1em;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .form-container {
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #dee2e6;
+      text-align: left;
+    }
+    th {
+      background-color: #343a40;
+      color: #fff;
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #f1f1f1;
+    }
+    @media (max-width: 768px) {
+      th, td { padding: 8px 10px; font-size: 0.9em; }
+      h1 { font-size: 1.8em; }
+      .cookie-textarea { font-size: 0.8em; }
+    }
+    .translate-button, .add-button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    .translate-button:hover, .add-button:hover, .remove-button:hover, .cookie-actions button:hover {
+      background-color: #0056b3;
+    }
+    .button-container{
+        text-align: center;
+    }
+    .hidden { display: none; }
+    .remove-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+    .input-group {
+      margin-bottom: 10px;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .input-group input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    #paymentMethodCount {
+        font-weight: bold;
+        margin-top: 10px;
+        text-align: center;
+    }
+    #cookieDisplay {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+    }
+    #cookieDisplay p {
+        margin: 5px 0;
+    }
+    .cookie-actions {
+        margin-top: 5px;
+        text-align: center;
+    }
+    .cookie-actions button {
+        margin: 5px;
+        padding: 8px 12px;
+        font-size: 0.9em;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #28a745;
+        color: white;
+    }
+    .cookie-textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .category-header {
+      font-weight: bold;
+      background-color: #ddd;
+      padding: 8px 12px;
+      border: 1px solid #bbb;
+      margin-top: 15px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><span class="en">Stripe Payment Methods</span><span class="zh hidden">支付方式</span></h1>
+    <div class="button-container">
+        <button class="translate-button" onclick="toggleLanguage()">Translate / 翻译</button>
+        <button class="add-button" onclick="showAddForm()"><span class="en">Add Payment Method</span><span class="zh hidden">添加支付方式</span></button>
+    </div>
+
+    <div class="intro">
+      <p>
+        <span class="en">Manage the list of payment methods accepted.</span>
+        <span class="zh hidden">管理可接受的支付方式列表。</span>
+      </p>
+    </div>
+
+    <div id="addForm" class="form-container hidden">
+      <h2><span class="en">Add New Payment Method</span><span class="zh hidden">添加新的支付方式</span></h2>
+      <div class="input-group">
+        <label for="newMethodEn"><span class="en">Payment Method (English)</span><span class="zh hidden">支付方式 (英文)</span>:</label>
+        <input type="text" id="newMethodEn">
+      </div>
+      <div class="input-group">
+        <label for="newMethodZh"><span class="en">Payment Method (Chinese)</span><span class="zh hidden">支付方式 (中文)</span>:</label>
+        <input type="text" id="newMethodZh">
+      </div>
+      <div class="input-group">
+        <label for="newDescriptionEn"><span class="en">Description (English)</span><span class="zh hidden">描述 (英文)</span>:</label>
+        <input type="text" id="newDescriptionEn">
+      </div>
+      <div class="input-group">
+        <label for="newDescriptionZh"><span class="en">Description (Chinese)</span><span class="zh hidden">描述 (中文)</span>:</label>
+        <input type="text" id="newDescriptionZh">
+      </div>
+      <div class="input-group">
+          <label for="newCategory"><span class="en">Category</span><span class="zh hidden">类别</span>:</label>
+          <select id="newCategory">
+              <option value="credit_card">Credit Card</option>
+              <option value="debit_card">Debit Card</option>
+              <option value="non_bank">Non-Bank</option>
+          </select>
+      </div>
+      <button class="add-button" onclick="addPaymentMethod()">
+        <span class="en">Add</span><span class="zh hidden">添加</span>
+      </button>
+       <button class="translate-button" onclick="hideAddForm()">
+        <span class="en">Cancel</span><span class="zh hidden">取消</span>
+      </button>
+    </div>
+
+    <div class="form-container">
+      <div id="creditCardMethods" class="payment-category">
+          <h2 class = "category-header"><span class="en">Credit Card Methods</span><span class="zh hidden">信用卡支付方式</span></h2>
+          <table>
+              <thead>
+                  <tr>
+                      <th><span class="en">Payment Method</span><span class="zh hidden">支付方式</span></th>
+                      <th><span class="en">Description</span><span class="zh hidden">描述</span></th>
+                      <th><span class="en">Actions</span><span class="zh hidden">操作</span></th>
+                  </tr>
+              </thead>
+              <tbody id="creditCardTableBody"></tbody>
+          </table>
+      </div>
+
+      <div id="debitCardMethods" class="payment-category">
+          <h2 class = "category-header"><span class="en">Debit Card Methods</span><span class="zh hidden">借记卡支付方式</span></h2>
+          <table>
+              <thead>
+                  <tr>
+                      <th><span class="en">Payment Method</span><span class="zh hidden">支付方式</span></th>
+                      <th><span class="en">Description</span><span class="zh hidden">描述</span></th>
+                      <th><span class="en">Actions</span><span class="zh hidden">操作</span></th>
+                  </tr>
+              </thead>
+              <tbody id="debitCardTableBody"></tbody>
+          </table>
+      </div>
+
+      <div id="nonBankMethods" class="payment-category">
+          <h2 class = "category-header"><span class="en">Non-Bank Methods</span><span class="zh hidden">非银行卡支付方式</span></h2>
+          <table>
+              <thead>
+                  <tr>
+                      <th><span class="en">Payment Method</span><span class="zh hidden">支付方式</span></th>
+                      <th><span class="en">Description</span><span class="zh hidden">描述</span></th>
+                      <th><span class="en">Actions</span><span class="zh hidden">操作</span></th>
+                  </tr>
+              </thead>
+              <tbody id="nonBankTableBody"></tbody>
+          </table>
+      </div>
+      <div id="paymentMethodCount"></div>
+    </div>
+
+    <div id="cookieDisplay" class="form-container">
+        <h3><span class="en">Cookie Information</span><span class="zh hidden">Cookie 信息</span></h3>
+        <textarea id="cookieValue" class="cookie-textarea"></textarea>
+        <div class="cookie-actions">
+            <button onclick="updateFromTextArea()"><span class="en">Update from Text</span><span class="zh hidden">从文本更新</span></button>
+            <button onclick="clearCookie()"><span class="en">Clear Cookie</span><span class="zh hidden">清除 Cookie</span></button>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    let payment_methods_info = {};
+    let currentLanguage = 'en';
+    let paymentMethodCount = 0;
+    const cookieName = "stripperPaymentMethods";
+
+    function setCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      // Use encodeURIComponent and decodeURIComponent for proper cookie handling
+      document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=/`;
+    }
+
+    function getCookie(name) {
+      const nameEQ = name + "=";
+      const ca = document.cookie.split(';');
+      for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) {
+          // Use decodeURIComponent to get the original value
+          return decodeURIComponent(c.substring(nameEQ.length, c.length));
+        }
+      }
+      return null;
+    }
+
+    function clearCookie() {
+        setCookie(cookieName, "", -1);
+        payment_methods_info = {};
+        renderTables();
+        updateCookieDisplay();
+        updatePaymentMethodCount();
+    }
+
+   function loadFromCookie() {
+      const cookieValue = getCookie(cookieName);
+      if (cookieValue) {
+        try {
+          payment_methods_info = JSON.parse(cookieValue);
+        } catch (error) {
+          console.error("Error parsing cookie:", error);
+          clearCookie();
+        }
+      } else {
+        payment_methods_info = {
+          credit_card: {
+            "信用卡/银行卡": "Traditional credit and debit cards including Visa, Mastercard, American Express, etc.",
+          },
+          debit_card: {
+            "Cartes Bancaires": "A French banking card system used for credit and debit transactions in France.",
+            "BACS 直接借记": "UK's direct debit system for automated bank payments.",
+            "SEPA 直接借记": "The Single Euro Payments Area system for direct debits across Europe.",
+            "ACH 直接借记": "Automated Clearing House system for direct debit transactions in the USA.",
+          },
+          non_bank: {
+            "Pay By Bank": "A method enabling direct bank transfers, often via open banking platforms.",
+            "Przelewy24": "A popular Polish online payment system facilitating bank transfers.",
+            "Sofort": "A European online banking transfer system, now part of Klarna's services.",
+            "TWINT": "A Swiss mobile payment solution for instant payments via smartphones.",
+            "Afterpay / Clearpay": "Buy Now, Pay Later service allowing deferred payments at checkout.",
+            "Klarna": "A leading Buy Now, Pay Later service that also offers direct payment options.",
+            "银行存款": "Traditional bank deposit method, including in-branch or online transfers.",
+            "Naver Pay": "A South Korean digital wallet service integrated with Naver's ecosystem.",
+            "Kakao Pay": "A South Korean mobile payment and digital wallet service by Kakao.",
+            "Samsung Pay": "Samsung's mobile wallet solution supporting both NFC and MST payments.",
+            "Payco": "A South Korean payment service offering digital wallet and online payment options.",
+            "Apple Pay": "Apple's mobile payment and digital wallet service integrated with iOS devices.",
+            "Google Pay": "Google's digital wallet and online payment system for Android and web.",
+            "Link": "A streamlined payment method, often associated with quick checkout experiences.",
+            "PayPal": "A globally recognized online payment platform supporting various transactions.",
+            "Revolut Pay": "An online payment service from Revolut, known for international banking features.",
+            "Bancontact": "A Belgian payment network widely used for debit card transactions.",
+            "Eps": "An Austrian online banking transfer method used for secure payments.",
+            "iDEAL": "A popular Dutch online banking payment system facilitating direct transfers.",
+            "FPX": "A Malaysian online banking payment system enabling real-time transfers.",
+            "giropay": "A German online payment method for secure bank transfers.",
+            "GrabPay": "A Southeast Asian digital wallet and payment service by Grab.",
+            "Boleto": "A Brazilian payment voucher system used for offline and online payments.",
+            "OXXO": "A Mexican cash payment option where vouchers are paid at OXXO stores.",
+            "Multibanco": "A Portuguese interbank network supporting various payment methods.",
+            "Alipay": "A leading Chinese digital wallet and online payment platform (支付宝).",
+            "WeChat Pay": "WeChat's integrated digital wallet and payment service (微信支付)."
+          }
+        };
+        setCookie(cookieName, JSON.stringify(payment_methods_info), 365);
+      }
+    }
+
+    function updateCookie() {
+        setCookie(cookieName, JSON.stringify(payment_methods_info), 365);
+        updateCookieDisplay();
+    }
+
+    function updateCookieDisplay() {
+        const cookieValue = getCookie(cookieName);
+        document.getElementById('cookieValue').value = cookieValue || "No cookie found.";
+    }
+
+    function updateFromTextArea() {
+        const textAreaValue = document.getElementById('cookieValue').value;
+        try {
+            payment_methods_info = JSON.parse(textAreaValue);
+            updateCookie();
+            renderTables();
+            updatePaymentMethodCount();
+            alert('Cookie updated successfully!');
+        } catch (error) {
+            console.error("Error parsing JSON from textarea:", error);
+            alert('Invalid JSON.  Please check the format.');
+        }
+    }
+
+    function createTableRow(method, description, category) {
+      const row = document.createElement('tr');
+      const methodCell = document.createElement('td');
+      const descCell = document.createElement('td');
+      const actionsCell = document.createElement('td');
+
+      const methodEn = document.createElement('span');
+      methodEn.classList.add('en');
+      methodEn.textContent = getEnglishMethod(method);
+
+      const methodZh = document.createElement('span');
+      methodZh.classList.add('zh', 'hidden');
+      methodZh.textContent = getChineseMethod(method);
+
+      methodCell.appendChild(methodEn);
+      methodCell.appendChild(methodZh);
+
+      const descEn = document.createElement('span');
+      descEn.classList.add('en');
+      descEn.textContent = description;
+
+      const descZh = document.createElement('span');
+      descZh.classList.add('zh', 'hidden');
+      descZh.textContent = getChineseDescription(method);
+
+      descCell.appendChild(descEn);
+      descCell.appendChild(descZh);
+
+      const removeButton = document.createElement('button');
+      removeButton.classList.add('remove-button');
+      removeButton.innerHTML = `<span class="en">Remove</span><span class="zh hidden">移除</span>`;
+      removeButton.onclick = () => removePaymentMethod(method, row, category);
+      actionsCell.appendChild(removeButton);
+
+      row.appendChild(methodCell);
+      row.appendChild(descCell);
+      row.appendChild(actionsCell);
+      return row;
+    }
+    function getEnglishMethod(method) {
+        const methodParts = method.split(" ");
+        if (methodParts.length > 1 && method.includes("直接借记")) {
+            return methodParts.slice(0, -2).join(" ") + " Direct Debit";
+        } else if (method.includes("支付宝") || method.includes("微信支付")) {
+            return methodParts[0];
+        }
+        return method;
+    }
+
+    function getChineseMethod(method) {
+        const methodParts = method.split(" ");
+        if (methodParts.length > 1 && method.includes("直接借记")) {
+            return method;
+        } else if (method.includes("支付宝")) {
+            return "支付宝";
+        } else if (method.includes("微信支付")) {
+            return "微信支付";
+        }
+        return method;
+    }
+    function getChineseDescription(method) {
+        switch (method) {
+            case "信用卡/银行卡": return "传统的信用卡和借记卡，包括Visa、Mastercard、American Express等。";
+            case "Cartes Bancaires": return "法国银行卡系统，用于法国的信用卡和借记卡交易。";
+            case "Pay By Bank": return "一种支持直接银行转账的方法，通常通过开放银行平台实现。";
+            case "Przelewy24": return "一种流行的波兰在线支付系统，方便银行转账。";
+            case "Sofort": return "一种欧洲在线银行转账系统，现在是 Klarna 服务的一部分。";
+            case "TWINT": return "一种瑞士移动支付解决方案，可通过智能手机进行即时支付。";
+            case "Afterpay / Clearpay": return "“先买后付”服务，允许在结账时延期付款。";
+            case "Klarna": return "一种领先的“先买后付”服务，还提供直接付款选项。";
+            case "BACS 直接借记": return "英国的直接借记系统，用于自动银行付款。";
+            case "SEPA 直接借记": return "单一欧元支付区系统，用于整个欧洲的直接借记。";
+            case "ACH 直接借记": return "美国自动清算所系统，用于直接借记交易。";
+            case "银行存款": return "传统的银行存款方式，包括在分行或在线转账。";
+            case "Naver Pay": return "韩国数字钱包服务，与 Naver 的生态系统集成。";
+            case "Kakao Pay": return "Kakao 的韩国移动支付和数字钱包服务。";
+            case "Samsung Pay": return "三星的移动钱包解决方案，支持 NFC 和 MST 支付。";
+            case "Payco": return "韩国支付服务，提供数字钱包和在线支付选项。";
+            case "Apple Pay": return "Apple 的移动支付和数字钱包服务，与 iOS 设备集成。";
+            case "Google Pay": return "Google 的数字钱包和在线支付系统，适用于 Android 和网络。";
+            case "Link": return "一种简化的支付方式，通常与快速结账体验相关联。";
+            case "PayPal": return "全球公认的在线支付平台，支持各种交易。";
+            case "Revolut Pay": return "Revolut 的在线支付服务，以国际银行功能而闻名。";
+            case "Bancontact": return "比利时支付网络，广泛用于借记卡交易。";
+            case "Eps": return "奥地利在线银行转账方法，用于安全支付。";
+            case "iDEAL": return "一种流行的荷兰在线银行支付系统，方便直接转账。";
+            case "FPX": return "马来西亚在线银行支付系统，支持实时转账。";
+            case "giropay": return "德国在线支付方式，用于安全的银行转账。";
+            case "GrabPay": return "Grab 的东南亚数字钱包和支付服务。";
+            case "Boleto": return "巴西支付凭证系统，用于离线和在线支付。";
+            case "OXXO": return "墨西哥现金支付选项，可在 OXXO 便利店支付凭证。";
+            case "Multibanco": return "葡萄牙银行间网络，支持各种支付方式。";
+            case "Alipay": return "中国领先的数字钱包和在线支付平台。";
+            case "WeChat Pay": return "微信集成的数字钱包和支付服务。";
+            default: return "";
+        }
+    }
+
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === 'en' ? 'zh' : 'en';
+      const enElements = document.querySelectorAll('.en');
+      const zhElements = document.querySelectorAll('.zh');
+
+      enElements.forEach(el => el.classList.toggle('hidden', currentLanguage === 'zh'));
+      zhElements.forEach(el => el.classList.toggle('hidden', currentLanguage === 'en'));
+      updatePaymentMethodCount();
+    }
+
+    function showAddForm() {
+      document.getElementById('addForm').classList.remove('hidden');
+    }
+    function hideAddForm() {
+      document.getElementById('addForm').classList.add('hidden');
+    }
+
+    function addPaymentMethod() {
+        const newMethodEn = document.getElementById('newMethodEn').value.trim();
+        const newMethodZh = document.getElementById('newMethodZh').value.trim();
+        const newDescriptionEn = document.getElementById('newDescriptionEn').value.trim();
+        const newDescriptionZh = document.getElementById('newDescriptionZh').value.trim();
+        const newCategory = document.getElementById('newCategory').value;
+
+        if (!newMethodEn || !newMethodZh || !newDescriptionEn) {
+            alert('Please fill in all required fields (English Method, Chinese Method, and English Description).');
+            return;
+        }
+
+        if (!payment_methods_info[newCategory]) {
+            payment_methods_info[newCategory] = {};
+        }
+        payment_methods_info[newCategory][newMethodZh] = newDescriptionEn;
+
+        document.getElementById('newMethodEn').value = '';
+        document.getElementById('newMethodZh').value = '';
+        document.getElementById('newDescriptionEn').value = '';
+        document.getElementById('newDescriptionZh').value = '';
+
+        updateCookie();
+        renderTables();
+        hideAddForm();
+    }
+
+
+    function removePaymentMethod(method, row, category) {
+        delete payment_methods_info[category][method];
+        updateCookie();
+        renderTables();
+    }
+
+    function renderTables() {
+        const creditCardTbody = document.getElementById('creditCardTableBody');
+        const debitCardTbody = document.getElementById('debitCardTableBody');
+        const nonBankTbody = document.getElementById('nonBankTableBody');
+
+        creditCardTbody.innerHTML = '';
+        debitCardTbody.innerHTML = '';
+        nonBankTbody.innerHTML = '';
+        paymentMethodCount = 0;
+
+        for (const category in payment_methods_info) {
+            if (payment_methods_info.hasOwnProperty(category)) {
+                const categoryData = payment_methods_info[category];
+                for (const method in categoryData) {
+                    if (categoryData.hasOwnProperty(method)) {
+                        const description = categoryData[method];
+                        let tbody;
+                        if (category === 'credit_card') {
+                            tbody = creditCardTbody;
+                        } else if (category === 'debit_card') {
+                            tbody = debitCardTbody;
+                        } else if (category === 'non_bank') {
+                            tbody = nonBankTbody;
+                        }
+
+                        if (tbody) {
+                            tbody.appendChild(createTableRow(method, description, category));
+                            paymentMethodCount++;
+                        }
+                    }
+                }
+            }
+        }
+        updatePaymentMethodCount();
+    }
+
+
+    function updatePaymentMethodCount() {
+        const countElement = document.getElementById('paymentMethodCount');
+        if (currentLanguage === 'en') {
+            countElement.textContent = `Total Payment Methods: ${paymentMethodCount}`;
+        } else {
+            countElement.textContent = `支付方式总数：${paymentMethodCount}`;
+        }
+    }
+
+    loadFromCookie();
+    renderTables();
+    updateCookieDisplay();
+    updatePaymentMethodCount();
+  </script>
+</body>
+</html>
