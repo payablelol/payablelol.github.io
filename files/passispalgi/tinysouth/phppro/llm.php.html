@@ -1,0 +1,127 @@
+<?php
+
+$llm_websites = [
+    // USA
+    ['name'=>'OpenAI (ChatGPT)','url'=>'https://chatgpt.com/','country'=>'USA'],
+    ['name'=>'Google Gemini (formerly Bard)','url'=>'https://gemini.google.com/','country'=>'USA'],
+    ['name'=>'Anthropic (Claude)','url'=>'https://claude.ai/','country'=>'USA'],
+    ['name'=>'Microsoft Copilot (integrates OpenAI models)','url'=>'https://copilot.microsoft.com/','country'=>'USA'],
+    ['name'=>'Meta AI (Llama models)','url'=>'https://www.meta.ai/','country'=>'USA'],
+    ['name'=>'Perplexity AI','url'=>'https://www.perplexity.ai/','country'=>'USA'],
+    ['name'=>'Amazon Bedrock','url'=>'https://aws.amazon.com/bedrock/','country'=>'USA'],
+    ['name'=>'Groq','url'=>'https://groq.com/','country'=>'USA'],
+    ['name'=>'Together AI','url'=>'https://www.together.ai/','country'=>'USA'],
+    ['name'=>'Character.ai','url'=>'https://character.ai/','country'=>'USA'],
+    ['name'=>'Poe by Quora','url'=>'https://poe.com/','country'=>'USA'],
+    ['name'=>'Replicate','url'=>'https://replicate.com/','country'=>'USA'],
+    ['name'=>'Inflection AI (Pi)','url'=>'https://pi.ai/','country'=>'USA'],
+    ['name'=>'NVIDIA AI Platform (NeMo)','url'=>'https://www.nvidia.com/en-us/ai-data-science/','country'=>'USA'],
+    ['name'=>'IBM Watsonx','url'=>'https://www.ibm.com/watsonx','country'=>'USA'],
+    ['name'=>'Databricks AI (MosaicML / DBRX)','url'=>'https://www.databricks.com/product/machine-learning','country'=>'USA'],
+    ['name'=>'Snowflake AI (Arctic)','url'=>'https://www.snowflake.com/en/data-cloud/arctic/','country'=>'USA'],
+    ['name'=>'Salesforce Einstein AI','url'=>'https://www.salesforce.com/products/einstein/overview/','country'=>'USA'],
+    ['name'=>'LangChain','url'=>'https://www.langchain.com/','country'=>'USA'],
+    ['name'=>'LlamaIndex','url'=>'https://www.llamaindex.ai/','country'=>'USA'],
+    ['name'=>'Weights & Biases (W&B)','url'=>'https://wandb.ai/','country'=>'USA'],
+    ['name'=>'Pinecone','url'=>'https://www.pinecone.io/','country'=>'USA'],
+    ['name'=>'Chroma','url'=>'https://www.trychroma.com/','country'=>'USA'],
+    ['name'=>'EleutherAI','url'=>'https://www.eleuther.ai/','country'=>'USA'],
+    ['name'=>'Google Cloud Vertex AI','url'=>'https://cloud.google.com/vertex-ai','country'=>'USA'],
+    ['name'=>'Azure Machine Learning','url'=>'https://azure.microsoft.com/en-us/products/machine-learning','country'=>'USA'],
+    ['name'=>'RunwayML','url'=>'https://runwayml.com/','country'=>'USA'],
+    ['name'=>'GitHub Copilot','url'=>'https://github.com/features/copilot','country'=>'USA'],
+    ['name'=>'Notion AI','url'=>'https://www.notion.so/product/ai','country'=>'USA'],
+    ['name'=>'Cerebras Systems','url'=>'https://www.cerebras.net/','country'=>'USA'],
+    ['name'=>'OpenRouter','url'=>'https://openrouter.ai/','country'=>'USA'],
+    ['name'=>'Anyscale (Ray)','url'=>'https://www.anyscale.com/','country'=>'USA'],
+    ['name'=>'Gradio','url'=>'https://gradio.app/','country'=>'USA'],
+    ['name'=>'Forefront AI','url'=>'https://forefront.ai/','country'=>'USA'],
+    ['name'=>'Jan AI','url'=>'https://jan.ai/','country'=>'USA'],
+    ['name'=>'Phind','url'=>'https://www.phind.com/','country'=>'USA'],
+    ['name'=>'You.com','url'=>'https://you.com/','country'=>'USA'],
+    ['name'=>'ChatPDF','url'=>'https://www.chatpdf.com/','country'=>'USA'],
+    ['name'=>'Aider','url'=>'https://aider.chat/','country'=>'USA'],
+    ['name'=>'AI Dungeon','url'=>'https://play.aidungeon.io/','country'=>'USA'],
+    ['name'=>'Blackbox AI','url'=>'https://www.blackbox.ai/','country'=>'USA'],
+    ['name'=>'Reka AI','url'=>'https://reka.ai/','country'=>'USA'],
+    ['name'=>'Magic AI','url'=>'https://magic.dev/','country'=>'USA'],
+    ['name'=>'Lamini','url'=>'https://lamini.ai/','country'=>'USA'],
+    ['name'=>'AdaptLLM','url'=>'https://www.adaptllm.com/','country'=>'USA'],
+    ['name'=>'Quora AI','url'=>'https://quora.com/ai','country'=>'USA'],
+    ['name'=>'Vicuna','url'=>'https://vicuna.lmsys.org/','country'=>'USA'],
+    ['name'=>'PromptLayer','url'=>'https://promptlayer.com/','country'=>'USA'],
+    ['name'=>'PromptHero','url'=>'https://prompthero.com/','country'=>'USA'],
+    ['name'=>'Promptist','url'=>'https://promptist.ai/','country'=>'USA'],
+    ['name'=>'xAI (Grok by Elon Musk)','url'=>'https://grok.x.ai/','country'=>'USA'],
+
+    // China
+    ['name'=>'百度 文心一言 (ERNIE Bot)','url'=>'https://yiyan.baidu.com/','country'=>'China'],
+    ['name'=>'阿里巴巴 通义千问 (Tongyi Qianwen)','url'=>'https://tongyi.aliyun.com/','country'=>'China'],
+    ['name'=>'智谱AI 清言 (ChatGLM)','url'=>'https://chatglm.cn/','country'=>'China'],
+    ['name'=>'月之暗面 Kimi Chat (Moonshot AI)','url'=>'https://kimi.ai/','country'=>'China'],
+    ['name'=>'讯飞星火认知大模型 (iFlytek SparkDesk)','url'=>'https://xinghuo.xfyun.cn/','country'=>'China'],
+    ['name'=>'腾讯混元助手 (Tencent Hunyuan)','url'=>'https://hunyuan.tencent.com/','country'=>'China'],
+    ['name'=>'商汤科技 日日新·商量 (SenseTime SenseChat)','url'=>'https://chat.sensetime.com/','country'=>'China'],
+    ['name'=>'百川智能 (Baichuan AI)','url'=>'https://www.baichuan-ai.com/','country'=>'China'],
+    ['name'=>'MiniMax 海螺AI (Heluo AI)','url'=>'https://hailuoai.com/','country'=>'China'],
+    ['name'=>'零一万物 (01.AI)','url'=>'https://01.ai/','country'=>'China'],
+    ['name'=>'华为云 盘古大模型 (Huawei Cloud Pangu)','url'=>'https://www.huaweicloud.com/product/pangu-models.html','country'=>'China'],
+    ['name'=>'京东科技 言犀 (JD Cloud ChatRhino)','url'=>'https://www.jdcloud.com/cn/products/lingxi','country'=>'China'],
+    ['name'=>'360智脑','url'=>'https://ai.360.com/','country'=>'China'],
+    ['name'=>'网易有道 子曰 (NetEase Youdao ZiYue)','url'=>'https://ziyue.youdao.com/','country'=>'China'],
+    ['name'=>'Milvus','url'=>'https://milvus.io/','country'=>'China'],
+    ['name'=>'WPS AI','url'=>'https://ai.wps.cn/','country'=>'China'],
+    ['name'=>'第四范式 (Fourth Paradigm)','url'=>'https://www.4paradigm.com/','country'=>'China'],
+    ['name'=>'美团 AI (Meituan)','url'=>'https://about.meituan.com/research','country'=>'China'],
+    ['name'=>'ModelScope (魔搭)','url'=>'https://modelscope.cn/','country'=>'China'],
+    ['name'=>'BaobaoGPT','url'=>'https://baobaogpt.com/','country'=>'China'],
+    ['name'=>'DeepSeek','url'=>'https://www.deepseek.com/','country'=>'China'],
+    ['name'=>'Yi (01.AI)','url'=>'https://01.ai/yi','country'=>'China'],
+    ['name'=>'Moonshot AI','url'=>'https://www.moonshot-ai.com/','country'=>'China'],
+    ['name'=>'Zhipu AI','url'=>'https://www.zhipuai.cn/','country'=>'China'],
+    ['name'=>'Kimi','url'=>'https://kimi.moonshot.cn/','country'=>'China'],
+    ['name'=>'TigerBot','url'=>'https://www.tigerbot.com/','country'=>'China'],
+    ['name'=>'InternLM','url'=>'https://intern.ai/','country'=>'China'],
+    ['name'=>'SparkDesk','url'=>'https://xinghuo.xfyun.cn/','country'=>'China'],
+    ['name'=>'Fuyu','url'=>'https://fuyu.ai/','country'=>'China'],
+    ['name'=>'GLM-4','url'=>'https://chatglm.cn/','country'=>'China'],
+    ['name'=>'SenseNova','url'=>'https://sense-nova.com/','country'=>'China'],
+    ['name'=>'Skywork AI','url'=>'https://skyworkai.com/','country'=>'China'],
+    ['name'=>'MiniCPM','url'=>'https://minicpm.com/','country'=>'China'],
+
+    // France
+    ['name'=>'Mistral AI','url'=>'https://mistral.ai/','country'=>'France'],
+    ['name'=>'Hugging Face','url'=>'https://huggingface.co/','country'=>'France'],
+    ['name'=>'LightOn AI','url'=>'https://lighton.ai/','country'=>'France'],
+
+    // Canada
+    ['name'=>'Cohere','url'=>'https://cohere.com/','country'=>'Canada'],
+
+    // Israel
+    ['name'=>'AI21 Labs (Jurassic)','url'=>'https://www.ai21.com/','country'=>'Israel'],
+    ['name'=>'Tabnine','url'=>'https://www.tabnine.com/','country'=>'Israel'],
+
+    // UK
+    ['name'=>'Stability AI','url'=>'https://stability.ai/','country'=>'UK'],
+    ['name'=>'DeepMind (now Google DeepMind)','url'=>'https://deepmind.google/','country'=>'UK'],
+    ['name'=>'PromptBase','url'=>'https://promptbase.com/','country'=>'UK'],
+
+    // Netherlands
+    ['name'=>'Weaviate','url'=>'https://weaviate.io/','country'=>'Netherlands'],
+
+    // Germany
+    ['name'=>'LAION','url'=>'https://laion.ai/','country'=>'Germany'],
+    ['name'=>'Aleph Alpha','url'=>'https://www.aleph-alpha.com/','country'=>'Germany'],
+    ['name'=>'PromptPerfect','url'=>'https://promptperfect.jina.ai/','country'=>'Germany'],
+
+    // Japan
+    ['name'=>'Sakana AI','url'=>'https://sakana.ai/','country'=>'Japan'],
+
+    // International
+    ['name'=>'BigScience (BLOOM)','url'=>'https://bigscience.huggingface.co/','country'=>'International'],
+    ['name'=>'OpenAssistant','url'=>'https://open-assistant.io/','country'=>'International'],
+    ['name'=>'KoboldAI','url'=>'https://koboldai.net/','country'=>'International'],
+    ['name'=>'OpenChat','url'=>'https://openchat.team/','country'=>'International'],
+    ['name'=>'Mina','url'=>'https://mina.chat/','country'=>'International']
+];
+?>
