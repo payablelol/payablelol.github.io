@@ -1,1 +1,20 @@
-
+{
+    "name": "payablelol/gh-pages-php-deploy", 
+    "description": "A PHP project deployed to GitHub Pages.",
+    "type": "project", 
+    "license": "proprietary",
+    "require": {
+        "vlucas/phpdotenv": "^5.5.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php -S 0.0.0.0:8000" ,
+            "php -S [::]:8001"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+}
