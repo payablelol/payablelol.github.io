@@ -7,7 +7,7 @@
  */
 include 'Telegram.php';
 
-$bot_token = 'bot_token';
+$bot_token = '7625094076:AAFzPQCV1l0wiMRiUlho0ushQdmE0Xr2SAY';
 $telegram = new Telegram($bot_token);
 
 // Get all the new updates and set the new correct update_id
