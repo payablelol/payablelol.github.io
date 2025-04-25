@@ -117,8 +117,12 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: Run update.php script
-        run: php branch/tg/update.php
+      - name: Run update.php in background and keep job alive
+        run: |
+          nohup php branch/tg/update.php >update.log 2>&1 &
+          echo $! > update-php.pid
+          disown
+          tail -f /dev/null
 
       - name: Deploy to GitHub Pages
         id: deployment
