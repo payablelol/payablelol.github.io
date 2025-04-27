@@ -7,7 +7,7 @@
  */
 include 'Telegram.php';
 
-$bot_token = '91552';
+$bot_token = '7625094076:AAFzPQCV1l0wiMRiUlho0ushQdmE0Xr2SAY';
 $telegram = new Telegram($bot_token);
 
 $last_update_id = 0;
