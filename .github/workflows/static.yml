@@ -35,6 +35,7 @@ jobs:
           # 如果运行器没有公网 IPv6 或无法连接，这步可能会失败或返回空
           curl -6s https://api64.ipify.org || echo "No Public IPv6 configured for this runner or failed to get it from api64.ipify.org" # <--- 修改后的 URL
           echo "---------------------------------------------"
+          echo ${{ steps.deployment.outputs.page_url }}
 
       - name: Display Local IP Addresses (显示本地 IP 地址)
         run: |
