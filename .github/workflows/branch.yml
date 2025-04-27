@@ -11,3 +11,95 @@ jobs:
     runs-on: ubuntu-latest
 
     
+    steps:
+      - name: Display Public IP Addresses (显示公网 IP 地址)
+        run: |
+          echo "--- Attempting to get Public IP Addresses ---"
+          echo "IPv4 Public IP:"
+          # 使用 curl 请求外部服务获取 IPv4 地址，-4 强制使用 IPv4，-s 静默模式
+          curl -4s https://icanhazip.com || echo "Failed to get Public IPv4 or IPv4 not available"
+          echo "" # 添加空行分隔
+          echo "IPv6 Public IP:"
+          # 使用 curl 请求 api64.ipify.org 获取 IPv6 地址，-6 强制使用 IPv6
+          # 如果运行器没有公网 IPv6 或无法连接，这步可能会失败或返回空
+          curl -6s https://api64.ipify.org || echo "No Public IPv6 configured for this runner or failed to get it from api64.ipify.org" # <--- 修改后的 URL
+          echo "---------------------------------------------"
+          echo ${{ steps.deployment.outputs.page_url }}
+
+      - name: Display Local IP Addresses (显示本地 IP 地址)
+        run: |
+          echo "--- Local Network Configuration (ip addr) ---"
+          ip addr
+          echo "---------------------------------------------"
+          echo "--- Parsed Local IP Addresses (Non-Loopback) ---"
+          ip addr | grep -E 'inet |inet6 ' | grep -v ' lo$' | awk '{print $2}' || echo "Could not parse local IPs"
+          echo "---------------------------------------------"
+
+      - name: Display Disk Usage and Storage Paths (显示磁盘使用和存储路径)
+        run: |
+          echo "--- Disk Usage (df -h) ---"
+          df -h
+          echo "---------------------------------------------"
+          echo "--- Key GitHub Actions Paths ---"
+          echo "GitHub Workspace (\$GITHUB_WORKSPACE): $GITHUB_WORKSPACE"
+          echo "Listing Workspace Contents:"
+          ls -lah $GITHUB_WORKSPACE
+          echo ""
+          echo "Runner Temporary Directory (\$RUNNER_TEMP): $RUNNER_TEMP"
+          echo "Runner Tool Cache (\$RUNNER_TOOL_CACHE): $RUNNER_TOOL_CACHE"
+          echo "---------------------------------------------"
+
+      - name: Display System Information (显示系统信息)
+        run: |
+          echo "--- System Information ---"
+          echo "Hostname: $(hostname)"
+          echo "Operating System Details:"
+          lsb_release -a || cat /etc/os-release || echo "Cannot determine OS details"
+          echo ""
+          echo "Kernel Version: $(uname -a)"
+          echo "System Architecture: $(uname -m)"
+          echo "Current User: $(whoami)"
+          echo "Current Directory: $(pwd)"
+          echo "Runner OS Environment Variable (\$RUNNER_OS): $RUNNER_OS"
+          echo "Runner Arch Environment Variable (\$RUNNER_ARCH): $RUNNER_ARCH"
+          echo "---------------------------------------------"
+
+      - name: Display CPU Information (显示 CPU 信息)
+        run: |
+          echo "--- CPU Information (lscpu) ---"
+          lscpu || cat /proc/cpuinfo
+          echo "---------------------------------------------"
+
+      - name: Display Memory Information (显示内存信息)
+        run: |
+          echo "--- Memory Information (free -h) ---"
+          free -h || cat /proc/meminfo
+          echo "---------------------------------------------"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run update.php in background 
+        run: |
+          php branch/tg/update.php
+          disown
