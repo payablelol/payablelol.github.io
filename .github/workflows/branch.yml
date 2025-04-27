@@ -1,1 +1,13 @@
+name: Daily push
 
+on:
+  push:
+  schedule:
+    - cron: '30 22 * * *'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    
