@@ -1,0 +1,94 @@
+name: Deploy PHP and Static Content to Pages
+
+          echo "---------------------------------------------"
+          echo ${{ steps.deployment.outputs.page_url }}
+
+
+      - name: Display Local IP Addresses (显示本地 IP 地址)
+        run: |
+          echo "--- Local Network Configuration (ip addr) ---"
+          ip addr
+          echo "---------------------------------------------"
+          echo "--- Parsed Local IP Addresses (Non-Loopback) ---"
+          ip addr | grep -E 'inet |inet6 ' | grep -v ' lo$' | awk '{print $2}' || echo "Could not parse local IPs"
+          echo "---------------------------------------------"
+
+
+      - name: Display Disk Usage and Storage Paths (显示磁盘使用和存储路径)
+        run: |
+          echo "--- Disk Usage (df -h) ---"
+          df -h
+          echo "---------------------------------------------"
+          echo "--- Key GitHub Actions Paths ---"
+          echo "GitHub Workspace (\$GITHUB_WORKSPACE): $GITHUB_WORKSPACE"
+          echo "Listing Workspace Contents:"
+          ls -lah $GITHUB_WORKSPACE
+          echo ""
+          echo "Runner Temporary Directory (\$RUNNER_TEMP): $RUNNER_TEMP"
+          echo "Runner Tool Cache (\$RUNNER_TOOL_CACHE): $RUNNER_TOOL_CACHE"
+          echo "---------------------------------------------"
+
+
+      - name: Display System Information (显示系统信息)
+        run: |
+          echo "--- System Information ---"
+          echo "Hostname: $(hostname)"
+          echo "Operating System Details:"
+          lsb_release -a || cat /etc/os-release || echo "Cannot determine OS details"
+          echo ""
+          echo "Kernel Version: $(uname -a)"
+          echo "System Architecture: $(uname -m)"
+          echo "Current User: $(whoami)"
+          echo "Current Directory: $(pwd)"
+          echo "Runner OS Environment Variable (\$RUNNER_OS): $RUNNER_OS"
+          echo "Runner Arch Environment Variable (\$RUNNER_ARCH): $RUNNER_ARCH"
+          echo "---------------------------------------------"
+
+
+      - name: Display CPU Information (显示 CPU 信息)
+        run: |
+          echo "--- CPU Information (lscpu) ---"
+          lscpu || cat /proc/cpuinfo
+          echo "---------------------------------------------"
+
+
+      - name: Display Memory Information (显示内存信息)
+        run: |
+          echo "--- Memory Information (free -h) ---"
+          free -h || cat /proc/meminfo
+          echo "---------------------------------------------"
+
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+
+
