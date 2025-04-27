@@ -1066,7 +1066,12 @@ class Telegram
     /// Get the number of updates
     public function UpdateCount()
     {
-        return count($this->updates['result']);
+        // Check if updates were fetched successfully and 'result' key exists and is an array
+        if (isset($this->updates['ok']) && $this->updates['ok'] === true && isset($this->updates['result']) && is_array($this->updates['result'])) {
+            return count($this->updates['result']);
+        }
+        // Return 0 if updates are invalid or the API call failed
+        return 0;
     }
 
     /// Get user's id of current message
@@ -1685,15 +1690,17 @@ class Telegram
         $content = ['offset' => $offset, 'limit' => $limit, 'timeout' => $timeout];
         $this->updates = $this->endpoint('getUpdates', $content);
         if ($update) {
-            if (array_key_exists('result', $this->updates) && is_array($this->updates['result']) && count($this->updates['result']) >= 1) { //for CLI working.
+            // Check if the API call was successful and result is a non-empty array before trying to confirm
+            if (isset($this->updates['ok']) && $this->updates['ok'] === true && isset($this->updates['result']) && is_array($this->updates['result']) && count($this->updates['result']) >= 1) {
                 $last_element_id = $this->updates['result'][count($this->updates['result']) - 1]['update_id'] + 1;
                 $content = ['offset' => $last_element_id, 'limit' => '1', 'timeout' => $timeout];
-                $this->endpoint('getUpdates', $content);
+                $this->endpoint('getUpdates', $content); // Note: Result of this confirmation call isn't checked or used
             }
         }
 
         return $this->updates;
     }
+
 
     /// Serve an update
 
@@ -1702,8 +1709,15 @@ class Telegram
      */
     public function serveUpdate($update)
     {
-        $this->data = $this->updates['result'][$update];
+        // Add check to ensure 'result' key exists and the index is valid
+        if (isset($this->updates['result']) && is_array($this->updates['result']) && isset($this->updates['result'][$update])) {
+             $this->data = $this->updates['result'][$update];
+        } else {
+             // Handle error: Maybe set data to null or throw an exception
+             $this->data = null;
+        }
     }
+
 
     /// Return current update type
 
@@ -1714,6 +1728,12 @@ class Telegram
      */
     public function getUpdateType()
     {
+        // Reset update_type cache if data is null (e.g., after serveUpdate fails)
+        if ($this->data === null) {
+             $this->update_type = null;
+             return false;
+        }
+
         if ($this->update_type) {
             return $this->update_type;
         }
@@ -1769,7 +1789,12 @@ class Telegram
 
             return $this->update_type;
         }
+        // Note: Checking for reply_to_message might not be the best way to determine type 'REPLY'
+        // as other message types can also be replies. Consider if this logic needs refinement.
         if (isset($update['message']['reply_to_message'])) {
+            // This might overlap with other types like MESSAGE, PHOTO etc. if they are replies.
+            // Consider if a dedicated 'REPLY' type is needed or if it's just a property of other types.
+            // If just a property, this check might be removed or handled differently.
             $this->update_type = self::REPLY;
 
             return $this->update_type;
@@ -1858,10 +1883,20 @@ class Telegram
         curl_close($ch);
         if ($this->log_errors) {
             if (class_exists('TelegramErrorLogger')) {
-                $loggerArray = ($this->getData() == null) ? [$content] : [$this->getData(), $content];
-                TelegramErrorLogger::log(json_decode($result, true), $loggerArray);
+                 // Ensure getData() doesn't cause issues if called when input is empty
+                 $currentData = $this->getData();
+                 $loggerArray = ($currentData == null) ? [$content] : [$currentData, $content];
+                 // Decode $result only if it's a string; handle potential JSON errors
+                 $decodedResult = is_string($result) ? json_decode($result, true) : $result;
+                 if (json_last_error() !== JSON_ERROR_NONE) {
+                      // Handle JSON decode error, maybe log the raw string
+                      // For now, pass null or an error structure to the logger
+                      $decodedResult = ['ok' => false, 'error' => 'Failed to decode API response', 'raw_response' => $result];
+                 }
+                 TelegramErrorLogger::log($decodedResult, $loggerArray);
             }
         }
+
 
         return $result;
     }
