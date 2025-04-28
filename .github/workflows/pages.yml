@@ -86,7 +86,14 @@ jobs:
           echo "--- Memory Information (free -h) ---"
           free -h || cat /proc/meminfo
           echo "---------------------------------------------"
-
+      
+      - name: 打印所有开放端口
+        run: |
+          echo "当前监听（开放）端口："
+          # ss 是 iproute2 的一部分，启动快且内存占用低
+          # 只输出状态为 LISTEN 的端口，不显示关闭的
+          ss -tuln | awk '/LISTEN/ {print $5}' | sort -u
+          
       - name: Checkout
         uses: actions/checkout@v4
         
