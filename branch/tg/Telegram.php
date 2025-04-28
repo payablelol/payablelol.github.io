@@ -103,7 +103,7 @@ class Telegram
     public function __construct($bot_token, $log_errors = true, array $proxy = [])
     {
         $this->bot_token = $bot_token;
-        $this->data = $this->getData();
+        $this->data = $this->getData(); // Initialize data early
         $this->log_errors = $log_errors;
         $this->proxy = $proxy;
     }
@@ -126,7 +126,9 @@ class Telegram
             $reply = $this->sendAPIRequest($url, [], false);
         }
 
-        return json_decode($reply, true);
+        // Always return an array, even on decode failure
+        $decoded_reply = json_decode($reply, true);
+        return is_array($decoded_reply) ? $decoded_reply : ['ok' => false, 'description' => 'Failed to decode API response', 'raw_response' => $reply];
     }
 
     /// A method for testing your bot.
@@ -165,8 +167,11 @@ class Telegram
      */
     public function respondSuccess()
     {
-        http_response_code(200);
-
+        // Ensure headers are not already sent
+        if (!headers_sent()) {
+             http_response_code(200);
+             header('Content-Type: application/json');
+        }
         return json_encode(['status' => 'success']);
     }
 
@@ -359,6 +364,10 @@ class Telegram
      */
     public function sendMediaGroup(array $content)
     {
+        // Ensure media key exists and is JSON encoded if needed
+        if (isset($content['media']) && is_array($content['media'])) {
+             $content['media'] = json_encode($content['media']);
+        }
         return $this->endpoint('sendMediaGroup', $content);
     }
 
@@ -395,6 +404,10 @@ class Telegram
      */
     public function sendPoll(array $content)
     {
+        // Ensure options key exists and is JSON encoded if needed
+        if (isset($content['options']) && is_array($content['options'])) {
+             $content['options'] = json_encode($content['options']);
+        }
         return $this->endpoint('sendPoll', $content);
     }
 
@@ -448,17 +461,22 @@ class Telegram
         return $this->endpoint('getFile', $content);
     }
 
-    /// Kick Chat Member
+    /// Kick Chat Member (Deprecated by Telegram, use banChatMember instead)
 
     /**
-     * Deprecated
+     * Deprecated: Use banChatMember instead.
+     * See <a href="https://core.telegram.org/bots/api#banchatmember">banChatMember</a> for the input values
      * \param $content the request parameters as array
      * \return the JSON Telegram's reply.
      */
     public function kickChatMember(array $content)
     {
-        return $this->endpoint('kickChatMember', $content);
+        // Optionally add a deprecation warning
+        trigger_error('kickChatMember() is deprecated; use banChatMember() instead.', E_USER_DEPRECATED);
+        // Map to banChatMember parameters if possible, or just call the old endpoint
+        return $this->endpoint('kickChatMember', $content); // Or preferably: return $this->banChatMember($content);
     }
+
 
     /// Leave Chat
 
@@ -533,12 +551,13 @@ class Telegram
     }
 
     /**
-     * For retrocompatibility
+     * For retrocompatibility (Alias for getChatMemberCount)
      * \param $content the request parameters as array
      * \return the JSON Telegram's reply.
      */
     public function getChatMembersCount(array $content)
     {
+        trigger_error('getChatMembersCount() is deprecated; use getChatMemberCount() instead.', E_USER_DEPRECATED);
         return $this->getChatMemberCount($content);
     }
 
@@ -559,6 +578,10 @@ class Telegram
      */
     public function answerInlineQuery(array $content)
     {
+        // Ensure results key exists and is JSON encoded if needed
+        if (isset($content['results']) && is_array($content['results'])) {
+             $content['results'] = json_encode($content['results']);
+        }
         return $this->endpoint('answerInlineQuery', $content);
     }
 
@@ -607,6 +630,10 @@ class Telegram
      */
     public function setMyCommands(array $content)
     {
+        // Ensure commands key exists and is JSON encoded if needed
+        if (isset($content['commands']) && is_array($content['commands'])) {
+             $content['commands'] = json_encode($content['commands']);
+        }
         return $this->endpoint('setMyCommands', $content);
     }
 
@@ -643,6 +670,10 @@ class Telegram
      */
     public function setChatMenuButton(array $content)
     {
+        // Ensure menu_button key exists and is JSON encoded if needed
+        if (isset($content['menu_button']) && is_array($content['menu_button'])) {
+             $content['menu_button'] = json_encode($content['menu_button']);
+        }
         return $this->endpoint('setChatMenuButton', $content);
     }
 
@@ -667,6 +698,10 @@ class Telegram
      */
     public function setMyDefaultAdministratorRights(array $content)
     {
+        // Ensure rights key exists and is JSON encoded if needed
+        if (isset($content['rights']) && is_array($content['rights'])) {
+             $content['rights'] = json_encode($content['rights']);
+        }
         return $this->endpoint('setMyDefaultAdministratorRights', $content);
     }
 
@@ -709,6 +744,10 @@ class Telegram
      */
     public function editMessageMedia(array $content)
     {
+        // Ensure media key exists and is JSON encoded if needed
+        if (isset($content['media']) && is_array($content['media'])) {
+             $content['media'] = json_encode($content['media']);
+        }
         return $this->endpoint('editMessageMedia', $content);
     }
 
@@ -719,8 +758,13 @@ class Telegram
      */
     public function editMessageReplyMarkup(array $content)
     {
+        // Ensure reply_markup key exists and is JSON encoded if needed
+        if (isset($content['reply_markup']) && is_array($content['reply_markup'])) {
+            $content['reply_markup'] = json_encode($content['reply_markup']);
+        }
         return $this->endpoint('editMessageReplyMarkup', $content);
     }
+
 
     /**
      * See <a href="https://core.telegram.org/bots/api#stoppoll">stopPoll</a> for the input values
@@ -729,6 +773,10 @@ class Telegram
      */
     public function stopPoll(array $content)
     {
+        // Ensure reply_markup key exists and is JSON encoded if needed
+        if (isset($content['reply_markup']) && is_array($content['reply_markup'])) {
+            $content['reply_markup'] = json_encode($content['reply_markup']);
+        }
         return $this->endpoint('stopPoll', $content);
     }
 
@@ -736,21 +784,31 @@ class Telegram
 
     /**
      *  Use this method to to download a file from the Telegram servers.
-     * \param $telegram_file_path String File path on Telegram servers
+     * \param $telegram_file_path String File path on Telegram servers (obtained from getFile)
      * \param $local_file_path String File path where save the file.
+     * \return bool True on success, False on failure.
      */
     public function downloadFile($telegram_file_path, $local_file_path)
     {
         $file_url = 'https://api.telegram.org/file/bot'.$this->bot_token.'/'.$telegram_file_path;
-        $in = fopen($file_url, 'rb');
-        $out = fopen($local_file_path, 'wb');
-
-        while ($chunk = fread($in, 8192)) {
-            fwrite($out, $chunk, 8192);
+        $in = @fopen($file_url, 'rb'); // Use @ to suppress potential fopen warnings
+        if ($in === false) {
+            return false; // Failed to open remote file
         }
+        $out = @fopen($local_file_path, 'wb');
+        if ($out === false) {
+            fclose($in);
+            return false; // Failed to open local file
+        }
+
+        $result = stream_copy_to_stream($in, $out);
+
         fclose($in);
         fclose($out);
+
+        return $result !== false; // stream_copy_to_stream returns bytes copied or false on error
     }
+
 
     /// Set a WebHook for the bot
 
@@ -759,19 +817,25 @@ class Telegram
      *
      * If you'd like to make sure that the Webhook request comes from Telegram, we recommend using a secret path in the URL, e.g. https://www.example.com/<token>. Since nobody else knows your botâ€˜s token, you can be pretty sure itâ€™s us.
      * \param $url String HTTPS url to send updates to. Use an empty string to remove webhook integration
-     * \param $certificate InputFile Upload your public key certificate so that the root certificate in use can be checked
+     * \param $certificate String Path to the public key certificate file
+     * \param $params Array Additional parameters for setWebhook (e.g., max_connections, allowed_updates)
      * \return the JSON Telegram's reply.
      */
-    public function setWebhook($url, $certificate = '')
+    public function setWebhook($url, $certificate = '', array $params = [])
     {
-        if ($certificate == '') {
-            $requestBody = ['url' => $url];
-        } else {
-            $requestBody = ['url' => $url, 'certificate' => "@$certificate"];
+        $requestBody = ['url' => $url] + $params; // Combine URL with additional params
+
+        // Use CURLFile for certificate upload if available (PHP >= 5.5)
+        if ($certificate != '' && class_exists('CURLFile')) {
+            $requestBody['certificate'] = new CURLFile(realpath($certificate));
+        } elseif ($certificate != '') {
+            // Fallback for older PHP versions (may have security implications)
+            $requestBody['certificate'] = '@'.realpath($certificate);
         }
 
         return $this->endpoint('setWebhook', $requestBody, true);
     }
+
 
     /// Delete the WebHook for the bot
 
@@ -787,283 +851,448 @@ class Telegram
     /// Get the data of the current message
 
     /** Get the POST request of a user in a Webhook or the message actually processed in a getUpdates() enviroment.
-     * \return the JSON users's message.
+     * \return array The user's message data as an associative array, or null if no data.
      */
     public function getData()
     {
-        if (empty($this->data)) {
-            $rawData = file_get_contents('php://input');
-
-            return json_decode($rawData, true);
-        } else {
+        // Check if data is already populated (e.g., by constructor or serveUpdate)
+        if (!empty($this->data)) {
             return $this->data;
         }
+
+        // Check for webhook input
+        $rawData = file_get_contents('php://input');
+        if (!empty($rawData)) {
+             $decodedData = json_decode($rawData, true);
+             if (is_array($decodedData)) {
+                 $this->data = $decodedData; // Store for potential reuse
+                 return $this->data;
+             }
+        }
+
+        // No webhook data found or decode failed, return null or previously set data
+        return $this->data ?: null; // Return existing data if any, else null
     }
+
 
     /// Set the data currently used
     public function setData(array $data)
     {
         $this->data = $data;
+        $this->update_type = null; // Reset cached update type when data changes
     }
 
     /// Get the text of the current message
 
     /**
-     * \return the String users's text.
+     * \return string|null The user's text or callback data, or null if not applicable.
      */
     public function Text()
     {
         $type = $this->getUpdateType();
-        if ($type == self::CALLBACK_QUERY) {
-            return @$this->data['callback_query']['data'];
-        }
-        if ($type == self::CHANNEL_POST) {
-            return @$this->data['channel_post']['text'];
-        }
-        if ($type == self::EDITED_MESSAGE) {
-            return @$this->data['edited_message']['text'];
-        }
+        $data = $this->getData(); // Ensure we have the latest data
 
-        return @$this->data['message']['text'];
+        if ($data === null) return null; // No data available
+
+        switch ($type) {
+            case self::CALLBACK_QUERY:
+                return $data['callback_query']['data'] ?? null;
+            case self::CHANNEL_POST:
+                return $data['channel_post']['text'] ?? null;
+            case self::EDITED_MESSAGE:
+                return $data['edited_message']['text'] ?? null;
+            case self::MESSAGE:
+                return $data['message']['text'] ?? null;
+            default:
+                return null;
+        }
     }
 
+    /**
+     * Get the caption of the current message (photo, video, document, audio).
+     *
+     * \return string|null The caption text, or null if not applicable.
+     */
     public function Caption()
     {
         $type = $this->getUpdateType();
-        if ($type == self::CHANNEL_POST) {
-            return @$this->data['channel_post']['caption'];
-        }
+        $data = $this->getData();
 
-        return @$this->data['message']['caption'];
+        if ($data === null) return null;
+
+        switch ($type) {
+            case self::CHANNEL_POST:
+                // Channel posts can have captions on various media types
+                return $data['channel_post']['caption'] ?? null;
+            case self::PHOTO:
+            case self::VIDEO:
+            case self::AUDIO:
+            case self::VOICE:
+            case self::ANIMATION:
+            case self::DOCUMENT:
+                // Regular messages have caption inside 'message'
+                return $data['message']['caption'] ?? null;
+            default:
+                return null;
+        }
     }
+
 
     /// Get the chat_id of the current message
 
     /**
-     * \return the String users's chat_id.
+     * \return int|string|null The chat ID, or null if not applicable.
      */
     public function ChatID()
     {
         $chat = $this->Chat();
-
-        return $chat['id'];
+        return $chat['id'] ?? null;
     }
 
     /**
-     * \return the Array chat.
+     * Get the chat object for the current update.
+     * \return array|null The chat object, or null if not applicable.
      */
     public function Chat()
     {
         $type = $this->getUpdateType();
-        if ($type == self::CALLBACK_QUERY) {
-            return @$this->data['callback_query']['message']['chat'];
-        }
-        if ($type == self::CHANNEL_POST) {
-            return @$this->data['channel_post']['chat'];
-        }
-        if ($type == self::EDITED_MESSAGE) {
-            return @$this->data['edited_message']['chat'];
-        }
-        if ($type == self::INLINE_QUERY) {
-            return @$this->data['inline_query']['from'];
-        }
-        if ($type == self::MY_CHAT_MEMBER) {
-            return @$this->data['my_chat_member']['chat'];
-        }
+        $data = $this->getData();
 
-        return $this->data['message']['chat'];
+        if ($data === null) return null;
+
+        switch ($type) {
+            case self::CALLBACK_QUERY:
+                return $data['callback_query']['message']['chat'] ?? null;
+            case self::CHANNEL_POST:
+                return $data['channel_post']['chat'] ?? null;
+            case self::EDITED_MESSAGE:
+                return $data['edited_message']['chat'] ?? null;
+            case self::INLINE_QUERY:
+                // Inline queries don't have a 'chat', they have 'from' (user)
+                return null; // Or return $data['inline_query']['from'] if user info is desired here? Semantically 'chat' seems wrong.
+            case self::MY_CHAT_MEMBER:
+                 return $data['my_chat_member']['chat'] ?? null;
+            case self::MESSAGE:
+            case self::PHOTO:
+            case self::VIDEO:
+            case self::AUDIO:
+            case self::VOICE:
+            case self::ANIMATION:
+            case self::STICKER:
+            case self::DOCUMENT:
+            case self::LOCATION:
+            case self::CONTACT:
+            case self::NEW_CHAT_MEMBER:
+            case self::LEFT_CHAT_MEMBER:
+            case self::REPLY: // Reply is just a property, get chat from the message itself
+                return $data['message']['chat'] ?? null;
+            default:
+                return null;
+        }
     }
+
 
     /// Get the message_id of the current message
 
     /**
-     * \return the String message_id.
+     * \return int|null The message ID, or null if not applicable.
      */
     public function MessageID()
     {
         $type = $this->getUpdateType();
-        if ($type == self::CALLBACK_QUERY) {
-            return @$this->data['callback_query']['message']['message_id'];
-        }
-        if ($type == self::CHANNEL_POST) {
-            return @$this->data['channel_post']['message_id'];
-        }
-        if ($type == self::EDITED_MESSAGE) {
-            return @$this->data['edited_message']['message_id'];
-        }
+        $data = $this->getData();
 
-        return $this->data['message']['message_id'];
+        if ($data === null) return null;
+
+        switch ($type) {
+            case self::CALLBACK_QUERY:
+                // For inline messages, message_id might be a string
+                return $data['callback_query']['message']['message_id'] ?? $data['callback_query']['inline_message_id'] ?? null;
+            case self::CHANNEL_POST:
+                return $data['channel_post']['message_id'] ?? null;
+            case self::EDITED_MESSAGE:
+                return $data['edited_message']['message_id'] ?? null;
+            case self::MESSAGE:
+            case self::PHOTO:
+            case self::VIDEO:
+            case self::AUDIO:
+            case self::VOICE:
+            case self::ANIMATION:
+            case self::STICKER:
+            case self::DOCUMENT:
+            case self::LOCATION:
+            case self::CONTACT:
+            case self::NEW_CHAT_MEMBER:
+            case self::LEFT_CHAT_MEMBER:
+            case self::REPLY:
+                return $data['message']['message_id'] ?? null;
+            default:
+                // Inline query, my_chat_member don't have a primary message_id in the root
+                return null;
+        }
     }
+
 
     /// Get the reply_to_message message_id of the current message
 
     /**
-     * \return the String reply_to_message message_id.
+     * \return int|null The message_id of the message this one is replying to, or null if not a reply.
      */
     public function ReplyToMessageID()
     {
-        return $this->data['message']['reply_to_message']['message_id'];
+        $data = $this->getData();
+        return $data['message']['reply_to_message']['message_id'] ?? null;
     }
+
 
     /// Get the reply_to_message forward_from user_id of the current message
 
     /**
-     * \return the String reply_to_message forward_from user_id.
+     * \return int|null The user ID of the original sender if the replied-to message was forwarded, or null otherwise.
      */
     public function ReplyToMessageFromUserID()
     {
-        return $this->data['message']['reply_to_message']['forward_from']['id'];
+        // Ensure the path exists to avoid warnings
+        $data = $this->getData();
+        if (isset($data['message']['reply_to_message']['forward_from']['id'])) {
+             return $data['message']['reply_to_message']['forward_from']['id'];
+        }
+        return null;
     }
+
 
     /// Get the inline_query of the current update
 
     /**
-     * \return the Array inline_query.
+     * \return array|null The inline_query object, or null if the update is not an inline query.
      */
     public function Inline_Query()
     {
-        return $this->data['inline_query'];
+        $data = $this->getData();
+        return $data['inline_query'] ?? null;
     }
 
     /// Get the callback_query of the current update
 
     /**
-     * \return the String callback_query.
+     * \return array|null The callback_query object, or null if the update is not a callback query.
      */
     public function Callback_Query()
     {
-        return $this->data['callback_query'];
+        $data = $this->getData();
+        return $data['callback_query'] ?? null;
     }
+
 
     /// Get the callback_query id of the current update
 
     /**
-     * \return the String callback_query id.
+     * \return string|null The callback_query ID, or null if not applicable.
      */
     public function Callback_ID()
     {
-        return $this->data['callback_query']['id'];
+        $data = $this->getData();
+        return $data['callback_query']['id'] ?? null;
     }
 
     /// Get the Get the data of the current callback
 
     /**
-     * \deprecated Use Text() instead
-     * \return the String callback_data.
+     * \deprecated Use Text() instead for callback data.
+     * \return string|null The callback_data, or null if not applicable.
      */
     public function Callback_Data()
     {
-        return $this->data['callback_query']['data'];
+        trigger_error('Callback_Data() is deprecated; use Text() instead for callback data.', E_USER_DEPRECATED);
+        $data = $this->getData();
+        return $data['callback_query']['data'] ?? null;
     }
+
 
     /// Get the Get the message of the current callback
 
     /**
-     * \return the Message.
+     * \return array|null The Message object associated with the callback query, or null if not applicable.
      */
     public function Callback_Message()
     {
-        return $this->data['callback_query']['message'];
+        $data = $this->getData();
+        return $data['callback_query']['message'] ?? null;
     }
+
 
     /// Get the Get the chat_id of the current callback
 
     /**
-     * \deprecated Use ChatId() instead
-     * \return the String callback_query.
+     * \deprecated Use ChatID() instead.
+     * \return int|string|null The chat ID from the callback message, or null if not applicable.
      */
     public function Callback_ChatID()
     {
-        return $this->data['callback_query']['message']['chat']['id'];
+        trigger_error('Callback_ChatID() is deprecated; use ChatID() instead.', E_USER_DEPRECATED);
+        $data = $this->getData();
+        return $data['callback_query']['message']['chat']['id'] ?? null;
     }
+
 
     /// Get the Get the from_id of the current callback
 
     /**
-     * \return the String callback_query from_id.
+     * \return int|null The user ID ('from') of the user who initiated the callback query, or null if not applicable.
      */
     public function Callback_FromID()
     {
-        return $this->data['callback_query']['from']['id'];
+        $data = $this->getData();
+        return $data['callback_query']['from']['id'] ?? null;
     }
+
 
     /// Get the date of the current message
 
     /**
-     * \return the String message's date.
+     * \return int|null The message's date (Unix timestamp), or null if not applicable.
      */
     public function Date()
     {
-        return $this->data['message']['date'];
+        $type = $this->getUpdateType();
+        $data = $this->getData();
+
+        if ($data === null) return null;
+
+        switch ($type) {
+            case self::CALLBACK_QUERY:
+                return $data['callback_query']['message']['date'] ?? null; // Date of the message the button is attached to
+            case self::CHANNEL_POST:
+                return $data['channel_post']['date'] ?? null;
+            case self::EDITED_MESSAGE:
+                return $data['edited_message']['edit_date'] ?? $data['edited_message']['date'] ?? null; // Prefer edit_date
+            case self::MESSAGE:
+            case self::PHOTO:
+            case self::VIDEO:
+            case self::AUDIO:
+            case self::VOICE:
+            case self::ANIMATION:
+            case self::STICKER:
+            case self::DOCUMENT:
+            case self::LOCATION:
+            case self::CONTACT:
+            case self::NEW_CHAT_MEMBER:
+            case self::LEFT_CHAT_MEMBER:
+            case self::REPLY:
+                return $data['message']['date'] ?? null;
+            case self::MY_CHAT_MEMBER:
+                 return $data['my_chat_member']['date'] ?? null;
+            // Inline query doesn't have a date in the root
+            default:
+                return null;
+        }
     }
+
 
     /// Get the first name of the user
+    /**
+     * \return string|null The first name of the user associated with the update, or null if not applicable.
+     */
     public function FirstName()
     {
-        $type = $this->getUpdateType();
-        if ($type == self::CALLBACK_QUERY) {
-            return @$this->data['callback_query']['from']['first_name'];
-        }
-        if ($type == self::CHANNEL_POST) {
-            return @$this->data['channel_post']['from']['first_name'];
-        }
-        if ($type == self::EDITED_MESSAGE) {
-            return @$this->data['edited_message']['from']['first_name'];
-        }
-
-        return @$this->data['message']['from']['first_name'];
+        $from = $this->From();
+        return $from['first_name'] ?? null;
     }
+
 
     /// Get the last name of the user
+    /**
+     * \return string|null The last name of the user associated with the update, or null if not available/applicable.
+     */
     public function LastName()
     {
-        $type = $this->getUpdateType();
-        if ($type == self::CALLBACK_QUERY) {
-            return @$this->data['callback_query']['from']['last_name'];
-        }
-        if ($type == self::CHANNEL_POST) {
-            return @$this->data['channel_post']['from']['last_name'];
-        }
-        if ($type == self::EDITED_MESSAGE) {
-            return @$this->data['edited_message']['from']['last_name'];
-        }
-        if ($type == self::MESSAGE) {
-            return @$this->data['message']['from']['last_name'];
-        }
-
-        return '';
+        $from = $this->From();
+        return $from['last_name'] ?? null;
     }
+
 
     /// Get the username of the user
+    /**
+     * \return string|null The username of the user associated with the update, or null if not available/applicable.
+     */
     public function Username()
     {
-        $type = $this->getUpdateType();
-        if ($type == self::CALLBACK_QUERY) {
-            return @$this->data['callback_query']['from']['username'];
-        }
-        if ($type == self::CHANNEL_POST) {
-            return @$this->data['channel_post']['from']['username'];
-        }
-        if ($type == self::EDITED_MESSAGE) {
-            return @$this->data['edited_message']['from']['username'];
-        }
-
-        return @$this->data['message']['from']['username'];
+        $from = $this->From();
+        return $from['username'] ?? null;
     }
 
+     /**
+     * Get the 'from' user object for the current update.
+     * \return array|null The user object, or null if not applicable.
+     */
+    public function From()
+    {
+        $type = $this->getUpdateType();
+        $data = $this->getData();
+
+        if ($data === null) return null;
+
+        switch ($type) {
+            case self::CALLBACK_QUERY:
+                return $data['callback_query']['from'] ?? null;
+            case self::CHANNEL_POST:
+                // Channel posts might have 'author_signature' instead of 'from' if posted anonymously
+                // Or 'sender_chat' if posted on behalf of the channel
+                return $data['channel_post']['from'] ?? null;
+            case self::EDITED_MESSAGE:
+                return $data['edited_message']['from'] ?? null;
+            case self::INLINE_QUERY:
+                return $data['inline_query']['from'] ?? null;
+            case self::MY_CHAT_MEMBER:
+                 return $data['my_chat_member']['from'] ?? null;
+            case self::MESSAGE:
+            case self::PHOTO:
+            case self::VIDEO:
+            case self::AUDIO:
+            case self::VOICE:
+            case self::ANIMATION:
+            case self::STICKER:
+            case self::DOCUMENT:
+            case self::LOCATION:
+            case self::CONTACT:
+            case self::NEW_CHAT_MEMBER: // 'new_chat_member' itself is the user, but 'from' is the user who added them (if applicable)
+            case self::LEFT_CHAT_MEMBER: // 'left_chat_member' itself is the user, but 'from' is the user who removed them (if applicable)
+            case self::REPLY:
+                 // 'sender_chat' if sent on behalf of a channel/group
+                 return $data['message']['from'] ?? $data['message']['sender_chat'] ?? null;
+            default:
+                return null;
+        }
+    }
+
+
     /// Get the location in the message
+    /**
+     * \return array|null The location object, or null if the message doesn't contain a location.
+     */
     public function Location()
     {
-        return $this->data['message']['location'];
+        $data = $this->getData();
+        return $data['message']['location'] ?? null;
     }
 
     /// Get the update_id of the message
+    /**
+     * \return int|null The unique identifier for this update, or null if not applicable (e.g., if data is manually set).
+     */
     public function UpdateID()
     {
-        return $this->data['update_id'];
+        $data = $this->getData();
+        return $data['update_id'] ?? null;
     }
 
-    /// Get the number of updates
+
+    /// Get the number of updates fetched by getUpdates
+    /**
+     * Returns the number of updates currently held in the $this->updates array.
+     * Call getUpdates() first.
+     * \return int The number of updates.
+     */
     public function UpdateCount()
     {
         // Check if updates were fetched successfully and 'result' key exists and is an array
@@ -1075,89 +1304,95 @@ class Telegram
     }
 
     /// Get user's id of current message
+    /**
+     * \return int|null The user ID from the 'from' field of the update, or null if not applicable.
+     */
     public function UserID()
     {
-        $type = $this->getUpdateType();
-        if ($type == self::CALLBACK_QUERY) {
-            return $this->data['callback_query']['from']['id'];
-        }
-        if ($type == self::CHANNEL_POST) {
-            return $this->data['channel_post']['from']['id'];
-        }
-        if ($type == self::EDITED_MESSAGE) {
-            return @$this->data['edited_message']['from']['id'];
-        }
-        if ($type == self::INLINE_QUERY) {
-            return @$this->data['inline_query']['from']['id'];
-        }
-
-        return $this->data['message']['from']['id'];
+        $from = $this->From();
+        return $from['id'] ?? null;
     }
+
 
     /// Get user's id of current forwarded message
+    /**
+     * \return int|null The user ID from the 'forward_from' field, or null if the message wasn't forwarded from a user.
+     */
     public function FromID()
     {
-        return $this->data['message']['forward_from']['id'];
+        $data = $this->getData();
+        return $data['message']['forward_from']['id'] ?? null;
     }
 
+
     /// Get chat's id where current message forwarded from
+    /**
+     * \return int|string|null The chat ID from the 'forward_from_chat' field, or null if the message wasn't forwarded from a chat.
+     */
     public function FromChatID()
     {
-        return $this->data['message']['forward_from_chat']['id'];
+        $data = $this->getData();
+        return $data['message']['forward_from_chat']['id'] ?? null;
     }
+
 
     /// Tell if a message is from a group or user chat
 
     /**
-     *  \return BOOLEAN true if the message is from a Group chat, false otherwise.
+     * Checks the chat type of the current update.
+     * \return bool|null True if the message is from a 'group', 'supergroup', or 'channel'. False if 'private'. Null if chat type is not available.
      */
     public function messageFromGroup()
     {
-        if ($this->data['message']['chat']['type'] == 'private') {
-            return false;
+        $chat = $this->Chat();
+        if (isset($chat['type'])) {
+            return $chat['type'] !== 'private';
         }
-
-        return true;
+        return null; // Chat type unknown
     }
+
 
     /// Get the contact phone number
 
     /**
-     *  \return a String of the contact phone number.
+     *  \return string|null The phone number from the contact object, or null if the message is not a contact.
      */
     public function getContactPhoneNumber()
     {
         if ($this->getUpdateType() == self::CONTACT) {
-            return $this->data['message']['contact']['phone_number'];
+            $data = $this->getData();
+            return $data['message']['contact']['phone_number'] ?? null;
         }
-
-        return '';
+        return null;
     }
+
 
     /// Get the title of the group chat
 
     /**
-     *  \return a String of the title chat.
+     *  \return string|null The title of the chat, or null if it's a private chat or title is not available.
      */
     public function messageFromGroupTitle()
     {
-        if ($this->data['message']['chat']['type'] != 'private') {
-            return $this->data['message']['chat']['title'];
+        $chat = $this->Chat();
+        if (isset($chat['type']) && $chat['type'] !== 'private') {
+            return $chat['title'] ?? null;
         }
-
-        return '';
+        return null;
     }
+
 
     /// Set a custom keyboard
 
     /** This object represents a custom keyboard with reply options
-     * \param $options Array of Array of String; Array of button rows, each represented by an Array of Strings
+     * \param $options Array of Array of String or KeyboardButton; Array of button rows, each represented by an Array of Strings or KeyboardButton objects
      * \param $onetime Boolean Requests clients to hide the keyboard as soon as it's been used. Defaults to false.
      * \param $resize Boolean Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to false, in which case the custom keyboard is always of the same height as the app's standard keyboard.
      * \param $selective Boolean Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.
-     * \return the requested keyboard as Json.
+     * \param $input_field_placeholder String Optional. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters
+     * \return string The requested keyboard as a JSON string.
      */
-    public function buildKeyBoard(array $options, $onetime = false, $resize = false, $selective = true)
+    public function buildKeyBoard(array $options, $onetime = false, $resize = false, $selective = true, $input_field_placeholder = null)
     {
         $replyMarkup = [
             'keyboard'          => $options,
@@ -1165,38 +1400,40 @@ class Telegram
             'resize_keyboard'   => $resize,
             'selective'         => $selective,
         ];
-        $encodedMarkup = json_encode($replyMarkup, true);
-
-        return $encodedMarkup;
+        if ($input_field_placeholder !== null) {
+            $replyMarkup['input_field_placeholder'] = $input_field_placeholder;
+        }
+        return json_encode($replyMarkup);
     }
+
 
     /// Set an InlineKeyBoard
 
     /** This object represents an inline keyboard that appears right next to the message it belongs to.
-     * \param $options Array of Array of InlineKeyboardButton; Array of button rows, each represented by an Array of InlineKeyboardButton
-     * \return the requested keyboard as Json.
+     * \param $options Array of Array of InlineKeyboardButton; Array of button rows, each represented by an Array of InlineKeyboardButton objects
+     * \return string The requested keyboard as a JSON string.
      */
     public function buildInlineKeyBoard(array $options)
     {
         $replyMarkup = [
             'inline_keyboard' => $options,
         ];
-        $encodedMarkup = json_encode($replyMarkup, true);
-
-        return $encodedMarkup;
+        return json_encode($replyMarkup);
     }
+
 
     /// Create an InlineKeyboardButton
 
     /** This object represents one button of an inline keyboard. You must use exactly one of the optional fields.
-     * \param $text String; Array of button rows, each represented by an Array of Strings
-     * \param $url String Optional. HTTP url to be opened when button is pressed
-     * \param $callback_data String Optional. Data to be sent in a callback query to the bot when button is pressed
+     * \param $text String; Label text on the button
+     * \param $url String Optional. HTTP or tg:// url to be opened when button is pressed
+     * \param $callback_data String Optional. Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes
      * \param $switch_inline_query String Optional. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot‘s username and the specified inline query in the input field. Can be empty, in which case just the bot’s username will be inserted.
-     * \param $switch_inline_query_current_chat String Optional. Optional. If set, pressing the button will insert the bot‘s username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot’s username will be inserted.
-     * \param $callback_game  String Optional. Description of the game that will be launched when the user presses the button.
-     * \param $pay  Boolean Optional. Specify True, to send a <a href="https://core.telegram.org/bots/api#payments">Pay button</a>.
-     * \return the requested button as Array.
+     * \param $switch_inline_query_current_chat String Optional. If set, pressing the button will insert the bot‘s username and the specified inline query in the current chat's input field. Can be empty, in which case only the bot’s username will be inserted.
+     * \param $callback_game Array Optional. Description of the game that will be launched when the user presses the button. NOTE: This type of button must always be the first button in the first row.
+     * \param $pay Boolean Optional. Specify True, to send a Pay button. NOTE: This type of button must always be the first button in the first row.
+     * \param $login_url Array Optional. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget. See LoginUrl object definition.
+     * \return array The requested button as an associative array.
      */
     public function buildInlineKeyboardButton(
         $text,
@@ -1204,53 +1441,73 @@ class Telegram
         $callback_data = '',
         $switch_inline_query = null,
         $switch_inline_query_current_chat = null,
-        $callback_game = '',
-        $pay = ''
+        $callback_game = null, // Changed to null default, expect array if used
+        $pay = false, // Changed default to false
+        $login_url = null // Added login_url, expect array if used
     ) {
         $replyMarkup = [
             'text' => $text,
         ];
-        if ($url != '') {
+        // Use elseif to ensure only one optional field is set per Telegram rules
+        if ($url !== '') {
             $replyMarkup['url'] = $url;
-        } elseif ($callback_data != '') {
+        } elseif ($callback_data !== '') {
             $replyMarkup['callback_data'] = $callback_data;
-        } elseif (!is_null($switch_inline_query)) {
+        } elseif ($switch_inline_query !== null) { // Use !== null for clarity
             $replyMarkup['switch_inline_query'] = $switch_inline_query;
-        } elseif (!is_null($switch_inline_query_current_chat)) {
+        } elseif ($switch_inline_query_current_chat !== null) { // Use !== null
             $replyMarkup['switch_inline_query_current_chat'] = $switch_inline_query_current_chat;
-        } elseif ($callback_game != '') {
-            $replyMarkup['callback_game'] = $callback_game;
-        } elseif ($pay != '') {
-            $replyMarkup['pay'] = $pay;
+        } elseif ($callback_game !== null && is_array($callback_game)) { // Check if it's an array
+            $replyMarkup['callback_game'] = (object)$callback_game; // Telegram expects an object
+        } elseif ($pay === true) { // Explicitly check for true
+            $replyMarkup['pay'] = true;
+        } elseif ($login_url !== null && is_array($login_url)) { // Check if it's an array
+             $replyMarkup['login_url'] = $login_url; // Expects LoginUrl object structure
         }
 
         return $replyMarkup;
     }
 
+
     /// Create a KeyboardButton
 
-    /** This object represents one button of an inline keyboard. You must use exactly one of the optional fields.
-     * \param $text String; Array of button rows, each represented by an Array of Strings
+    /** This object represents one button of the reply keyboard. For simple text buttons String can be used instead of this object to specify text of the button. Optional fields request_contact, request_location, and request_poll are mutually exclusive.
+     * \param $text String; Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed
      * \param $request_contact Boolean Optional. If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only
      * \param $request_location Boolean Optional. If True, the user's current location will be sent when the button is pressed. Available in private chats only
-     * \return the requested button as Array.
+     * \param $request_poll Array Optional. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only. See KeyboardButtonPollType object definition.
+     * \param $web_app Array Optional. If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only. See WebAppInfo object definition.
+     * \return array The requested button as an associative array.
      */
-    public function buildKeyboardButton($text, $request_contact = false, $request_location = false)
+    public function buildKeyboardButton($text, $request_contact = false, $request_location = false, $request_poll = null, $web_app = null)
     {
         $replyMarkup = [
-            'text'             => $text,
-            'request_contact'  => $request_contact,
-            'request_location' => $request_location,
+            'text' => $text,
         ];
+        // Use elseif as these are mutually exclusive
+        if ($request_contact === true) {
+            $replyMarkup['request_contact'] = true;
+        } elseif ($request_location === true) {
+            $replyMarkup['request_location'] = true;
+        } elseif ($request_poll !== null && is_array($request_poll)) {
+            $replyMarkup['request_poll'] = $request_poll; // Expects KeyboardButtonPollType structure
+        }
+
+        // web_app can be combined with text
+        if ($web_app !== null && is_array($web_app)) {
+             $replyMarkup['web_app'] = $web_app; // Expects WebAppInfo structure
+        }
+
 
         return $replyMarkup;
     }
 
+
     /// Hide a custom keyboard
 
-    /** Upon receiving a message with this object, Telegram clients will hide the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button.
-     * \param $selective Boolean Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.
-     * \return the requested keyboard hide as Array.
+    /** Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button.
+     * \param $selective Boolean Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.
+     * \return string The requested keyboard removal directive as a JSON string.
      */
     public function buildKeyBoardHide($selective = true)
     {
@@ -1258,26 +1515,28 @@ class Telegram
             'remove_keyboard' => true,
             'selective'       => $selective,
         ];
-        $encodedMarkup = json_encode($replyMarkup, true);
-
-        return $encodedMarkup;
+        return json_encode($replyMarkup);
     }
+
 
     /// Display a reply interface to the user
     /* Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot‘s message and tapped ’Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice privacy mode.
-     * \param $selective Boolean Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.
-     * \return the requested force reply as Array
+     * \param $selective Boolean Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.
+     * \param $input_field_placeholder String Optional. The placeholder to be shown in the input field when the reply is active; 1-64 characters
+     * \return string The requested force reply directive as a JSON string.
      */
-    public function buildForceReply($selective = true)
+    public function buildForceReply($selective = true, $input_field_placeholder = null)
     {
         $replyMarkup = [
             'force_reply' => true,
             'selective'   => $selective,
         ];
-        $encodedMarkup = json_encode($replyMarkup, true);
-
-        return $encodedMarkup;
+         if ($input_field_placeholder !== null) {
+            $replyMarkup['input_field_placeholder'] = $input_field_placeholder;
+        }
+        return json_encode($replyMarkup);
     }
+
 
     // Payments
     /// Send an invoice
@@ -1289,6 +1548,13 @@ class Telegram
      */
     public function sendInvoice(array $content)
     {
+         // Ensure prices & reply_markup are JSON encoded if needed
+        if (isset($content['prices']) && is_array($content['prices'])) {
+            $content['prices'] = json_encode($content['prices']);
+        }
+        if (isset($content['reply_markup']) && is_array($content['reply_markup'])) {
+            $content['reply_markup'] = json_encode($content['reply_markup']);
+        }
         return $this->endpoint('sendInvoice', $content);
     }
 
@@ -1301,6 +1567,10 @@ class Telegram
      */
     public function answerShippingQuery(array $content)
     {
+         // Ensure shipping_options are JSON encoded if needed
+        if (isset($content['shipping_options']) && is_array($content['shipping_options'])) {
+            $content['shipping_options'] = json_encode($content['shipping_options']);
+        }
         return $this->endpoint('answerShippingQuery', $content);
     }
 
@@ -1325,6 +1595,10 @@ class Telegram
      */
     public function setPassportDataErrors(array $content)
     {
+         // Ensure errors are JSON encoded if needed
+        if (isset($content['errors']) && is_array($content['errors'])) {
+            $content['errors'] = json_encode($content['errors']);
+        }
         return $this->endpoint('setPassportDataErrors', $content);
     }
 
@@ -1337,6 +1611,10 @@ class Telegram
      */
     public function sendGame(array $content)
     {
+        // Ensure reply_markup key exists and is JSON encoded if needed
+        if (isset($content['reply_markup']) && is_array($content['reply_markup'])) {
+            $content['reply_markup'] = json_encode($content['reply_markup']);
+        }
         return $this->endpoint('sendGame', $content);
     }
 
@@ -1349,6 +1627,10 @@ class Telegram
      */
     public function sendVideoNote(array $content)
     {
+        // Ensure reply_markup key exists and is JSON encoded if needed
+        if (isset($content['reply_markup']) && is_array($content['reply_markup'])) {
+            $content['reply_markup'] = json_encode($content['reply_markup']);
+        }
         return $this->endpoint('sendVideoNote', $content);
     }
 
@@ -1361,6 +1643,10 @@ class Telegram
      */
     public function restrictChatMember(array $content)
     {
+         // Ensure permissions are JSON encoded if needed
+        if (isset($content['permissions']) && is_array($content['permissions'])) {
+            $content['permissions'] = json_encode($content['permissions']);
+        }
         return $this->endpoint('restrictChatMember', $content);
     }
 
@@ -1421,6 +1707,10 @@ class Telegram
      */
     public function setChatPermissions(array $content)
     {
+         // Ensure permissions are JSON encoded if needed
+        if (isset($content['permissions']) && is_array($content['permissions'])) {
+            $content['permissions'] = json_encode($content['permissions']);
+        }
         return $this->endpoint('setChatPermissions', $content);
     }
 
@@ -1500,19 +1790,34 @@ class Telegram
 
     /**
      * See <a href="https://core.telegram.org/bots/api#setchatphoto">setChatPhoto</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'chat_id' and 'photo' which should be InputFile)
      * \return the JSON Telegram's reply.
      */
     public function setChatPhoto(array $content)
     {
+        // Ensure 'photo' is correctly handled (e.g., using CURLFile)
+        if (isset($content['photo']) && is_string($content['photo']) && class_exists('CURLFile')) {
+            // Assuming $content['photo'] is a file path
+            $filePath = realpath($content['photo']);
+            if ($filePath) {
+                $content['photo'] = new CURLFile($filePath);
+            } else {
+                // Handle error: file not found
+                return ['ok' => false, 'description' => 'Chat photo file not found'];
+            }
+        } elseif (isset($content['photo']) && is_string($content['photo'])) {
+             // Fallback for older PHP? Requires '@' prefix which might be disabled.
+             $content['photo'] = '@' . realpath($content['photo']);
+        }
         return $this->endpoint('setChatPhoto', $content);
     }
+
 
     /// Delete Chat Photo
 
     /**
      * See <a href="https://core.telegram.org/bots/api#deletechatphoto">deleteChatPhoto</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'chat_id')
      * \return the JSON Telegram's reply.
      */
     public function deleteChatPhoto(array $content)
@@ -1524,7 +1829,7 @@ class Telegram
 
     /**
      * See <a href="https://core.telegram.org/bots/api#setchattitle">setChatTitle</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'chat_id' and 'title')
      * \return the JSON Telegram's reply.
      */
     public function setChatTitle(array $content)
@@ -1536,7 +1841,7 @@ class Telegram
 
     /**
      * See <a href="https://core.telegram.org/bots/api#setchatdescription">setChatDescription</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'chat_id', 'description' is optional)
      * \return the JSON Telegram's reply.
      */
     public function setChatDescription(array $content)
@@ -1548,7 +1853,7 @@ class Telegram
 
     /**
      * See <a href="https://core.telegram.org/bots/api#pinchatmessage">pinChatMessage</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'chat_id' and 'message_id')
      * \return the JSON Telegram's reply.
      */
     public function pinChatMessage(array $content)
@@ -1560,7 +1865,7 @@ class Telegram
 
     /**
      * See <a href="https://core.telegram.org/bots/api#unpinchatmessage">unpinChatMessage</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'chat_id', 'message_id' is optional)
      * \return the JSON Telegram's reply.
      */
     public function unpinChatMessage(array $content)
@@ -1572,7 +1877,7 @@ class Telegram
 
     /**
      * See <a href="https://core.telegram.org/bots/api#unpinallchatmessages">unpinAllChatMessages</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'chat_id')
      * \return the JSON Telegram's reply.
      */
     public function unpinAllChatMessages(array $content)
@@ -1584,7 +1889,7 @@ class Telegram
 
     /**
      * See <a href="https://core.telegram.org/bots/api#getstickerset">getStickerSet</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'name')
      * \return the JSON Telegram's reply.
      */
     public function getStickerSet(array $content)
@@ -1596,43 +1901,76 @@ class Telegram
 
     /**
      * See <a href="https://core.telegram.org/bots/api#uploadstickerfile">uploadStickerFile</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'user_id' and 'sticker' (InputFile))
      * \return the JSON Telegram's reply.
      */
     public function uploadStickerFile(array $content)
     {
+        // Ensure 'sticker' is correctly handled (e.g., using CURLFile)
+        if (isset($content['sticker']) && is_string($content['sticker']) && class_exists('CURLFile')) {
+             $filePath = realpath($content['sticker']);
+             if ($filePath) {
+                 $content['sticker'] = new CURLFile($filePath);
+             } else {
+                 return ['ok' => false, 'description' => 'Sticker file not found'];
+             }
+        } elseif (isset($content['sticker']) && is_string($content['sticker'])) {
+             $content['sticker'] = '@' . realpath($content['sticker']);
+        }
+
+        // Ensure sticker_format is provided if using CURLFile/newer API versions
+        if (!isset($content['sticker_format'])) {
+            // Attempt to guess or require it? For now, assume it's provided.
+            // Example: $content['sticker_format'] = 'static'; // or 'animated', 'video'
+        }
+
         return $this->endpoint('uploadStickerFile', $content);
     }
+
 
     /// Create New Sticker Set
 
     /**
      * See <a href="https://core.telegram.org/bots/api#createnewstickerset">createNewStickerSet</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'user_id', 'name', 'title', 'stickers' array)
      * \return the JSON Telegram's reply.
      */
     public function createNewStickerSet(array $content)
     {
+        // Ensure stickers array is JSON encoded
+        if (isset($content['stickers']) && is_array($content['stickers'])) {
+            $content['stickers'] = json_encode($content['stickers']);
+        } else {
+             return ['ok' => false, 'description' => "'stickers' array is required and must be an array."];
+        }
         return $this->endpoint('createNewStickerSet', $content);
     }
+
 
     /// Add Sticker To Set
 
     /**
      * See <a href="https://core.telegram.org/bots/api#addstickertoset">addStickerToSet</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'user_id', 'name', 'sticker' object)
      * \return the JSON Telegram's reply.
      */
     public function addStickerToSet(array $content)
     {
+        // Ensure sticker object is JSON encoded
+        if (isset($content['sticker']) && is_array($content['sticker'])) {
+            $content['sticker'] = json_encode($content['sticker']);
+        } else {
+             return ['ok' => false, 'description' => "'sticker' object is required and must be an array."];
+        }
         return $this->endpoint('addStickerToSet', $content);
     }
+
 
     /// Set Sticker Position In Set
 
     /**
      * See <a href="https://core.telegram.org/bots/api#setstickerpositioninset">setStickerPositionInSet</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'sticker' (file_id) and 'position')
      * \return the JSON Telegram's reply.
      */
     public function setStickerPositionInSet(array $content)
@@ -1644,7 +1982,7 @@ class Telegram
 
     /**
      * See <a href="https://core.telegram.org/bots/api#deletestickerfromset">deleteStickerFromSet</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'sticker' (file_id))
      * \return the JSON Telegram's reply.
      */
     public function deleteStickerFromSet(array $content)
@@ -1652,23 +1990,57 @@ class Telegram
         return $this->endpoint('deleteStickerFromSet', $content);
     }
 
-    /// Set Sticker Thumb From Set
+    /// Set Sticker Set Thumbnail (formerly setStickerSetThumb)
 
     /**
-     * See <a href="https://core.telegram.org/bots/api#setstickersetthumb">setStickerSetThumb</a> for the input values
-     * \param $content the request parameters as array
+     * See <a href="https://core.telegram.org/bots/api#setstickersetthumbnail">setStickerSetThumbnail</a> for the input values
+     * \param $content the request parameters as array (must include 'name', 'user_id', optional 'thumbnail' (InputFile or file_id))
      * \return the JSON Telegram's reply.
+     */
+    public function setStickerSetThumbnail(array $content)
+    {
+        // Handle thumbnail upload if path is provided
+        if (isset($content['thumbnail']) && is_string($content['thumbnail']) && file_exists($content['thumbnail']) && class_exists('CURLFile')) {
+             $filePath = realpath($content['thumbnail']);
+             if ($filePath) {
+                 $content['thumbnail'] = new CURLFile($filePath);
+             } else {
+                  // Keep as string (assuming it's a file_id) or handle error
+             }
+        } elseif (isset($content['thumbnail']) && is_string($content['thumbnail']) && file_exists($content['thumbnail'])) {
+             $content['thumbnail'] = '@' . realpath($content['thumbnail']);
+        }
+        // Rename thumb to thumbnail for API consistency
+        if (isset($content['thumb'])) {
+             if (!isset($content['thumbnail'])) { // Avoid overwriting if both exist
+                 $content['thumbnail'] = $content['thumb'];
+             }
+             unset($content['thumb']);
+        }
+
+        return $this->endpoint('setStickerSetThumbnail', $content); // Use the new endpoint name
+    }
+
+    /**
+     * @deprecated Use setStickerSetThumbnail instead.
      */
     public function setStickerSetThumb(array $content)
     {
-        return $this->endpoint('setStickerSetThumb', $content);
+        trigger_error('setStickerSetThumb() is deprecated; use setStickerSetThumbnail() instead.', E_USER_DEPRECATED);
+        // Map 'thumb' to 'thumbnail' if necessary for compatibility before calling the new method
+         if (isset($content['thumb']) && !isset($content['thumbnail'])) {
+             $content['thumbnail'] = $content['thumb'];
+             unset($content['thumb']);
+         }
+        return $this->setStickerSetThumbnail($content);
     }
+
 
     /// Delete a message
 
     /**
      * See <a href="https://core.telegram.org/bots/api#deletemessage">deleteMessage</a> for the input values
-     * \param $content the request parameters as array
+     * \param $content the request parameters as array (must include 'chat_id' and 'message_id')
      * \return the JSON Telegram's reply.
      */
     public function deleteMessage(array $content)
@@ -1681,40 +2053,62 @@ class Telegram
     /** Use this method to receive incoming updates using long polling.
      * \param $offset Integer Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as getUpdates is called with an offset higher than its update_id.
      * \param $limit Integer Limits the number of updates to be retrieved. Values between 1—100 are accepted. Defaults to 100
-     * \param $timeout Integer Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling
-     * \param $update Boolean If true updates the pending message list to the last update received. Default to true.
-     * \return the updates as Array.
+     * \param $timeout Integer Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing only.
+     * \param $allowed_updates Array Optional. A JSON-serialized list of the update types you want your bot to receive. For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types. See Update object for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used. Please note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.
+     * \param $confirm Boolean If true, confirms the last received update_id to Telegram after fetching updates. Default to true.
+     * \return array The updates response from Telegram as an associative array.
      */
-    public function getUpdates($offset = 0, $limit = 100, $timeout = 0, $update = true)
+    public function getUpdates($offset = 0, $limit = 100, $timeout = 0, $allowed_updates = null, $confirm = true)
     {
         $content = ['offset' => $offset, 'limit' => $limit, 'timeout' => $timeout];
-        $this->updates = $this->endpoint('getUpdates', $content);
-        if ($update) {
-            // Check if the API call was successful and result is a non-empty array before trying to confirm
-            if (isset($this->updates['ok']) && $this->updates['ok'] === true && isset($this->updates['result']) && is_array($this->updates['result']) && count($this->updates['result']) >= 1) {
-                $last_element_id = $this->updates['result'][count($this->updates['result']) - 1]['update_id'] + 1;
-                $content = ['offset' => $last_element_id, 'limit' => '1', 'timeout' => $timeout];
-                $this->endpoint('getUpdates', $content); // Note: Result of this confirmation call isn't checked or used
+        if ($allowed_updates !== null && is_array($allowed_updates)) {
+            $content['allowed_updates'] = json_encode($allowed_updates);
+        }
+
+        // Make the API call
+        $this->updates = $this->endpoint('getUpdates', $content, false); // getUpdates uses GET
+
+        // Confirm updates if requested and successful
+        if ($confirm && isset($this->updates['ok']) && $this->updates['ok'] === true && !empty($this->updates['result']) && is_array($this->updates['result'])) {
+            $updateCount = count($this->updates['result']);
+            $lastUpdate = $this->updates['result'][$updateCount - 1];
+
+            // *** FIX: Check if last update has 'update_id' before accessing it ***
+            if (isset($lastUpdate['update_id'])) {
+                $last_element_id = $lastUpdate['update_id'] + 1;
+                $confirmContent = ['offset' => $last_element_id, 'limit' => 1, 'timeout' => $timeout]; // Limit 1 is enough for confirmation
+                // Send confirmation request (result usually not needed, but could be checked)
+                $this->endpoint('getUpdates', $confirmContent, false);
+            } else {
+                // Handle case where last update is missing 'update_id' (optional logging/error handling)
+                 if ($this->log_errors && class_exists('TelegramErrorLogger')) {
+                     TelegramErrorLogger::log(['ok' => false, 'error' => 'Last update missing update_id during confirmation'], [$this->updates]);
+                 }
             }
         }
 
-        return $this->updates;
+        return $this->updates; // Return the fetched updates
     }
+
 
 
     /// Serve an update
 
-    /** Use this method to use the bultin function like Text() or Username() on a specific update.
-     * \param $update Integer The index of the update in the updates array.
+    /** Use this method to use the bultin function like Text() or Username() on a specific update index from the array fetched by getUpdates().
+     * \param $update Integer The index of the update in the updates array (0-based).
+     * \return bool True if the update was successfully served, False otherwise.
      */
     public function serveUpdate($update)
     {
-        // Add check to ensure 'result' key exists and the index is valid
-        if (isset($this->updates['result']) && is_array($this->updates['result']) && isset($this->updates['result'][$update])) {
-             $this->data = $this->updates['result'][$update];
+        // Check if updates were fetched, are OK, and the index is valid
+        // *** FIX: The check here was already correct for preventing the warning on line 874 ***
+        if (isset($this->updates['ok']) && $this->updates['ok'] === true && isset($this->updates['result']) && is_array($this->updates['result']) && isset($this->updates['result'][$update])) {
+             $this->setData($this->updates['result'][$update]); // Use setData to also reset update_type cache
+             return true;
         } else {
-             // Handle error: Maybe set data to null or throw an exception
-             $this->data = null;
+             // Handle error: Set data to null or an empty array, and reset type
+             $this->setData([]); // Set to empty array to avoid null issues later
+             return false;
         }
     }
 
@@ -1722,192 +2116,246 @@ class Telegram
     /// Return current update type
 
     /**
-     * Return current update type `False` on failure.
+     * Determines and returns the type of the current update stored in $this->data. Caches the result.
      *
-     * @return bool|string
+     * @return string|false The update type constant (e.g., self::MESSAGE) or False on failure/unknown type.
      */
     public function getUpdateType()
     {
-        // Reset update_type cache if data is null (e.g., after serveUpdate fails)
-        if ($this->data === null) {
-             $this->update_type = null;
-             return false;
-        }
-
-        if ($this->update_type) {
+        // Return cached type if available
+        if ($this->update_type !== null) {
             return $this->update_type;
         }
 
-        $update = $this->data;
+        $update = $this->getData(); // Ensure we have data loaded
+
+        // If data is empty or not an array, cannot determine type
+        if (empty($update) || !is_array($update)) {
+            $this->update_type = false; // Cache failure
+            return false;
+        }
+
+        // Determine type based on existing keys
         if (isset($update['inline_query'])) {
             $this->update_type = self::INLINE_QUERY;
-
-            return $this->update_type;
-        }
-        if (isset($update['callback_query'])) {
+        } elseif (isset($update['callback_query'])) {
             $this->update_type = self::CALLBACK_QUERY;
-
-            return $this->update_type;
-        }
-        if (isset($update['edited_message'])) {
+        } elseif (isset($update['edited_message'])) {
             $this->update_type = self::EDITED_MESSAGE;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['text'])) {
-            $this->update_type = self::MESSAGE;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['photo'])) {
-            $this->update_type = self::PHOTO;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['video'])) {
-            $this->update_type = self::VIDEO;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['audio'])) {
-            $this->update_type = self::AUDIO;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['voice'])) {
-            $this->update_type = self::VOICE;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['contact'])) {
-            $this->update_type = self::CONTACT;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['location'])) {
-            $this->update_type = self::LOCATION;
-
-            return $this->update_type;
-        }
-        // Note: Checking for reply_to_message might not be the best way to determine type 'REPLY'
-        // as other message types can also be replies. Consider if this logic needs refinement.
-        if (isset($update['message']['reply_to_message'])) {
-            // This might overlap with other types like MESSAGE, PHOTO etc. if they are replies.
-            // Consider if a dedicated 'REPLY' type is needed or if it's just a property of other types.
-            // If just a property, this check might be removed or handled differently.
-            $this->update_type = self::REPLY;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['animation'])) {
-            $this->update_type = self::ANIMATION;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['sticker'])) {
-            $this->update_type = self::STICKER;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['document'])) {
-            $this->update_type = self::DOCUMENT;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['new_chat_member'])) {
-            $this->update_type = self::NEW_CHAT_MEMBER;
-
-            return $this->update_type;
-        }
-        if (isset($update['message']['left_chat_member'])) {
-            $this->update_type = self::LEFT_CHAT_MEMBER;
-
-            return $this->update_type;
-        }
-        if (isset($update['my_chat_member'])) {
-            $this->update_type = self::MY_CHAT_MEMBER;
-
-            return $this->update_type;
-        }
-        if (isset($update['channel_post'])) {
+        } elseif (isset($update['channel_post'])) { // Check channel_post before message
             $this->update_type = self::CHANNEL_POST;
-
-            return $this->update_type;
+        } elseif (isset($update['message'])) {
+            // Message subtypes - order might matter if multiple keys exist (e.g., photo reply)
+            $message = $update['message'];
+            if (isset($message['photo'])) {
+                $this->update_type = self::PHOTO;
+            } elseif (isset($message['video'])) {
+                $this->update_type = self::VIDEO;
+            } elseif (isset($message['audio'])) {
+                $this->update_type = self::AUDIO;
+            } elseif (isset($message['voice'])) {
+                $this->update_type = self::VOICE;
+            } elseif (isset($message['animation'])) {
+                $this->update_type = self::ANIMATION;
+            } elseif (isset($message['sticker'])) {
+                $this->update_type = self::STICKER;
+            } elseif (isset($message['document'])) {
+                $this->update_type = self::DOCUMENT;
+            } elseif (isset($message['location'])) {
+                $this->update_type = self::LOCATION;
+            } elseif (isset($message['contact'])) {
+                $this->update_type = self::CONTACT;
+            } elseif (isset($message['new_chat_member']) || isset($message['new_chat_members'])) { // Check both singular/plural
+                $this->update_type = self::NEW_CHAT_MEMBER;
+            } elseif (isset($message['left_chat_member'])) {
+                $this->update_type = self::LEFT_CHAT_MEMBER;
+            } elseif (isset($message['reply_to_message'])) {
+                 // A reply is a property, not a primary type. The primary type (text, photo etc.) is more specific.
+                 // We already determined the specific type above. If we reach here, it's likely just text.
+                 // If we want a dedicated REPLY type, it needs careful handling.
+                 // For now, assume it's a text message if no other type matched.
+                 if (isset($message['text'])) {
+                     $this->update_type = self::MESSAGE; // Treat text reply as MESSAGE
+                 } else {
+                     // If it's a reply but not text and didn't match other media? Should be rare.
+                     // Fallback to generic MESSAGE or REPLY? Let's stick to MESSAGE for now if text exists.
+                     // If no text, maybe REPLY? But that loses info. Let's default to MESSAGE if text exists.
+                     // If it's a reply to media, the media type check should have caught it earlier.
+                     // Let's prioritize the content type over the reply status for getUpdateType().
+                     // If we only have reply_to_message and no other content key:
+                     // This case seems unlikely based on API docs.
+                     // If we must have REPLY type:
+                     // $this->update_type = self::REPLY;
+                     // But let's assume text if nothing else fits:
+                      if (isset($message['text'])) {
+                         $this->update_type = self::MESSAGE;
+                      } else {
+                          // Fallback if it's a reply with no recognizable content?
+                          $this->update_type = self::MESSAGE; // Default assumption
+                      }
+                 }
+            } elseif (isset($message['text'])) { // Must be after other content checks
+                $this->update_type = self::MESSAGE;
+            } else {
+                // Other message types (venue, game, invoice, etc.) not explicitly handled here yet
+                 $this->update_type = false; // Unknown message content
+            }
+        } elseif (isset($update['my_chat_member'])) {
+            $this->update_type = self::MY_CHAT_MEMBER;
+        } else {
+            $this->update_type = false; // Unknown update structure
         }
 
-        return false;
+        return $this->update_type;
     }
+
 
     private function sendAPIRequest($url, array $content, $post = true)
     {
-        if (isset($content['chat_id'])) {
-            $url = $url.'?chat_id='.$content['chat_id'];
-            unset($content['chat_id']);
-        }
+        // Handle chat_id in URL for GET requests if necessary, though endpoint() handles this better now.
+        // This part might be redundant if endpoint() always prepares the URL correctly.
+        // if (!$post && isset($content['chat_id'])) {
+        //     $url = $url.'?chat_id='.$content['chat_id'];
+        //     unset($content['chat_id']); // No, keep it for the endpoint call if needed there
+        // }
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, false); // Don't include header in output
+
+        // Set method and payload
         if ($post) {
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+            // Check for CURLFile objects (for file uploads)
+            $hasFile = false;
+            if (!empty($content)) {
+                 foreach ($content as $key => $value) {
+                     if ($value instanceof CURLFile) {
+                         $hasFile = true;
+                         break;
+                     }
+                     // Handle older '@' syntax if needed, though CURLFile is preferred
+                     if (is_string($value) && strpos($value, '@') === 0) {
+                          // Potentially requires PHP < 5.5 or specific curl settings
+                          // $hasFile = true; // May not need explicit flag for '@'
+                     }
+                 }
+                 // Use multipart/form-data for file uploads, otherwise default application/x-www-form-urlencoded
+                 curl_setopt($ch, CURLOPT_POSTFIELDS, $hasFile ? $content : http_build_query($content));
+            } else {
+                 // Send empty POST body if content is empty
+                 curl_setopt($ch, CURLOPT_POSTFIELDS, '');
+            }
+
+        } else {
+            curl_setopt($ch, CURLOPT_HTTPGET, 1);
+            // GET parameters should be in the URL, constructed by endpoint() or manually
         }
-        // 		echo "inside curl if";
+
+        // Proxy settings
         if (!empty($this->proxy)) {
-            // 			echo "inside proxy if";
-            if (array_key_exists('type', $this->proxy)) {
-                curl_setopt($ch, CURLOPT_PROXYTYPE, $this->proxy['type']);
-            }
-
-            if (array_key_exists('auth', $this->proxy)) {
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxy['auth']);
-            }
-
             if (array_key_exists('url', $this->proxy)) {
-                // 				echo "Proxy Url";
                 curl_setopt($ch, CURLOPT_PROXY, $this->proxy['url']);
             }
-
             if (array_key_exists('port', $this->proxy)) {
-                // 				echo "Proxy port";
                 curl_setopt($ch, CURLOPT_PROXYPORT, $this->proxy['port']);
             }
-        }
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $result = curl_exec($ch);
-        if ($result === false) {
-            $result = json_encode(
-                ['ok' => false, 'curl_error_code' => curl_errno($ch), 'curl_error' => curl_error($ch)]
-            );
-        }
-        curl_close($ch);
-        if ($this->log_errors) {
-            if (class_exists('TelegramErrorLogger')) {
-                 // Ensure getData() doesn't cause issues if called when input is empty
-                 $currentData = $this->getData();
-                 $loggerArray = ($currentData == null) ? [$content] : [$currentData, $content];
-                 // Decode $result only if it's a string; handle potential JSON errors
-                 $decodedResult = is_string($result) ? json_decode($result, true) : $result;
-                 if (json_last_error() !== JSON_ERROR_NONE) {
-                      // Handle JSON decode error, maybe log the raw string
-                      // For now, pass null or an error structure to the logger
-                      $decodedResult = ['ok' => false, 'error' => 'Failed to decode API response', 'raw_response' => $result];
-                 }
-                 TelegramErrorLogger::log($decodedResult, $loggerArray);
+            if (array_key_exists('type', $this->proxy)) {
+                // CURLPROXY_HTTP, CURLPROXY_SOCKS4, CURLPROXY_SOCKS5, etc.
+                // Ensure the constant value is used if 'type' is a string like 'socks5'
+                $proxyType = $this->proxy['type'];
+                if (is_string($proxyType)) {
+                     if (defined('CURLPROXY_' . strtoupper($proxyType))) {
+                         $proxyType = constant('CURLPROXY_' . strtoupper($proxyType));
+                     } else {
+                         // Handle unknown proxy type string - default or error?
+                         // For now, assume it's passed as the correct CURL constant integer
+                     }
+                }
+                curl_setopt($ch, CURLOPT_PROXYTYPE, $proxyType);
+            }
+            if (array_key_exists('auth', $this->proxy)) { // Format "user:password"
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxy['auth']);
             }
         }
 
+        // SSL verification - consider making this configurable
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Warning: Disabling verification is insecure
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); // Use 0 in production only if necessary and understand risks
 
-        return $result;
+        // Timeout settings
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // Connection timeout
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);      // Total execution timeout
+
+        // Execute request
+        $result = curl_exec($ch);
+        $curl_error_code = curl_errno($ch);
+        $curl_error = curl_error($ch);
+        curl_close($ch);
+
+        // Handle CURL errors
+        if ($result === false) {
+            $result_data = ['ok' => false, 'curl_error_code' => $curl_error_code, 'curl_error' => $curl_error];
+        } else {
+            // Attempt to decode JSON, but keep raw result for logging if needed
+             $decoded_result = json_decode($result, true);
+             if (json_last_error() !== JSON_ERROR_NONE) {
+                 // JSON decode failed - could be HTML error page, etc.
+                 $result_data = ['ok' => false, 'error_code' => null, 'description' => 'Invalid JSON received from API', 'raw_response' => $result];
+             } else {
+                 $result_data = $decoded_result; // Use the decoded array
+             }
+        }
+
+
+        // Error Logging
+        // Log if the request failed (curl error or API error)
+        if ($this->log_errors && class_exists('TelegramErrorLogger') && ($result === false || (isset($result_data['ok']) && $result_data['ok'] === false))) {
+                $currentData = $this->getData(); // Get current update context if available
+                // Prepare context: current update + parameters sent
+                $loggerContext = [];
+                if ($currentData !== null) $loggerContext['update_data'] = $currentData;
+                if (!empty($content)) $loggerContext['request_params'] = $content;
+
+                // Log the result data (which includes error info) and the context
+                TelegramErrorLogger::log($result_data, $loggerContext);
+        }
+
+        // Return the raw JSON string as previous versions did, endpoint() handles decoding
+        return $result === false ? json_encode($result_data) : $result;
     }
-}
 
-// Helper for Uploading file using CURL
+} // End of Telegram Class
+
+// Helper for Uploading file using CURL - Compatibility for PHP < 5.5
 if (!function_exists('curl_file_create')) {
+    /**
+     * Create a CURLFile object (or fallback string for older PHP).
+     *
+     * @param string $filename Path to the file.
+     * @param string $mimetype Mime type of the file.
+     * @param string $postname Name of the file to be used in the upload data.
+     * @return CURLFile|string Returns a CURLFile object or the '@' syntax string.
+     */
     function curl_file_create($filename, $mimetype = '', $postname = '')
     {
-        return "@$filename;filename="
-            .($postname ?: basename($filename))
-            .($mimetype ? ";type=$mimetype" : '');
+        // Check if CURLFile class exists (PHP >= 5.5)
+        if (class_exists('CURLFile')) {
+            return new CURLFile($filename, $mimetype, $postname ?: basename($filename));
+        }
+
+        // Fallback for PHP < 5.5 (use '@' syntax)
+        // Note: This might be disabled by `safe_mode` or `open_basedir`.
+        //       It's generally recommended to use PHP >= 5.5 for CURL file uploads.
+        $value = "@{$filename}";
+        if (!empty($mimetype)) {
+            $value .= ';type=' . $mimetype;
+        }
+        // Filename in POST is handled differently with '@' syntax, often implicit
+        // Adding ';filename=' might not always work as expected with '@'
+        // $value .= ';filename=' . ($postname ?: basename($filename));
+
+        return $value;
     }
 }
