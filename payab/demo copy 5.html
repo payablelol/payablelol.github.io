@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付宝 - 收银台</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, 'Microsoft Yahei', 'Hiragino Sans GB', 'Heiti SC', 'WenQuanYi Micro Hei', sans-serif;
+            background-color: #f5f5f5; /* Light grey background */
+            color: #333;
+            /* Adjusted base font size slightly based on screenshots */
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 990px; /* Desktop max width */
+            margin: 0 auto;
+            padding: 0; /* Padding managed by inner elements */
+        }
+
+        /* Header */
+        .header {
+            background-color: #fff;
+            /* Adjusted padding slightly */
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* Consistent padding with other sections */
+            padding: 0 20px;
+            height: 40px; /* Match screenshot header height */
+        }
+
+        .logo img {
+            height: 28px; /* Adjusted logo height */
+            vertical-align: middle;
+        }
+
+        .logo-text {
+            font-size: 16px; /* Adjusted size */
+            color: #666;
+            margin-left: 10px;
+            border-left: 1px solid #ccc;
+            padding-left: 10px;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1; /* Align better with logo */
+        }
+
+        .header-links {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .header-links a {
+            color: #666;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        .header-links a:hover {
+            color: #ff6600; /* Alipay orange */
+        }
+
+        /* Order Summary Section (Top Bar) */
+        .order-summary {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            /* Adjusted padding */
+            padding: 15px 25px;
+            margin: 20px 0; /* Consistent margin */
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .order-summary-details {
+            flex-grow: 1;
+            padding-right: 20px;
+        }
+
+        .order-summary-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 12px; /* Increased space */
+        }
+        .order-summary-title span {
+            color: #1677ff;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .order-summary dl {
+            margin-bottom: 8px; /* Increased spacing */
+            display: flex;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .order-summary dt {
+            width: 70px;
+            text-align: right;
+            margin-right: 8px; /* Increased spacing */
+            color: #999; /* Lighter label color */
+            white-space: nowrap;
+        }
+        .order-summary dd {
+            flex-grow: 1;
+            color: #333; /* Darker value color */
+        }
+        .order-summary dd.merchant-name {
+            font-weight: bold; /* Match screenshot */
+        }
+
+        .order-summary-amount {
+            text-align: right;
+            flex-shrink: 0;
+            padding-top: 2px; /* Align top better */
+        }
+
+        .order-summary-amount .amount {
+            font-size: 22px; /* Adjusted size */
+            color: #ff6600;
+            font-weight: 700; /* Bold */
+            line-height: 1;
+            font-family: Arial, Helvetica, sans-serif; /* Match screenshot font */
+        }
+        .order-summary-amount .amount-currency {
+            font-size: 14px;
+            margin-left: 3px;
+            color: #ff6600; /* Match amount color */
+            font-weight: normal; /* Normal weight for currency */
+        }
+        .order-summary-amount .order-link {
+            display: block; /* Make it a block to control margin */
+            font-size: 12px;
+            color: #0d8ae6; /* Standard link blue */
+            text-decoration: none;
+            margin-top: 5px; /* Add margin-top for spacing from amount */
+            line-height: 1.2; /* Adjust line-height if needed */
+        }
+        .order-summary-amount .order-link:hover {
+            color: #FF6A00; /* Hover color */
+            text-decoration: underline;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            /* Removed padding, handled by inner body */
+            padding: 0;
+            margin-bottom: 20px; /* Space before footer */
+        }
+
+        .main-content-body {
+            display: flex;
+            /* Adjusted padding */
+            padding: 25px;
+        }
+
+        /* Payment Section (QR Code) */
+        .payment-section {
+            flex-grow: 1;
+            padding-right: 30px; /* Space to sidebar */
+            border-right: 1px solid #eee; /* Separator line */
+            margin-right: 30px; /* Space from separator */
+            text-align: center; /* Center QR content */
+        }
+
+        .qr-code-area {
+            display: inline-block; /* Allow centering */
+            position: relative;
+            margin-bottom: 15px; /* Space below QR */
+        }
+
+        .amount-display {
+            font-size: 14px; /* Adjusted size */
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .amount-display span {
+            font-size: 18px; /* Larger amount */
+            font-weight: bold;
+            color: #ff6600; /* Orange amount */
+            margin-left: 5px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .qr-image {
+            width: 160px; /* QR code size */
+            height: 160px;
+            margin: 0 auto; /* Center image */
+            border: 1px solid #eee; /* Subtle border */
+            padding: 5px; /* Padding around QR */
+            background-color: #fff;
+            position: relative; /* For overlay positioning */
+        }
+        .qr-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Scanner Overlay Animation */
+        .scanner-overlay {
+            position: absolute;
+            /* Adjusted size and position */
+            top: 45px;
+            left: 45px;
+            width: 80px;
+            height: 80px;
+            border: 2px dashed #1677ff; /* Blue dashed border */
+            border-radius: 50%; /* Circular */
+            box-sizing: border-box;
+            opacity: 0; /* Start hidden */
+            animation: pulseRotate 3s infinite ease-out;
+        }
+
+        @keyframes pulseRotate {
+            0% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 1; }
+            100% { transform: scale(0.8) rotate(360deg); opacity: 0.5; }
+        }
+
+
+        .qr-instructions {
+            margin-top: 15px; /* Space above instructions */
+            font-size: 13px; /* Adjusted size */
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center horizontally */
+        }
+        .qr-instructions img {
+            width: 14px; /* Icon size */
+            height: auto;
+            margin-right: 8px; /* Space after icon */
+            vertical-align: middle; /* Align icon with text */
+        }
+
+        .alternative-link {
+            display: block;
+            margin-top: 15px; /* Space above link */
+            font-size: 12px;
+            color: #1677ff;
+            text-decoration: none;
+        }
+        .alternative-link:hover {
+            color: #ff6600;
+        }
+
+        /* Sidebar Section (Login/Switch Account) */
+        .sidebar {
+            flex-basis: 220px;
+            flex-shrink: 0;
+            padding-left: 30px;
+            display: flex; /* Keep display:flex for default sidebar */
+            justify-content: center;
+            align-items: center;
+        }
+        /* Initially hide the login-specific sidebar */
+        .sidebar.login-sidebar {
+            display: none;
+        }
+
+        .sidebar-box {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            text-align: center;
+            width: 100%;
+        }
+        /* Styles for the alternative sidebar box in login view */
+        .sidebar-box.alt-box {
+            background-color: #fff; /* White background */
+            border: none; /* No border */
+            padding: 30px 20px; /* Adjust padding */
+        }
+        .sidebar-box.alt-box h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: normal;
+        }
+        .sidebar-icon-placeholder {
+            margin-bottom: 20px;
+        }
+        .sidebar-icon-placeholder img {
+            width: 48px; /* Adjust size as needed */
+            height: 48px;
+        }
+        .sidebar-button.alt-button {
+            background-color: #f5f5f5; /* Light grey background */
+            color: #1677ff; /* Blue text */
+            border: 1px solid #ddd;
+            font-weight: bold;
+        }
+        .sidebar-button.alt-button:hover {
+            background-color: #eee;
+            border-color: #ccc;
+        }
+
+        .sidebar-box img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #1677ff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease; /* Add transition */
+        }
+        .sidebar-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Login Section Styles */
+        .login-section {
+            flex-basis: calc(100% - 250px); /* Adjust basis considering sidebar */
+            padding-left: 40px; /* Space between QR/Login */
+            border-left: 1px solid #f0f0f0; /* Separator line */
+            display: none; /* Hidden by default */
+            flex-direction: column; /* Stack header and form */
+        }
+        .login-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px; /* Space below header */
+            padding-bottom: 10px; /* Space before border */
+            border-bottom: 1px solid #f0f0f0; /* Line below header */
+        }
+        .login-header h2 {
+            font-size: 18px; /* Slightly larger header */
+            font-weight: 600; /* Bolder header */
+            color: #333;
+        }
+        .login-header a { /* Register link */
+            font-size: 13px;
+            color: #1677ff;
+            text-decoration: none;
+        }
+         .login-header a:hover {
+             text-decoration: underline;
+         }
+
+        .login-form {
+            width: 100%;
+        }
+
+        /* Login Form Enhancements */
+        .login-form .form-group {
+            display: flex;
+            /* Use flex-wrap for potential wrapping if needed, though unlikely here */
+            /* flex-wrap: wrap; */
+            align-items: flex-start; /* Align items to the top */
+            margin-bottom: 18px; /* Consistent spacing between groups */
+            position: relative;
+        }
+        .login-form label {
+            width: 75px; /* Consistent label width */
+            text-align: right;
+            margin-right: 10px;
+            padding-top: 8px; /* Align label text better with input */
+            flex-shrink: 0;
+            font-size: 14px; /* Standard form label size */
+            color: #555; /* Slightly darker label */
+            line-height: 1.4; /* Match input line-height */
+        }
+
+        .login-form .input-wrapper {
+            position: relative;
+            flex-grow: 1; /* Allow wrapper to take remaining space */
+            /* Removed margin-right, handled by forgot-link margin */
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 8px 12px; /* Standard input padding */
+            border: 1px solid #d9d9d9; /* Standard border color */
+            border-radius: 4px; /* Slightly more rounded corners */
+            font-size: 14px;
+            line-height: 1.5; /* Standard line height */
+            transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions */
+        }
+        .login-form input[type="text"]:focus,
+        .login-form input[type="password"]:focus {
+             border-color: #1677ff;
+             outline: none;
+             box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15); /* Softer focus glow */
+        }
+
+
+        /* Style for invalid input fields */
+        .login-form input.invalid {
+            border-color: #ff4d4f;
+            box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1); /* Softer error glow */
+        }
+        .login-form input.invalid:focus {
+             /* Keep focus style consistent even when invalid */
+             border-color: #ff4d4f; /* Keep red border on focus */
+             box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1); /* Keep error glow */
+        }
+
+
+        /* Error Message Styling */
+        .error-message {
+            display: block;
+            color: #ff4d4f; /* Error red */
+            font-size: 12px; /* Clear but not too large */
+            margin-top: 5px; /* Space below input */
+            min-height: 16px; /* Reserve space to prevent layout shift */
+            padding-left: 0;
+            line-height: 1.3; /* Tighter line height for error */
+            /* Removed absolute positioning for simpler flow */
+        }
+
+        .login-form .forgot-link {
+            font-size: 13px; /* Standard link size */
+            color: #1677ff;
+            text-decoration: none;
+            margin-left: 15px; /* More space between input wrapper and link */
+            padding-top: 9px; /* Align better vertically */
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .login-form .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .login-form .password-hint {
+            font-size: 12px;
+            color: #888; /* Lighter hint text */
+            margin-left: 85px; /* Align with input fields (label width + margin) */
+            margin-bottom: 20px; /* More space before button */
+            margin-top: -10px; /* Pull hint closer to password field group */
+            padding-right: 10px; /* Ensure hint doesn't touch edge */
+        }
+        .login-form .password-hint .highlight {
+            color: #f60; /* Orange highlight */
+        }
+
+        .submit-button {
+            width: auto; /* Let button size to content + padding */
+            min-width: 120px; /* Minimum width */
+            margin-left: 85px; /* Align with input fields */
+            padding: 9px 25px; /* Comfortable padding */
+            font-size: 15px; /* Clear button text */
+            font-weight: 500; /* Medium weight */
+            background-color: #1677ff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+            text-align: center;
+            display: inline-block; /* Allow margin-left to work */
+        }
+        .submit-button:hover {
+             background-color: #0958d9;
+        }
+
+
+        /* Submit Button Loading/Disabled State */
+        .submit-button:disabled {
+            background-color: #69aaff;
+            cursor: not-allowed;
+            opacity: 0.75; /* Slightly more opaque when disabled */
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px 15px 30px; /* Adjusted padding */
+            font-size: 12px;
+            color: #999;
+            margin-top: 30px; /* Space above footer */
+            background-color: #fff; /* Ensure white background */
+            border-top: 1px solid #eee; /* Add subtle top border */
+        }
+        .footer .container {
+            /* Ensure container padding doesn't affect footer content */
+            padding: 0 15px;
+        }
+        .footer-icp {
+            margin-bottom: 10px; /* Space between ICP and logos */
+        }
+        .footer-logos {
+            line-height: 1; /* Reset line-height for logo container */
+        }
+        /* Footer Logos using Background Images */
+        .footer-logos .img-placeholder {
+            display: inline-block;
+            height: 20px; /* Consistent height */
+            margin: 0 5px; /* Horizontal spacing */
+            vertical-align: middle; /* Align logos vertically */
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: contain; /* Scale image within bounds */
+            text-indent: -9999px; /* Hide text */
+            overflow: hidden; /* Hide overflow */
+        }
+        /* Specific logo styles */
+        .img-placeholder.trustwave { background-image: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*svAXTYMD3PAAAAAAAAAAAABjAQAAAQ/original'); width: 80px; }
+        .img-placeholder.verisign { background-image: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*Q0ZRRrJgnrYAAAAAAAAAAABjAQAAAQ/original'); width: 60px; }
+        .img-placeholder.pci { background-image: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*Y4WMRYm3Fz4AAAAAAAAAAABjAQAAAQ/original'); width: 40px; }
+        .img-placeholder.visa { background-image: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*p6YyQ5LxG0MAAAAAAAAAAAABjAQAAAQ/original'); width: 40px; }
+        .img-placeholder.mastercard { background-image: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*o5XgQ7l_GqEAAAAAAAAAAABjAQAAAQ/original'); width: 35px; }
+        .img-placeholder.jcb { background-image: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*wLHiR5c5m0AAAAAAAAAAAABjAQAAAQ/original'); width: 30px; }
+
+
+        /* --- 移动端样式 (Mobile View) --- */
+        .mobile-view {
+            display: none; /* Hidden by default */
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .mobile-header {
+            background-color: #1677FF;
+            color: white;
+            padding: 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            height: 44px; /* Standard mobile header height */
+        }
+        .mobile-header .back-arrow {
+            font-size: 26px; /* Slightly smaller arrow */
+            text-decoration: none;
+            color: white;
+            font-weight: normal;
+            line-height: 1;
+            padding: 0 12px; /* Adjust click area */
+            margin-left: -12px;
+        }
+        .mobile-header .title {
+            font-size: 18px;
+            font-weight: 500;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            white-space: nowrap; /* Prevent title wrapping */
+        }
+        .mobile-header .title-logo-placeholder {
+            display: inline-block;
+            vertical-align: middle; /* Better alignment */
+            margin-right: 6px;
+            width: 24px;
+            height: 24px;
+            /* Using official Alipay logo URL */
+            background: url('https://t.alipayobjects.com/images/rmsweb/T1B8lXXeliXXXXXXXX.png') no-repeat center center;
+            background-size: contain;
+            flex-shrink: 0; /* Prevent logo shrinking */
+        }
+        .mobile-header .title-text {
+             display: inline-block;
+             vertical-align: middle;
+             overflow: hidden; /* Hide overflow text */
+             text-overflow: ellipsis; /* Add ellipsis */
+             white-space: nowrap; /* Prevent wrapping */
+             max-width: calc(100vw - 160px); /* Adjust max-width based on arrows/margins */
+        }
+        .mobile-header .more-options {
+            font-size: 24px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            line-height: 1;
+            padding: 0 10px;
+            margin-right: -10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .mobile-content {
+            padding: 64px 20px 40px; /* Header(44) + 20 spacing */
+            text-align: center;
+        }
+        .mobile-merchant-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px; /* Adjusted spacing */
+            line-height: 1.4;
+        }
+        .mobile-amount {
+            font-size: 40px; /* Adjusted size */
+            color: #000;
+            font-weight: 500;
+            margin-bottom: 50px; /* Adjusted spacing */
+            line-height: 1;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        .mobile-amount .currency {
+            font-size: 28px; /* Adjusted size */
+            font-weight: normal;
+            margin-right: 3px; /* Fine-tune spacing */
+            vertical-align: baseline;
+        }
+        .mobile-button {
+            display: block;
+            width: 100%;
+            padding: 13px 0; /* Adjusted padding */
+            background-color: #1677FF;
+            color: white;
+            font-size: 18px; /* Adjusted size */
+            border: none;
+            border-radius: 6px; /* Slightly more rounded */
+            text-decoration: none;
+            margin-bottom: 25px; /* Adjusted spacing */
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .mobile-button:active {
+            background-color: #0f5ecc;
+        }
+        .mobile-link {
+            color: #1677FF;
+            text-decoration: none;
+            font-size: 15px; /* Adjusted size */
+        }
+        .mobile-footer-link {
+            position: absolute;
+            bottom: 25px; /* Adjusted position */
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 14px; /* Adjusted size */
+            color: #999;
+        }
+        /* Mobile Options Menu */
+        .mobile-options-menu {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #f7f7f7;
+            z-index: 20;
+            border-top: 1px solid #e0e0e0; /* Add separator */
+        }
+        .mobile-options-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .mobile-options-menu li a, .mobile-options-menu li span {
+            display: block;
+            padding: 13px 20px; /* Adjusted padding */
+            text-align: center;
+            font-size: 17px; /* Adjusted size */
+            color: #007aff; /* Blue color for options */
+            text-decoration: none;
+            border-bottom: 1px solid #e0e0e0; /* Separator line */
+            cursor: pointer;
+        }
+        .mobile-options-menu li:last-child a,
+        .mobile-options-menu li:last-child span {
+            border-bottom: none; /* No border for last item */
+        }
+        .mobile-options-menu li.cancel span {
+            color: #007aff; /* Blue color for cancel */
+            font-weight: 600; /* Slightly bolder cancel */
+            margin-top: 8px; /* Space above cancel */
+            background-color: #fff; /* White background for cancel */
+            border-top: 8px solid #f7f7f7; /* Create space using border */
+            padding-top: 13px; /* Keep padding consistent */
+            padding-bottom: 13px;
+        }
+        /* Mobile Toast Message */
+        .mobile-toast {
+            display: none;
+            position: fixed;
+            bottom: 75px; /* Adjusted position */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.75); /* Slightly darker */
+            color: white;
+            padding: 10px 20px; /* Adjusted padding */
+            border-radius: 6px; /* Match button radius */
+            font-size: 14px; /* Adjusted size */
+            z-index: 30;
+            white-space: nowrap;
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            /* Hide Desktop Elements */
+            .header,
+            .container > .order-summary, /* Target direct child */
+            .container > .main-content, /* Target direct child */
+            .footer {
+                display: none;
+            }
+
+            /* Show Mobile View */
+            .mobile-view {
+                display: block;
+            }
+
+            /* Reset body/container styles if needed for mobile */
+            body {
+                background-color: #f5f5f5; /* Ensure mobile background */
+                /* Remove potential desktop margin/padding */
+                margin: 0;
+                padding: 0;
+            }
+            .container { /* Reset container styles for mobile if they interfere */
+                 max-width: 100%;
+                 margin: 0;
+                 padding: 0;
+                 border: none;
+                 box-shadow: none;
+                 background-color: transparent; /* Let mobile-view handle background */
+            }
+
+            .main-content-body {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .payment-section {
+                /* Ensure it's displayed or hidden correctly */
+                 /* display: flex; /* or block, depending on default */
+            }
+
+            .sidebar {
+                flex-basis: 100%;
+                padding-left: 0;
+                align-items: stretch;
+                justify-content: flex-start;
+                min-width: unset;
+                /* Ensure it's displayed or hidden correctly */
+                /* display: flex; /* or block, depending on default */
+                margin-top: 20px; /* Add space when stacked */
+            }
+            /* Ensure login sidebar also stacks */
+            .sidebar.login-sidebar {
+                 flex-basis: 100%;
+                 padding-left: 0;
+                 align-items: stretch;
+                 justify-content: flex-start;
+                 min-width: unset;
+                 margin-top: 20px; /* Add space when stacked */
+            }
+
+            .login-section {
+                flex-basis: auto; /* Full width */
+                padding-left: 0;
+                border-left: none;
+                /* Add top border when stacked below QR section if needed */
+                /* border-top: 1px solid #f0f0f0; */
+                /* padding-top: 20px; */
+                /* display: block; /* or none, depending on state */
+            }
+            .login-form label {
+                width: 70px; /* Adjust label width */
+            }
+             .login-form .password-hint,
+             .submit-button {
+                 margin-left: 80px; /* Adjust indentation */
+             }
+        }
+
+         @media (max-width: 480px) {
+            // ... existing small screen styles ...
+            .login-form label {
+                width: auto; /* Let labels stack */
+                text-align: left;
+                margin-right: 0;
+                margin-bottom: 3px;
+                display: block; /* Stack label above input */
+            }
+            .login-form .form-group {
+                flex-direction: column; /* Stack input and forgot link */
+                align-items: stretch; /* Stretch items */
+            }
+            .login-form .input-wrapper {
+                margin-right: 0;
+                margin-bottom: 0; /* Reset margin */
+                width: 100%; /* Ensure wrapper takes full width */
+            }
+            .error-message {
+                 /* position: static; */ /* Reset position if it was absolute */
+                 margin-bottom: 5px; /* Add space below error when stacked */
+            }
+            .login-form .forgot-link {
+                text-align: right;
+                margin-top: 5px; /* Add space above forgot link */
+                width: 100%; /* Make link take full width for alignment */
+            }
+            .login-form .password-hint,
+            .login-form .submit-button {
+                 margin-left: 0; /* Remove indentation */
+                 width: 100%;
+            }
+            .login-header h2 {
+                font-size: 15px;
+            }
+            .login-form input[type="text"],
+            .login-form input[type="password"] {
+                font-size: 13px;
+            }
+            .login-form .submit-button {
+                font-size: 14px; /* Keep button font size reasonable */
+            }
+         }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header (Desktop) -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" alt="支付宝 Logo">
+                <span class="logo-text">我的收银台</span>
+            </div>
+            <div class="header-links">
+                你好，欢迎使用支付宝付款！ | <a href="#" id="faq-link">常见问题</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container (Desktop) -->
+    <div class="container">
+
+        <!-- Order Summary Section (Desktop) -->
+        <section class="order-summary">
+            <div class="order-summary-details">
+                <div class="order-summary-title">正在使用即时到账交易 <span id="instant-trade-help" style="cursor: pointer;">[?]</span></div>
+                <dl>
+                    <dt>收款方：</dt>
+                    <dd class="merchant-name">凌河区天鳌软件经销处</dd>
+                </dl>
+                <dl>
+                    <dt>商品名称：</dt>
+                    <dd>18568542584 (H)售后客服 KF.744.CN</dd>
+                </dl>
+                <dl>
+                    <dt>订单号：</dt>
+                    <dd>2025040314005288111</dd>
+                </dl>
+            </div>
+            <div class="order-summary-amount">
+                <span class="amount">32.80</span><span class="amount-currency">元</span>
+                <a href="#" class="order-link" id="order-details-link">订单详情</a>
+            </div>
+        </section>
+
+        <!-- Main Content Body (QR + Login - Desktop) -->
+        <div class="main-content">
+            <div class="main-content-body">
+
+                <!-- Payment Section (QR Code) -->
+                <section class="payment-section">
+                    <div class="qr-code-area">
+                         <div class="amount-display">扫一扫付款 (元) <span>32.80</span></div>
+                        <div class="qr-image">
+                            <img src="https://via.placeholder.com/160x160/EEEEEE/888888?text=QR+Code" alt="支付二维码">
+                        </div>
+                        <!-- Updated Scanner Overlay -->
+                        <div class="scanner-overlay"></div>
+                    </div>
+                    <div class="qr-instructions">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDE2IDI0Ij4KICAgIDxwYXRoIGZpbGw9IiMxNjc3RkYiIGQ9Ik0xMi41IDBoLTlDMy4yMjQgMCAzIC4yMjQgMyAuNVYyMy41YzAgLjI3Ni4yMjQuNS41LjVoOUMxMi43NzYgMjQgMTMgMjMuNzc2IDEzIDIzLjVWLjVDMTMgLjIyNCAxMi43NzYgMCAxMi41IDB6TTYuNSAydi0uNWgxVjJINi41em0zIDE5LjVINy41di0xaDF2MXptMi41LTNoLTdWNEgxMlYxOC41eiIvPgo8L3N2Zz4K" alt="手机图标">
+                        打开手机支付宝 扫一扫继续付款
+                    </div>
+                    <a href="#" class="alternative-link" id="download-app-link" target="_blank">首次使用请下载手机支付宝</a>
+                </section>
+
+                 <!-- Sidebar Section (Login/Switch Account) -->
+                 <aside class="sidebar">
+                     <div class="sidebar-box">
+                         <img src="https://gw.alipayobjects.com/zos/rmsportal/OvAqLjyNJUcbMxAQNFup.svg" alt="支付宝">
+                         <a href="#" class="sidebar-button" id="login-button">&lt; 登录账户付款</a>
+                     </div>
+                 </aside>
+
+                 <!-- Login Section (Hidden by default) -->
+                 <section class="login-section" id="login-section">
+                     <div class="login-header">
+                         <h2>登录支付宝账户付款</h2>
+                         <a href="#" id="register-link">新用户注册</a>
+                     </div>
+                     <form class="login-form" id="login-form">
+                         <div class="form-group">
+                             <label for="account-name">账户名：</label>
+                             <div class="input-wrapper">
+                                 <input type="text" id="account-name" name="account-name" placeholder="手机号码/邮箱">
+                                 <span class="error-message" id="account-name-error"></span>
+                             </div>
+                             <a href="#" class="forgot-link" id="forgot-account-link">忘记账户名？</a>
+                         </div>
+                         <div class="form-group">
+                             <label for="payment-password">支付密码：</label>
+                             <div class="input-wrapper">
+                                 <input type="password" id="payment-password" name="payment-password">
+                                 <span class="error-message" id="password-error"></span>
+                             </div>
+                             <a href="#" class="forgot-link" id="forgot-password-link">忘记密码？</a>
+                         </div>
+                         <p class="password-hint">请输入账户的 <span class="highlight">支付密码</span>，不是登录密码。</p>
+                         <button type="submit" class="submit-button" id="next-step-button">下一步</button>
+                     </form>
+                 </section>
+
+                 <!-- Sidebar Section (Associated with Login View, Hidden by default) -->
+                 <aside class="sidebar login-sidebar" id="login-sidebar">
+                     <div class="sidebar-box alt-box">
+                         <h3>试试手机支付宝</h3>
+                         <!-- Placeholder icon -->
+                         <div class="sidebar-icon-placeholder">
+                             <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48cGF0aCBmaWxsPSIjMTY3N0ZGIiBkPSJNMzkgNkg5QzcuMzUgNiA2IDcuMzUgNiA5djMwYzAgMS42NSAxLjM1IDMgMyAzaDMwYzEuNjUgMCAzLTEuMzUgMy0zVjljMC0xLjY1LTEuMzUtMy0zLTN6TTIzIDI4aDJ2Mmgzdi0yaDJ2LTJoLTJ2LTJoLTJ2MmgtM3Yyek0xNSA5aDE4djZoLTE4Vjl6bTIxIDMwaC04di0yaDh2MnptLTkuNSAwaC05di0yaDl2MnptMTEuNS01SDExVjE4aDI4djE2eiIvPjwvc3ZnPg==" alt="手机支付图标">
+                         </div>
+                         <a href="#" class="sidebar-button alt-button" id="show-qr-button">扫一扫付款 &gt;</a>
+                     </div>
+                 </aside>
+
+            </div>
+        </div>
+
+    </div> <!-- End .container (Desktop) -->
+
+    <!-- Footer (Desktop) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-icp">
+                ICP证：合字B2-20190046
+            </div>
+            <div class="footer-logos">
+                <!-- Replaced img with span placeholders using background images -->
+                <span class="img-placeholder trustwave">Trustwave</span>
+                <span class="img-placeholder verisign">VeriSign</span>
+                <span class="img-placeholder pci">PCI DSS</span>
+                <span class="img-placeholder visa">VISA</span>
+                <span class="img-placeholder mastercard">MasterCard</span>
+                <span class="img-placeholder jcb">JCB</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile View Container -->
+    <div class="mobile-view">
+        <div class="mobile-header">
+            <a href="#" class="back-arrow" id="mobile-back-arrow">&lt;</a>
+            <span class="title">
+                <span class="title-logo-placeholder"></span> <!-- Logo Placeholder -->
+                <span class="title-text">支付宝付款</span>
+            </span>
+            <a href="#" class="more-options" id="mobile-more-options">...</a> <!-- 实际功能需 JS -->
+        </div>
+        <div class="mobile-content">
+            <!-- Example Content (Update with dynamic data as needed) -->
+            <div class="mobile-merchant-info">17745551445 (H)售后客服 KF.744.CN</div>
+            <div class="mobile-amount">
+                <span class="currency">¥</span>22.80
+            </div>
+            <button class="mobile-button">打开支付宝APP付款</button>
+            <a href="#" class="mobile-link">下载支付宝APP付款</a>
+        </div>
+        <div class="mobile-footer-link">
+            已支付完成返回查看订单
+        </div>
+
+        <!-- Mobile Options Menu (Hidden by default) -->
+        <div class="mobile-options-menu" id="mobile-menu">
+             <ul>
+                 <li><a href="#" id="mobile-menu-service">我的客服</a></li>
+                 <li><a href="#" id="mobile-menu-feedback">问题反馈</a></li>
+                 <li><a href="#" id="mobile-menu-download">下载支付宝</a></li>
+                 <!-- Use span + JS for cancel -->
+                 <li class="cancel"><span id="mobile-menu-cancel">取消</span></li>
+             </ul>
+        </div>
+
+        <!-- Mobile Toast Message (Hidden by default) -->
+        <div class="mobile-toast" id="mobile-toast">
+            您还未完成付款，请继续付款
+        </div>
+
+    </div> <!-- end mobile-view -->
+
+    <!-- JavaScript for Mobile Interactions -->
+    <script>
+        const moreOptionsButton = document.getElementById('mobile-more-options'); // Use ID
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuCancel = document.getElementById('mobile-menu-cancel');
+        const mobileBackArrow = document.getElementById('mobile-back-arrow');
+
+        function showMobileMenu() {
+            if (mobileMenu) {
+                mobileMenu.style.display = 'block';
+                // Optional: Add overlay or disable background scroll
+            }
+        }
+
+        function hideMobileMenu() {
+             if (mobileMenu) {
+                mobileMenu.style.display = 'none';
+                 // Optional: Remove overlay or enable background scroll
+            }
+        }
+
+        // Click "..." to show menu
+        if (moreOptionsButton) {
+            moreOptionsButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent link default action
+                showMobileMenu();
+            });
+        }
+
+        // Click "Cancel" in menu to hide
+        if (mobileMenuCancel) {
+            mobileMenuCancel.addEventListener('click', function() {
+                hideMobileMenu();
+            });
+        }
+
+        // Optional: Click outside menu to hide (more complex)
+        // document.addEventListener('click', function(event) {
+        //     if (mobileMenu && mobileMenu.style.display === 'block') {
+        //         if (!mobileMenu.contains(event.target) && event.target !== moreOptionsButton) {
+        //             hideMobileMenu();
+        //         }
+        //     }
+        // });
+
+
+        // Function to show Toast message
+        function showToast(message, duration = 3000) {
+            const mobileToast = document.getElementById('mobile-toast');
+            if (mobileToast) {
+                mobileToast.textContent = message; // Set message content
+                mobileToast.style.display = 'block';
+                // Center the toast (optional, requires CSS position:fixed/absolute)
+                // mobileToast.style.left = `calc(50% - ${mobileToast.offsetWidth / 2}px)`;
+                // mobileToast.style.top = `calc(50% - ${mobileToast.offsetHeight / 2}px)`; // Or bottom: 20px etc.
+                setTimeout(() => { mobileToast.style.display = 'none'; }, duration); // Auto-hide
+            }
+        }
+
+        // Example: Show toast when clicking back arrow
+        if (mobileBackArrow) {
+            mobileBackArrow.addEventListener('click', function(e) {
+                e.preventDefault();
+                showToast('您还未完成付款，请继续付款');
+                // In a real app, you might check payment status before showing this
+            });
+        }
+
+        // Add listeners for other menu items (optional example)
+        const mobileMenuService = document.getElementById('mobile-menu-service');
+        if (mobileMenuService) {
+            mobileMenuService.addEventListener('click', (e) => {
+                e.preventDefault();
+                hideMobileMenu();
+                showInfo('您点击了"我的客服"');
+            });
+        }
+        // Add similar listeners for feedback, download...
+
+    </script>
+
+    <!-- JavaScript for Interactions -->
+    <script>
+        // --- Helper Function for Alerts (Optional) ---
+        function showInfo(message) {
+            alert(message); // Simple alert for demonstration
+        }
+
+        // --- Element References ---
+        const faqLink = document.getElementById('faq-link');
+        const instantTradeHelp = document.getElementById('instant-trade-help');
+        const orderDetailsLink = document.getElementById('order-details-link');
+        const downloadAppLink = document.getElementById('download-app-link');
+        const loginButton = document.getElementById('login-button'); // Button in QR sidebar
+        const showQrButton = document.getElementById('show-qr-button'); // Button in Login sidebar
+        const registerLink = document.getElementById('register-link');
+        const forgotAccountLink = document.getElementById('forgot-account-link');
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
+        const nextStepButton = document.getElementById('next-step-button');
+        const loginForm = document.getElementById('login-form'); // The form itself
+        const accountNameInput = document.getElementById('account-name');
+        const passwordInput = document.getElementById('payment-password');
+        const accountNameError = document.getElementById('account-name-error');
+        const passwordError = document.getElementById('password-error');
+
+        // View Sections
+        const paymentSection = document.querySelector('.payment-section');
+        const qrSidebar = document.querySelector('.sidebar:not(.login-sidebar)'); // Original sidebar
+        const loginSection = document.getElementById('login-section');
+        const loginSidebar = document.getElementById('login-sidebar');
+
+        // --- Event Listeners ---
+
+        // 1. Header: FAQ Link
+        if (faqLink) {
+            faqLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                showInfo('您点击了"常见问题"。\n（实际应用中会跳转到帮助页面）');
+            });
+        }
+
+        // 2. Order Summary: Instant Trade Help [?]
+        if (instantTradeHelp) {
+            instantTradeHelp.addEventListener('click', function(event) {
+                event.preventDefault();
+                showInfo('即时到账交易：买家付款后，款项将立刻进入卖家支付宝账户。\n（此为示例说明）');
+            });
+        }
+
+        // 3. Order Summary: Order Details Link
+        if (orderDetailsLink) {
+            orderDetailsLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                showInfo('您点击了"订单详情"。\n（实际应用中会显示订单详细信息）');
+            });
+        }
+
+        // 4. Payment Section: Download App Link
+        if (downloadAppLink) {
+            downloadAppLink.addEventListener('click', function(event) {
+                // Let the default behavior (target="_blank") proceed after the alert
+                showInfo('正在前往支付宝 App 下载页面...\n（实际应用中会跳转到下载地址）');
+            });
+        }
+
+        // 5. Sidebar: Login Button (Switch to Login View)
+        if (loginButton) {
+            loginButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                if (paymentSection && qrSidebar && loginSection && loginSidebar) {
+                    paymentSection.style.display = 'none';
+                    qrSidebar.style.display = 'none';
+                    loginSection.style.display = 'block'; // Or 'flex' if needed by inner styles
+                    loginSidebar.style.display = 'flex'; // Show the login sidebar
+                    // Clear any previous login errors when switching view
+                    setInputError(accountNameInput, accountNameError, '');
+                    setInputError(passwordInput, passwordError, '');
+                }
+            });
+        }
+
+        // 6. Login Sidebar: Show QR Button (Switch back to QR View)
+        if (showQrButton) {
+            showQrButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                 if (paymentSection && qrSidebar && loginSection && loginSidebar) {
+                    loginSection.style.display = 'none';
+                    loginSidebar.style.display = 'none';
+                    paymentSection.style.display = 'flex'; // Show QR section (use flex as it's a flex item)
+                    qrSidebar.style.display = 'flex';    // Show QR sidebar (use flex as it's a flex item)
+                }
+            });
+        }
+
+        // 7. Login Form: Register Link
+        if (registerLink) {
+            registerLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                showInfo('您点击了"新用户注册"。\n（实际应用中会跳转到注册页面）');
+            });
+        }
+
+        // 8. Login Form: Forgot Account Link
+        if (forgotAccountLink) {
+            forgotAccountLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                showInfo('您点击了"忘记账户名？"。\n（实际应用中会跳转到找回账户名页面）');
+            });
+        }
+
+        // 9. Login Form: Forgot Password Link
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                showInfo('您点击了"忘记密码？"。\n（实际应用中会跳转到找回密码页面）');
+            });
+        }
+
+        // 10. Login Form: Input Event Listener (Clear errors on typing)
+        if (accountNameInput && accountNameError) {
+            accountNameInput.addEventListener('input', () => setInputError(accountNameInput, accountNameError, ''));
+        }
+        if (passwordInput && passwordError) {
+            passwordInput.addEventListener('input', () => setInputError(passwordInput, passwordError, ''));
+        }
+
+        // 11. Login Form: Submit Event Listener (Validation and Loading State)
+        if (loginForm && nextStepButton && accountNameInput && passwordInput && accountNameError && passwordError) {
+             loginForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent actual form submission
+
+                // Clear previous errors first
+                setInputError(accountNameInput, accountNameError, '');
+                setInputError(passwordInput, passwordError, '');
+
+                // Get values
+                const accountName = accountNameInput.value.trim();
+                const password = passwordInput.value; // Don't trim password
+
+                // Validate
+                const accountErrorMsg = validateAccountName(accountName);
+                const passwordErrorMsg = validatePassword(password);
+
+                let isValid = true;
+                if (accountErrorMsg) {
+                    setInputError(accountNameInput, accountNameError, accountErrorMsg);
+                    isValid = false;
+                }
+                if (passwordErrorMsg) {
+                    setInputError(passwordInput, passwordError, passwordErrorMsg);
+                    isValid = false;
+                }
+
+                // If valid, proceed with simulated loading
+                if (isValid) {
+                    const originalButtonText = nextStepButton.textContent;
+                    nextStepButton.disabled = true;
+                    nextStepButton.textContent = '正在验证...';
+
+                    // Simulate network request delay
+                    setTimeout(() => {
+                        // Re-enable button and restore text
+                        nextStepButton.disabled = false;
+                        nextStepButton.textContent = originalButtonText;
+
+                        // Show success message (or handle next step)
+                        showInfo(`登录信息已提交。\n账户名: ${accountName}\n（实际应用中会处理登录结果）`);
+                        // Optionally clear form or redirect here
+
+                    }, 1500); // Simulate 1.5 second delay
+                }
+            });
+        }
+
+    </script>
+
+</body>
+</html>

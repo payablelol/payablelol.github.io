@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付宝 - 收银台</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, 'Microsoft Yahei', 'Hiragino Sans GB', 'Heiti SC', 'WenQuanYi Micro Hei', sans-serif;
+            background-color: #f5f5f5; /* Light grey background */
+            color: #333;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 990px; /* Desktop max width */
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* Header */
+        .header {
+            background-color: #fff;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .logo img {
+            height: 30px; /* Adjust as needed */
+            vertical-align: middle;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            color: #666;
+            margin-left: 10px;
+            border-left: 1px solid #ccc;
+            padding-left: 10px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .header-links {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .header-links a {
+            color: #666;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        .header-links a:hover {
+            color: #ff6600; /* Alipay orange */
+        }
+
+        /* Order Summary Section (Top Bar) */
+        .order-summary {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 15px 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .order-summary-details {
+            flex-grow: 1;
+            padding-right: 20px;
+        }
+
+        .order-summary-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px; /* Space below title */
+        }
+        .order-summary-title span {
+            color: #1677ff;
+            cursor: pointer;
+            font-weight: normal; /* Ensure [?] is not bold */
+        }
+
+        .order-summary dl {
+            margin-bottom: 5px;
+            display: flex;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .order-summary dt {
+            width: 70px;
+            text-align: right;
+            margin-right: 5px;
+            color: #999;
+            white-space: nowrap;
+        }
+        .order-summary dd {
+            flex-grow: 1;
+            color: #333;
+        }
+        .order-summary dd.merchant-name {
+            font-weight: bold; /* Keep merchant name bold */
+        }
+
+        .order-summary-amount {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .order-summary-amount .amount {
+            font-size: 24px;
+            color: #ff6600;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .order-summary-amount .amount-currency {
+            font-size: 14px;
+            margin-left: 3px;
+        }
+        .order-summary-amount .order-link {
+            display: block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #1677ff;
+            text-decoration: none;
+        }
+         .order-summary-amount .order-link:hover {
+             text-decoration: underline;
+         }
+
+        /* Main Content Area Container */
+        .main-content {
+            padding: 0 15px;
+        }
+
+        /* Main Content Body (QR + Login) */
+        .main-content-body {
+            display: flex;
+            flex-wrap: wrap;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 30px;
+        }
+
+        /* Payment Section (QR Code) - Now on the left */
+        .payment-section {
+            flex: 1;
+            min-width: 300px;
+            padding-right: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-right: 1px solid #f0f0f0;
+        }
+
+        .qr-code-area {
+            position: relative;
+        }
+
+        .qr-code-area .amount-display {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+         .qr-code-area .amount-display span {
+             /* Increased font size and weight for amount */
+             font-size: 18px;
+             font-weight: bold;
+             color: #ff6600;
+         }
+
+        .qr-image {
+            width: 180px;
+            height: 180px;
+            border: 1px solid #eee;
+            padding: 5px;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+         .qr-image img {
+             max-width: 100%;
+             max-height: 100%;
+         }
+
+        /* Updated Scanner Overlay Style */
+        .scanner-overlay {
+            position: absolute;
+            top: 50px; /* Fine-tuned position */
+            left: 50px; /* Fine-tuned position */
+            width: 90px; /* Slightly larger */
+            height: 90px; /* Slightly larger */
+            border: 2px dashed #1677ff; /* Dashed border */
+            border-radius: 50%;
+            /* Gradient to mimic scanner light */
+            background: radial-gradient(circle at center, rgba(22,119,255,0.05) 0%, rgba(22,119,255,0.2) 70%, rgba(22,119,255,0.05) 100%);
+            opacity: 0.9;
+            animation: pulse 2s infinite ease-in-out, rotate 4s linear infinite; /* Added rotation */
+            box-shadow: 0 0 5px rgba(22, 119, 255, 0.3); /* Subtle glow */
+        }
+
+        /* Updated pulse animation */
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        /* Added rotation animation */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .qr-instructions {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 15px; /* Space below instructions */
+            margin-top: 10px; /* Space above instructions */
+        }
+        .qr-instructions img {
+            width: 16px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .alternative-link {
+            font-size: 12px;
+            color: #1677ff;
+            text-decoration: none;
+        }
+        .alternative-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Sidebar (Login/Switch Account) - Now on the right */
+        .sidebar {
+            flex-basis: 220px;
+            flex-shrink: 0;
+            padding-left: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sidebar-box {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .sidebar-box img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #1677ff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .sidebar-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 30px;
+            padding: 20px 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .footer-icp {
+            margin-bottom: 15px;
+        }
+
+        .footer-logos img {
+            height: 20px;
+            margin: 0 10px;
+            vertical-align: middle;
+            opacity: 0.7;
+        }
+
+        /* --- Sidebar Styles (Copied from demo copy.html, adjusted slightly) --- */
+        /* Note: These specific sidebar styles might conflict or be redundant */
+        /* with existing .sidebar styles. Review and merge as needed. */
+        /* Keeping the QR view specific styles for potential use */
+        .sidebar.qr-view .sidebar-icon { /*支付宝 Logo 占位符 */
+            width: 100px;
+            height: 40px; /* 调整高度 */
+            background-color: #f0f0f0;
+            margin: 0 auto 15px auto; /* 居中 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            border: 1px solid #ddd;
+            /* 使用官方 Logo URL */
+            background: #f0f0f0 url('https://t.alipayobjects.com/images/rmsweb/T1B8lXXeliXXXXXXXX.png') no-repeat center center; /* 支付宝官方 Logo */
+            background-size: 80%; /* 调整大小 */
+        }
+        .sidebar.qr-view .sidebar-button {
+            display: block;
+            width: 100%;
+            padding: 9px 0;
+            background-color: #009fe8; /* 按钮蓝色 */
+            border: none;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            height: 36px;
+            line-height: 1;
+            box-sizing: border-box;
+        }
+        .sidebar.qr-view .sidebar-button:hover {
+            background-color: #007bb5;
+        }
+
+
+        /* --- 移动端样式 (Mobile View - Copied from demo copy.html) --- */
+        .mobile-view {
+            display: none; /* 默认隐藏 */
+            background-color: #f5f5f5; /* 移动端背景色 */
+            min-height: 100vh;
+            padding-bottom: 80px; /* 为底部链接留出空间 */
+            box-sizing: border-box;
+            position: relative;
+        }
+        .mobile-header {
+            background-color: #1677FF; /* 支付宝蓝 */
+            color: white;
+            padding: 0 10px; /* 调整左右内边距 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed; /* 固定顶部 */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            height: 44px; /* 移动端标准导航栏高度 */
+            line-height: 44px; /* 垂直居中 */
+        }
+        .mobile-header .back-arrow {
+            font-size: 28px; /* 调整箭头大小 */
+            text-decoration: none;
+            color: white;
+            font-weight: normal; /* 不加粗 */
+            line-height: 1; /* 确保不影响高度 */
+            padding: 0 10px; /* 增加点击区域 */
+            margin-left: -10px; /* 抵消内边距 */
+        }
+        .mobile-header .title {
+            font-size: 18px;
+            font-weight: 500; /* 中等粗细 */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex; /* 使用 flex 布局 */
+            align-items: center; /* 垂直居中 */
+        }
+        .mobile-header .title-logo-placeholder { /* Logo Image Placeholder */
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 6px; /* Adjust spacing */
+            width: 24px; /* Adjust size */
+            height: 24px; /* Adjust size */
+            background: url('https://t.alipayobjects.com/images/rmsweb/T1B8lXXeliXXXXXXXX.png') no-repeat center center; /* Use Alipay logo */
+            background-size: contain; /* Scale logo */
+        }
+        .mobile-header .title-text { /* 包裹文字 */
+             display: inline-block;
+             vertical-align: middle; /* Ensure text aligns with icon */
+        }
+        .mobile-header .more-options {
+            font-size: 24px; /* 调整图标大小 */
+            text-decoration: none;
+            color: white;
+            font-weight: bold; /* 加粗 */
+            line-height: 1; /* 确保不影响高度 */
+            padding: 0 10px; /* 增加点击区域 */
+            margin-right: -10px; /* 抵消内边距 */
+            font-family: 'Courier New', Courier, monospace; /* 使用等宽字体模拟省略号 */
+        }
+        .mobile-content {
+            padding: 64px 20px 40px; /* 调整顶部 padding (header height + spacing) */
+            text-align: center;
+        }
+        .mobile-merchant-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px; /* 调整间距 */
+            line-height: 1.4; /* 调整行高 */
+        }
+        .mobile-amount {
+            font-size: 40px; /* 调整金额字体 */
+            color: #000;
+            font-weight: 500; /* 中等粗细 */
+            margin-bottom: 50px; /* 调整间距 */
+            line-height: 1;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* 金额字体 */
+        }
+        .mobile-amount .currency {
+            font-size: 28px; /* 调整货币符号大小 */
+            font-weight: normal; /* 不加粗 */
+            margin-right: 3px; /* 调整间距 */
+            vertical-align: baseline; /* 基线对齐 */
+        }
+        .mobile-button {
+            display: block;
+            width: 100%;
+            padding: 13px 0; /* 调整按钮内边距 */
+            background-color: #1677FF; /* 支付宝蓝 */
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 6px; /* 圆角 */
+            text-decoration: none;
+            margin-bottom: 25px; /* 调整间距 */
+            cursor: pointer;
+            font-weight: 500; /* 中等粗细 */
+        }
+        .mobile-button:active { /* 点击效果 */
+            background-color: #0f5ecc;
+        }
+        .mobile-link {
+            color: #1677FF;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .mobile-footer-link {
+            position: absolute; /* 固定底部 */
+            bottom: 25px; /* 调整距离底部距离 */
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 14px;
+            color: #999;
+        }
+        /* 模拟移动端选项菜单 (Screenshot 4) - 默认隐藏, 需 JS 控制 */
+        .mobile-options-menu {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #f7f7f7; /* 浅灰色背景 */
+            z-index: 20;
+        }
+        .mobile-options-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .mobile-options-menu li a, .mobile-options-menu li span {
+            display: block;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee; /* 分隔线 */
+            background-color: #fff; /* 选项白色背景 */
+        }
+         .mobile-options-menu li:last-child a, .mobile-options-menu li:last-child span {
+             border-bottom: none; /* 最后一个无下边框 */
+         }
+        .mobile-options-menu li.cancel a, .mobile-options-menu li.cancel span {
+            color: #333; /* 根据截图调整为深灰色 */
+            margin-top: 8px; /* 与上方选项分隔 */
+            background-color: #fff;
+            border-bottom: none; /* 确保取消按钮无下边框 */
+        }
+        /* 模拟 Toast 消息 (需要 JS 控制显示/隐藏和动画) */
+        .mobile-toast {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            bottom: 100px; /* 大致位置 */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            z-index: 30;
+            text-align: center; /* 文字居中 */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            /* Hide Desktop Elements */
+            .header,
+            .order-summary,
+            .main-content,
+            .footer {
+                display: none;
+            }
+            /* Show Mobile View */
+            .mobile-view {
+                display: block;
+            }
+            /* Remove desktop container constraints */
+             .container {
+                 max-width: 100%;
+                 margin: 0;
+                 padding: 0;
+                 border: none;
+                 box-shadow: none;
+                 background-color: transparent; /* Ensure container is transparent */
+             }
+             body {
+                 background-color: #f5f5f5; /* Ensure mobile background is set */
+             }
+
+             /* Keep existing mobile adjustments below if needed, */
+             /* but the main switch is handled above */
+
+             /* Example: Adjustments from original demo.html mobile styles */
+             /* These might need review based on the new mobile-view structure */
+             /*
+             .order-summary { // Now hidden, rules below are likely irrelevant
+                 flex-direction: column;
+                 align-items: stretch;
+                 padding: 15px;
+                 margin-top: 15px;
+                 margin-bottom: 15px;
+             }
+             .order-summary-details {
+                 padding-right: 0;
+                 margin-bottom: 10px;
+             }
+             .order-summary-amount {
+                 text-align: left;
+             }
+             .order-summary-amount .amount {
+                 font-size: 20px;
+             }
+
+             .main-content-body { // Now hidden
+                 flex-direction: column;
+                 padding: 20px;
+             }
+
+             .payment-section { // Now hidden
+                 flex-basis: 100%;
+                 padding-right: 0;
+                 border-right: none;
+                 margin-bottom: 20px;
+                 padding-bottom: 20px;
+                 border-bottom: 1px solid #f0f0f0;
+                 min-width: unset;
+             }
+             .qr-image { // Now hidden
+                 width: 150px;
+                 height: 150px;
+             }
+             .scanner-overlay { // Now hidden
+                 top: 40px;
+                 left: 40px;
+                 width: 80px;
+                 height: 80px;
+             }
+
+             .sidebar { // Now hidden
+                 flex-basis: 100%;
+                 padding-left: 0;
+                 align-items: stretch;
+                 justify-content: flex-start;
+                 min-width: unset;
+             }
+             .sidebar-box { // Now hidden
+                  width: 100%;
+                  padding: 15px;
+             }
+
+             .footer-logos img { // Now hidden
+                 height: 18px;
+                 margin: 5px 5px;
+             }
+             */
+        }
+
+         @media (max-width: 480px) {
+             /* Adjustments for very small screens */
+             /* These might need review based on the new mobile-view structure */
+             /* Example: Adjust mobile font size if needed */
+             /*
+             body {
+                 font-size: 12px; // Already base size, maybe adjust mobile elements?
+             }
+             .mobile-header .title {
+                 font-size: 16px;
+             }
+             .mobile-amount {
+                 font-size: 36px;
+             }
+             .mobile-button {
+                 font-size: 16px;
+                 padding: 12px 0;
+             }
+             */
+
+             /* Keep existing smallest screen adjustments below if needed */
+             /* but they likely target hidden elements now */
+             /*
+             .header { // Hidden
+                 padding: 8px 0;
+             }
+             .logo img { // Hidden
+                 height: 25px;
+             }
+             .header-links { // Hidden
+                 font-size: 11px;
+             }
+             .header-links a { // Hidden
+                 margin-left: 8px;
+             }
+
+             .order-summary { // Hidden
+                 padding: 10px;
+                 margin-top: 10px;
+                 margin-bottom: 10px;
+             }
+             .order-summary dt { // Hidden
+                 width: 60px;
+             }
+             .order-summary-title { // Hidden
+                 font-size: 13px;
+             }
+
+             .main-content-body { // Hidden
+                 padding: 15px;
+             }
+
+             .payment-section { // Hidden
+                 padding-bottom: 15px;
+                 margin-bottom: 15px;
+             }
+             .qr-instructions { // Hidden
+                 font-size: 13px;
+             }
+             .qr-image { // Hidden
+                 width: 130px;
+                 height: 130px;
+             }
+              .scanner-overlay { // Hidden
+                 top: 35px;
+                 left: 35px;
+                 width: 70px;
+                 height: 70px;
+             }
+
+             .sidebar-button { // Hidden
+                 font-size: 13px;
+                 padding: 8px;
+             }
+
+             .footer { // Hidden
+                 margin-top: 20px;
+                 padding: 15px 10px;
+             }
+             .footer-logos img { // Hidden
+                 height: 16px;
+                 margin: 3px 4px;
+             }
+             */
+         }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header (Desktop) -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" alt="支付宝 Logo">
+                <span class="logo-text">我的收银台</span>
+            </div>
+            <div class="header-links">
+                你好，欢迎使用支付宝付款！ | <a href="#">常见问题</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container (Desktop) -->
+    <div class="container">
+
+        <!-- Order Summary Section (Desktop) -->
+        <section class="order-summary">
+            <div class="order-summary-details">
+                <div class="order-summary-title">正在使用即时到账交易 <span>[?]</span></div>
+                <dl>
+                    <dt>收款方：</dt>
+                    <dd class="merchant-name">凌河区天鳌软件经销处</dd>
+                </dl>
+                <dl>
+                    <dt>商品名称：</dt>
+                    <dd>18568542584 (H)售后客服 KF.744.CN</dd>
+                </dl>
+                <dl>
+                    <dt>订单号：</dt>
+                    <dd>2025040314005288111</dd>
+                </dl>
+            </div>
+            <div class="order-summary-amount">
+                <span class="amount">32.80</span><span class="amount-currency">元</span>
+                <a href="#" class="order-link">订单详情</a>
+            </div>
+        </section>
+
+        <!-- Main Content Body (QR + Login - Desktop) -->
+        <div class="main-content">
+            <div class="main-content-body">
+
+                <!-- Payment Section (QR Code) -->
+                <section class="payment-section">
+                    <div class="qr-code-area">
+                         <div class="amount-display">扫一扫付款 (元) <span>32.80</span></div>
+                        <div class="qr-image">
+                            <img src="https://via.placeholder.com/160x160/EEEEEE/888888?text=QR+Code" alt="支付二维码">
+                        </div>
+                        <!-- Updated Scanner Overlay -->
+                        <div class="scanner-overlay"></div>
+                    </div>
+                    <div class="qr-instructions">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDE2IDI0Ij4KICAgIDxwYXRoIGZpbGw9IiMxNjc3RkYiIGQ9Ik0xMi41IDBoLTlDMy4yMjQgMCAzIC4yMjQgMyAuNVYyMy41YzAgLjI3Ni4yMjQuNS41LjVoOUMxMi43NzYgMjQgMTMgMjMuNzc2IDEzIDIzLjVWLjVDMTMgLjIyNCAxMi43NzYgMCAxMi41IDB6TTYuNSAydi0uNWgxVjJINi41em0zIDE5LjVINy41di0xaDF2MXptMi41LTNoLTdWNEgxMlYxOC41eiIvPgo8L3N2Zz4K" alt="手机图标">
+                        打开手机支付宝 扫一扫继续付款
+                    </div>
+                    <a href="#" class="alternative-link">首次使用请下载手机支付宝</a>
+                </section>
+
+                 <!-- Sidebar Section (Login/Switch Account) -->
+                 <aside class="sidebar">
+                     <div class="sidebar-box">
+                         <img src="https://gw.alipayobjects.com/zos/rmsportal/OvAqLjyNJUcbMxAQNFup.svg" alt="支付宝">
+                         <a href="#" class="sidebar-button">&lt; 登录账户付款</a>
+                     </div>
+                 </aside>
+
+            </div>
+        </div>
+
+    </div> <!-- End .container (Desktop) -->
+
+    <!-- Footer (Desktop) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-icp">
+                <!-- Updated ICP to match screenshot -->
+                ICP证：合字B2-20190046
+            </div>
+            <div class="footer-logos">
+                <!-- Placeholders remain -->
+                <img src="https://via.placeholder.com/60x20/CCCCCC/FFFFFF?text=Trust" alt="Trust Logo">
+                <img src="https://via.placeholder.com/60x20/CCCCCC/FFFFFF?text=VeriSign" alt="VeriSign Logo">
+                <img src="https://via.placeholder.com/60x20/CCCCCC/FFFFFF?text=PCI" alt="PCI Logo">
+                <img src="https://via.placeholder.com/60x20/CCCCCC/FFFFFF?text=Visa" alt="Visa Logo">
+                <img src="https://via.placeholder.com/60x20/CCCCCC/FFFFFF?text=MasterCard" alt="MasterCard Logo">
+                <img src="https://via.placeholder.com/60x20/CCCCCC/FFFFFF?text=JCB" alt="JCB Logo">
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile View Container (Copied from demo copy.html) -->
+    <div class="mobile-view">
+        <div class="mobile-header">
+            <a href="#" class="back-arrow">&lt;</a>
+            <span class="title">
+                <span class="title-logo-placeholder"></span> <!-- Logo Placeholder -->
+                <span class="title-text">支付宝付款</span>
+            </span>
+            <a href="#" class="more-options">...</a> <!-- 实际功能需 JS -->
+        </div>
+        <div class="mobile-content">
+            <!-- Example Content (Update with dynamic data as needed) -->
+            <div class="mobile-merchant-info">17745551445 (H)售后客服 KF.744.CN</div>
+            <div class="mobile-amount">
+                <span class="currency">¥</span>22.80
+            </div>
+            <button class="mobile-button">打开支付宝APP付款</button>
+            <a href="#" class="mobile-link">下载支付宝APP付款</a>
+        </div>
+        <div class="mobile-footer-link">
+            已支付完成返回查看订单
+        </div>
+
+        <!-- Mobile Options Menu (Hidden by default) -->
+        <div class="mobile-options-menu" id="mobile-menu">
+             <ul>
+                 <li><a href="#">我的客服</a></li>
+                 <li><a href="#">问题反馈</a></li>
+                 <li><a href="#">下载支付宝</a></li>
+                 <!-- Use span + JS for cancel -->
+                 <li class="cancel"><span onclick="hideMobileMenu()">取消</span></li>
+             </ul>
+        </div>
+
+        <!-- Mobile Toast Message (Hidden by default) -->
+        <div class="mobile-toast" id="mobile-toast">
+            您还未完成付款，请继续付款
+        </div>
+
+    </div> <!-- end mobile-view -->
+
+    <!-- JavaScript for Mobile Interactions (Copied from demo copy.html) -->
+    <script>
+        const moreOptionsButton = document.querySelector('.mobile-header .more-options');
+        const mobileMenu = document.getElementById('mobile-menu');
+        // const mobileToast = document.getElementById('mobile-toast'); // Get Toast element if needed elsewhere
+
+        function showMobileMenu() {
+            if (mobileMenu) {
+                mobileMenu.style.display = 'block';
+            }
+        }
+
+        function hideMobileMenu() {
+             if (mobileMenu) {
+                mobileMenu.style.display = 'none';
+            }
+        }
+
+        // Click "..." to show menu
+        if (moreOptionsButton) {
+            moreOptionsButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent link default action
+                showMobileMenu();
+            });
+        }
+
+        // Function to show Toast message
+        function showToast(message, duration = 3000) {
+            const mobileToast = document.getElementById('mobile-toast');
+            if (mobileToast) {
+                mobileToast.textContent = message; // Set message content
+                mobileToast.style.display = 'block';
+                setTimeout(() => { mobileToast.style.display = 'none'; }, duration); // Auto-hide
+            }
+        }
+
+        // Example: Show toast when clicking back arrow (uncomment to test)
+        // document.querySelector('.mobile-header .back-arrow').addEventListener('click', function(e) {
+        //     e.preventDefault();
+        //     showToast('您还未完成付款，请继续付款');
+        // });
+
+    </script>
+
+</body>
+</html>

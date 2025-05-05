@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付宝收银台</title>
+    <style>
+        /* --- 通用样式 --- */
+        body {
+            margin: 0;
+            /* 参考截图字体，优先使用系统默认 UI 字体 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei";
+            font-size: 12px; /* 基础字体 */
+            background-color: #f5f5f5; /* 页面背景色 */
+            color: #333;
+            line-height: 1.5;
+        }
+        a { /* 基础链接样式 */
+            color: #0d8ae6;
+            text-decoration: none;
+        }
+        a:hover {
+            color: #FF6A00; /* 悬停颜色 */
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 990px; /* 容器最大宽度 */
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e1e1e1; /* 添加细边框 */
+        }
+        .header {
+            padding: 15px 25px; /* 内边距 */
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff; /* 确保页头背景白色 */
+            height: 40px; /* 根据截图调整高度 */
+            box-sizing: border-box; /* 让 padding 不增加总高度 */
+        }
+        .logo {
+            height: 28px; /* 根据截图调整 Logo 高度 */
+            display: inline-block;
+            width: auto;
+            text-indent: -9999px; /* 隐藏文字 */
+            background: url('https://t.alipayobjects.com/images/rmsweb/T1B8lXXeliXXXXXXXX.png') no-repeat; /* 支付宝官方 Logo */
+            background-size: contain; /* 缩放以适应 */
+            width: 88px; /* 根据 Logo 图片调整宽度 */
+            vertical-align: middle;
+        }
+        .logo-divider { /* Logo 和文字间的竖线 */
+            display: inline-block;
+            height: 16px;
+            width: 1px;
+            background-color: #ccc;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+        .header-title { /* "我的收银台" */
+            font-size: 16px;
+            color: #666;
+            vertical-align: middle;
+        }
+        .header-right span, .header-right a {
+            margin-left: 15px;
+            color: #666; /* 调整为截图颜色 */
+            text-decoration: none;
+            font-size: 12px;
+        }
+        .header-right a:hover {
+            color: #FF6A00; /* 悬停颜色 */
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0 30px 0; /* 调整上下内边距 */
+            font-size: 12px;
+            color: #999;
+            /* border-top: 1px solid #eee; */ /* 移除顶部边框，截图无 */
+            margin-top: 30px; /* 增加与主要内容分隔 */
+            line-height: 1.8; /* 增加行高以便图标显示 */
+            background-color: #fff; /* 确保页脚背景白色 */
+        }
+        .footer img, .footer .img-placeholder { /* 同时为 img 和占位符设置样式 */
+            height: 20px; /* 调整高度以匹配截图 */
+            margin: 0 5px -4px 5px; /* 调整垂直对齐和间距 */
+            vertical-align: middle; /* 垂直居中对齐 */
+            display: inline-block; /* 确保占位符有尺寸 */
+            border: none; /* 移除占位符边框 */
+            padding: 0;
+            line-height: 20px; /* 使文字垂直居中 */
+            /* 使用文字模拟图片 */
+            font-size: 10px;
+            color: #aaa;
+        }
+        /* 移除占位符背景色和文字 */
+        .img-placeholder {
+            background-color: transparent;
+            text-indent: -9999px;
+            overflow: hidden;
+        }
+        /* 使用背景图模拟 Logo */
+        .img-placeholder.trustwave { background: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*svAXTYMD3PAAAAAAAAAAAABjAQAAAQ/original') no-repeat center center; background-size: contain; width: 80px; height: 20px; } /* 替换为 Trustwave */
+        .img-placeholder.verisign { background: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*Q0ZRRrJgnrYAAAAAAAAAAABjAQAAAQ/original') no-repeat center center; background-size: contain; width: 60px; height: 20px; }
+        .img-placeholder.pci { background: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*Y4WMRYm3Fz4AAAAAAAAAAABjAQAAAQ/original') no-repeat center center; background-size: contain; width: 40px; height: 20px; }
+        .img-placeholder.visa { background: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*p6YyQ5LxG0MAAAAAAAAAAAABjAQAAAQ/original') no-repeat center center; background-size: contain; width: 40px; height: 20px; }
+        .img-placeholder.mastercard { background: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*o5XgQ7l_GqEAAAAAAAAAAABjAQAAAQ/original') no-repeat center center; background-size: contain; width: 35px; height: 20px; }
+        .img-placeholder.jcb { background: url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*wLHiR5c5m0AAAAAAAAAAAABjAQAAAQ/original') no-repeat center center; background-size: contain; width: 30px; height: 20px; }
+
+
+        /* --- 电脑端样式 (Desktop View) --- */
+        .desktop-view {
+            display: block;
+            padding: 20px 25px 30px;
+            background-color: #fff; /* 确保内容区域背景白色 */
+        }
+        .order-info {
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 15px; /* 调整底部内边距 */
+            margin-bottom: 25px; /* 调整底部外边距 */
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* 顶部对齐 */
+        }
+        .order-details {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8; /* 调整行高 */
+            max-width: 75%; /* 调整左侧宽度 */
+        }
+        .order-details .detail-item {
+            margin-bottom: 5px; /* 调整项间距 */
+        }
+        .order-details .label {
+            display: inline-block;
+            text-align: left; /* 标签左对齐 */
+            margin-right: 5px;
+            color: #666; /* 标签颜色调整为截图颜色 */
+            font-weight: bold; /* Make labels bold */
+        }
+        .order-details .value {
+            color: #333;
+        }
+        .order-details .value.merchant-name {
+            font-weight: normal; /* 商家名称不加粗 */
+            font-size: 12px; /* 商家名称字体大小 */
+            color: #333; /* 商家名称颜色 */
+        }
+        .order-details .question-mark { /* [?] 样式 */
+            color: #0d8ae6;
+            cursor: pointer;
+            margin-left: 3px;
+            font-weight: bold; /* 加粗问号 */
+        }
+        .order-amount {
+            text-align: right;
+        }
+        .amount-value {
+            font-size: 20px; /* 金额字体大小调整 */
+            color: #FF6A00;
+            font-weight: 700; /* 加粗 */
+            line-height: 1;
+            margin-bottom: 8px; /* 与下方链接间距 */
+            font-family: Arial, Helvetica, sans-serif; /* 使用 Arial 字体显示金额 */
+        }
+        .amount-value .currency {
+            font-size: 12px; /* "元"字体大小 */
+            font-weight: normal; /* 不加粗 */
+            margin-left: 2px;
+            font-family: inherit; /* 继承 body 字体 */
+        }
+        .order-link {
+            font-size: 12px;
+            color: #0d8ae6;
+            text-decoration: none;
+            display: block;
+            margin-top: 0; /* 移除上方间距 */
+        }
+        .order-link:hover {
+            color: #FF6A00;
+            text-decoration: underline;
+        }
+
+        .payment-section {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* --- Login Form Styles (Screenshot 1) --- */
+        .login-payment {
+            flex-grow: 1; /* 占据主要空间 */
+            padding-right: 40px; /* 与右侧栏分隔 */
+            max-width: calc(100% - 220px); /* 限制最大宽度，防止挤压 sidebar */
+        }
+        .login-title-bar {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-bottom: 25px; /* 增加间距 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .login-title {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+        .new-user-link {
+            font-size: 12px;
+            color: #0d8ae6;
+            text-decoration: none;
+        }
+        .new-user-link:hover {
+            color: #FF6A00;
+            text-decoration: underline;
+        }
+        .login-form .form-group {
+            margin-bottom: 18px; /* 调整组间距 */
+            display: flex;
+            align-items: center;
+        }
+        .login-form .form-label {
+            width: 70px; /* 标签宽度 */
+            text-align: right;
+            margin-right: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+        .login-form .form-control {
+            width: 240px; /* 输入框宽度调整 */
+            height: 32px; /* 输入框高度调整 */
+            padding: 5px 10px; /* 调整内边距 */
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px; /* 增大输入字体 */
+            line-height: 1.5; /* 确保文字垂直居中 */
+            box-sizing: border-box; /* 让 padding 不增加总宽度 */
+        }
+        .login-form .form-control:focus { /* 输入框获取焦点样式 */
+             border-color: #0d8ae6;
+             outline: none;
+             box-shadow: 0 0 2px rgba(13, 138, 230, 0.5);
+        }
+        .login-form .form-links {
+            margin-left: 10px;
+        }
+        .login-form .form-links a {
+            font-size: 12px;
+            color: #0d8ae6;
+            text-decoration: none;
+        }
+        .login-form .form-links a:hover {
+            color: #FF6A00;
+            text-decoration: underline;
+        }
+        .login-form .form-tip {
+            margin-left: 80px; /* 与标签对齐 */
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 20px; /* 与按钮间距 (Reduced from 25px) */
+            padding-top: 5px; /* 微调位置 */
+        }
+        .login-form .form-tip .highlight { /* Style for highlighted text */
+            color: #f04134; /* Alipay red */
+            font-weight: bold;
+        }
+        .login-form .form-tip a {
+            /* Link style removed to match screenshot 1 */
+            color: #999; /* Keep color consistent with surrounding text */
+            text-decoration: none; /* No underline */
+            cursor: text; /* Indicate it's not interactive like a standard link */
+        }
+         /* .login-form .form-tip a:hover { */
+            /* color: #FF6A00; */ /* Remove hover effect */
+            /* text-decoration: underline; */
+         /* } */
+        .login-form .submit-button {
+            background-color: #009fe8; /* 按钮蓝色 - Replaced by image */
+            color: white; /* Text removed */
+            border: none;
+            padding: 9px 35px; /* Padding removed as text is gone */
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s ease; /* Hover effect might change */
+            margin-left: 80px; /* 与标签对齐 */
+            height: 36px; /* Height determined by background size */
+            line-height: 1; /* Not needed for icon */
+            /* Use background image instead of mask */
+            /* background: url('https://gw.alipayobjects.com/zos/rmsportal/xBYDmdjMAbWITLFCvMVe.svg') no-repeat center center; */ /* Removed background image */
+            /* background-size: contain; */ /* Removed */
+            /* width: 20px; */ /* Removed */
+            /* height: 20px; */ /* Removed */
+            box-sizing: border-box;
+        }
+        .login-form .submit-button:hover {
+            background-color: #007bb5; /* Optional: Add hover effect if desired, e.g., slight opacity change */
+            /* opacity: 0.85; */ /* Example hover effect */
+        }
+
+
+        /* --- QR Payment Styles (Screenshot 2/9) --- */
+        .qr-payment {
+            /* flex-grow: 1; */ /* 移除，让其自然宽度 */
+            padding-right: 40px; /* 与右侧栏分隔 */
+            display: flex; /* 使用 flex 布局 */
+            align-items: flex-start; /* 顶部对齐 */
+            max-width: calc(100% - 220px); /* 限制最大宽度 */
+        }
+        .qr-code-area {
+            text-align: center;
+            margin-right: 30px; /* 与右侧动画间距 */
+        }
+        .qr-title {
+            font-size: 14px; /* 调整标题大小 */
+            color: #666; /* 调整颜色 */
+            margin-bottom: 8px; /* 调整间距 */
+        }
+        .qr-amount {
+            font-size: 18px; /* 调整金额大小 */
+            color: #FF6A00;
+            font-weight: bold;
+            margin-bottom: 15px; /* 调整间距 */
+            font-family: Arial, Helvetica, sans-serif; /* 金额字体 */
+        }
+        .qr-code-container {
+            width: 140px; /* 调整二维码容器大小 */
+            height: 140px;
+            margin: 0 auto 15px auto; /* 调整间距 */
+            border: 1px solid #eee;
+            padding: 5px; /* 内边距 */
+            position: relative;
+            background-color: #fff; /* 白色背景 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1); /* 轻微阴影 */
+        }
+        .qr-code-container img { /* 如果用图片显示二维码 */
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+        .qr-instruction {
+            font-size: 12px; /* 调整字体大小 */
+            color: #333;
+            margin-top: 0; /* 移除上方间距 */
+            line-height: 1.6; /* 调整行高 (Reduced from 1.8) */
+        }
+        .qr-instruction .icon-mobile { /* Styled span for mobile icon */
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: #1677FF; /* Alipay blue */
+            color: #fff;
+            font-size: 12px;
+            line-height: 18px; /* Center content vertically */
+            text-align: center;
+            vertical-align: middle;
+            margin-right: 5px;
+            border-radius: 4px; /* Rounded corners */
+            font-weight: bold;
+            /* Add phone symbol inside if desired, or leave blank */
+            /* content: "📱"; */ /* Optional: if you want the emoji inside the box */
+        }
+        .qr-scan-animation {
+            width: 180px; /* 扫描动画区域宽度 */
+            height: 180px; /* 扫描动画区域高度 */
+            border: 1px solid #eee;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            /* 使用官方 URL */
+            background: #f9f9f9 url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*p4NoQ59r8uAAAAAAAAAAAABjAQAAAQ/original') no-repeat center center; /* 模拟扫描动画背景 */
+            background-size: contain; /* 缩放背景 */
+        }
+        .other-payment-link {
+            margin-top: 20px; /* 调整间距 */
+            font-size: 12px;
+            text-align: center;
+        }
+        .other-payment-link a {
+            color: #0d8ae6;
+            text-decoration: none;
+        }
+        .other-payment-link a:hover {
+            color: #FF6A00;
+            text-decoration: underline;
+        }
+
+        /* --- Sidebar Styles --- */
+        .sidebar {
+            width: 180px; /* 右侧栏宽度 */
+            /* border-left: 1px solid #eee; */ /* 移除左边框 */
+            /* padding-left: 30px; */ /* 移除左内边距 */
+            text-align: center;
+            flex-shrink: 0; /* 防止被压缩 */
+            border-left: 1px solid #eee; /* 添加左边框作为分隔 */
+            padding-left: 25px; /* 添加左内边距 */
+            margin-left: 25px; /* 添加左外边距 */
+            height: fit-content; /* 高度自适应内容 */
+        }
+        /* Sidebar for Login View (Screenshot 1) */
+        .sidebar.login-view .sidebar-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            text-align: left; /* 标题左对齐 */
+            font-weight: bold; /* 加粗 */
+        }
+        .sidebar.login-view .sidebar-icon {
+            width: 100px; /* 图标宽度 */
+            height: 100px; /* 图标高度 */
+            background-color: #f0f0f0;
+            margin: 0 auto 15px auto; /* 居中 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            border: 1px solid #ddd;
+            /* 使用官方 URL */
+            background: #f0f0f0 url('https://gw.alipayobjects.com/mdn/pa_custsrv/afts/img/A*06AjQbf6E0MAAAAAAAAAAAABjAQAAAQ/original') no-repeat center center; /* 模拟手机扫码示意图 */
+            background-size: 80%; /* 调整背景大小 */
+        }
+        .sidebar.login-view .sidebar-button {
+            display: block;
+            width: 100%; /* 宽度100% */
+            padding: 9px 0; /* 调整按钮内边距 */
+            background-color: #009fe8; /* 按钮蓝色 */
+            border: none;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold; /* 加粗 */
+            border-radius: 3px; /* 调整圆角 */
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            height: 36px; /* 固定高度 */
+            line-height: 1; /* 确保文字垂直居中 */
+            box-sizing: border-box;
+        }
+        .sidebar.login-view .sidebar-button:hover {
+            background-color: #007bb5;
+        }
+
+        /* Sidebar for QR View (Screenshot 2/9) */
+        .sidebar.qr-view .sidebar-icon { /* 支付宝 Logo 占位符 */
+            width: 100px;
+            height: 40px; /* 调整高度 */
+            background-color: #f0f0f0;
+            margin: 0 auto 15px auto; /* 居中 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+            border: 1px solid #ddd;
+            /* 使用官方 Logo URL */
+            background: #f0f0f0 url('https://t.alipayobjects.com/images/rmsweb/T1B8lXXeliXXXXXXXX.png') no-repeat center center; /* 支付宝官方 Logo */
+            background-size: 80%; /* 调整大小 */
+        }
+        .sidebar.qr-view .sidebar-button {
+            display: block;
+            width: 100%;
+            padding: 9px 0;
+            background-color: #009fe8; /* 按钮蓝色 */
+            border: none;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            height: 36px;
+            line-height: 1;
+            box-sizing: border-box;
+        }
+        .sidebar.qr-view .sidebar-button:hover {
+            background-color: #007bb5;
+        }
+
+
+        /* --- 移动端样式 (Mobile View) --- */
+        .mobile-view {
+            display: none; /* 默认隐藏 */
+            background-color: #f5f5f5; /* 移动端背景色 */
+            min-height: 100vh;
+            padding-bottom: 80px; /* 为底部链接留出空间 */
+            box-sizing: border-box;
+            position: relative;
+        }
+        .mobile-header {
+            background-color: #1677FF; /* 支付宝蓝 */
+            color: white;
+            padding: 0 10px; /* 调整左右内边距 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed; /* 固定顶部 */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            height: 44px; /* 移动端标准导航栏高度 */
+            line-height: 44px; /* 垂直居中 */
+        }
+        .mobile-header .back-arrow {
+            font-size: 28px; /* 调整箭头大小 */
+            text-decoration: none;
+            color: white;
+            font-weight: normal; /* 不加粗 */
+            line-height: 1; /* 确保不影响高度 */
+            padding: 0 10px; /* 增加点击区域 */
+            margin-left: -10px; /* 抵消内边距 */
+        }
+        .mobile-header .title {
+            font-size: 18px;
+            font-weight: 500; /* 中等粗细 */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex; /* 使用 flex 布局 */
+            align-items: center; /* 垂直居中 */
+        }
+        .mobile-header .title-logo-placeholder { /* Logo Image Placeholder */
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 6px; /* Adjust spacing */
+            width: 24px; /* Adjust size */
+            height: 24px; /* Adjust size */
+            background: url('https://t.alipayobjects.com/images/rmsweb/T1B8lXXeliXXXXXXXX.png') no-repeat center center; /* Use Alipay logo */
+            background-size: contain; /* Scale logo */
+            /* Removed mask properties */
+        }
+        .mobile-header .title-text { /* 包裹文字 */
+             display: inline-block;
+             vertical-align: middle; /* Ensure text aligns with icon */
+        }
+        .mobile-header .more-options {
+            font-size: 24px; /* 调整图标大小 */
+            text-decoration: none;
+            color: white;
+            font-weight: bold; /* 加粗 */
+            line-height: 1; /* 确保不影响高度 */
+            padding: 0 10px; /* 增加点击区域 */
+            margin-right: -10px; /* 抵消内边距 */
+            font-family: 'Courier New', Courier, monospace; /* 使用等宽字体模拟省略号 */
+        }
+        .mobile-content {
+            padding: 64px 20px 40px; /* 调整顶部 padding (header height + spacing) */
+            text-align: center;
+        }
+        .mobile-merchant-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px; /* 调整间距 */
+            line-height: 1.4; /* 调整行高 */
+        }
+        .mobile-amount {
+            font-size: 40px; /* 调整金额字体 */
+            color: #000;
+            font-weight: 500; /* 中等粗细 */
+            margin-bottom: 50px; /* 调整间距 */
+            line-height: 1;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* 金额字体 */
+        }
+        .mobile-amount .currency {
+            font-size: 28px; /* 调整货币符号大小 */
+            font-weight: normal; /* 不加粗 */
+            margin-right: 3px; /* 调整间距 */
+            vertical-align: baseline; /* 基线对齐 */
+        }
+        .mobile-button {
+            display: block;
+            width: 100%;
+            padding: 13px 0; /* 调整按钮内边距 */
+            background-color: #1677FF; /* 支付宝蓝 */
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 6px; /* 圆角 */
+            text-decoration: none;
+            margin-bottom: 25px; /* 调整间距 */
+            cursor: pointer;
+            font-weight: 500; /* 中等粗细 */
+        }
+        .mobile-button:active { /* 点击效果 */
+            background-color: #0f5ecc;
+        }
+        .mobile-link {
+            color: #1677FF;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .mobile-footer-link {
+            position: absolute; /* 固定底部 */
+            bottom: 25px; /* 调整距离底部距离 */
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 14px;
+            color: #999;
+        }
+        /* 模拟移动端选项菜单 (Screenshot 4) - 默认隐藏, 需 JS 控制 */
+        .mobile-options-menu {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #f7f7f7; /* 浅灰色背景 */
+            z-index: 20;
+            /* border-top: 1px solid #eee; */ /* 移除顶部边框 */
+        }
+        .mobile-options-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .mobile-options-menu li a, .mobile-options-menu li span {
+            display: block;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee; /* 分隔线 */
+            background-color: #fff; /* 选项白色背景 */
+        }
+         .mobile-options-menu li:last-child a, .mobile-options-menu li:last-child span {
+             border-bottom: none; /* 最后一个无下边框 */
+         }
+        .mobile-options-menu li.cancel a, .mobile-options-menu li.cancel span {
+            /* color: #ff4d4f; */ /* 取消按钮默认颜色 */
+            color: #333; /* 根据截图调整为深灰色 */
+            margin-top: 8px; /* 与上方选项分隔 */
+            background-color: #fff;
+            border-bottom: none; /* 确保取消按钮无下边框 */
+        }
+        /* 模拟 Toast 消息 (需要 JS 控制显示/隐藏和动画) */
+        .mobile-toast {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            bottom: 100px; /* 大致位置 */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            z-index: 30;
+            text-align: center; /* 文字居中 */
+        }
+
+
+        /* --- 响应式设计: 切换电脑/移动视图 --- */
+        @media (max-width: 768px) {
+            body {
+                background-color: #f5f5f5; /* 移动端背景 */
+            }
+            .container {
+                margin: 0;
+                box-shadow: none;
+                max-width: 100%;
+                background-color: transparent; /* 容器透明 */
+                border: none; /* 移除边框 */
+            }
+            .header, .footer, .desktop-view {
+                display: none; /* 隐藏电脑端元素 */
+            }
+            .mobile-view {
+                display: block; /* 显示移动端视图 */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 电脑端视图容器 -->
+    <div class="container">
+        <div class="header">
+            <div> <!-- 左侧容器 -->
+                <span class="logo">支付宝</span>
+                <span class="logo-divider"></span>
+                <span class="header-title">我的收银台</span>
+            </div>
+            <div class="header-right">
+                <span>你好, 欢迎使用支付宝付款！</span>
+                <a href="#">常见问题</a>
+            </div>
+        </div>
+
+        <!-- 电脑端内容 -->
+        <div class="desktop-view">
+            <!-- 订单信息区域 -->
+            <div class="order-info">
+                <div class="order-details">
+                    <!-- 根据 Screenshot 1 & 9 更新订单详情 -->
+                    <div class="detail-item">
+                        <span class="label">正在使用即时到账交易</span>
+                        <span class="value"><a href="#" class="question-mark">[?]</a></span>
+                    </div>
+                    <div class="detail-item">
+                        <!-- 调整标签以匹配截图 -->
+                        <span class="label">新 极品：</span> <!-- 注意截图中的空格 -->
+                        <span class="value value-merchant-name">收款方：滦河区天慧软件经销处</span>
+                    </div>
+                    <!-- 根据 Screenshot 9 添加更多详情 (默认注释掉，可在 QR 视图时显示) -->
+                    <!--
+                    <div class="detail-item">
+                        <span class="label">正在使用担保交易</span> // Updated label for screenshot 9
+                        <span class="value"><a href="#" class="question-mark">[?]</a></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">收款方：</span> // Updated label for screenshot 9
+                        <span class="value value-merchant-name">北京奇虎科技有限公司</span> // Updated merchant for screenshot 9
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">商户订单号：</span>
+                        <span class="value">18568542584 [H]售后客服 KF.744.CN</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">支付宝交易号：</span>
+                        <span class="value">2025040314005288111</span>
+                    </div>
+                     <div class="detail-item">
+                        <span class="label">创建时间：</span>
+                        <span class="value">2025.04.03 14:00:52</span>
+                    </div>
+                    -->
+                </div>
+                <div class="order-amount">
+                    <!-- 根据 Screenshot 1 更新金额 -->
+                    <span class="amount-value">9.80<span class="currency">元</span></span>
+                    <!-- 根据 Screenshot 9 更新金额 (默认注释掉) -->
+                    <!-- <span class="amount-value">32.80<span class="currency">元</span></span> -->
+                    <a href="#" class="order-link">订单详情</a>
+                </div>
+            </div>
+
+            <!-- 付款方式区域 -->
+            <div class="payment-section">
+
+                <!-- 默认显示: 登录支付宝账户付款 (Screenshot 1) -->
+                <div class="login-payment">
+                    <div class="login-title-bar">
+                        <span class="login-title">登录支付宝账户付款</span>
+                        <a href="#" class="new-user-link">新用户注册</a>
+                    </div>
+                    <form class="login-form">
+                        <div class="form-group">
+                            <label for="account" class="form-label">账户名：</label>
+                            <input type="text" id="account" class="form-control" placeholder="手机号码/邮箱">
+                            <div class="form-links">
+                                <a href="#">忘记账户名？</a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="form-label">支付密码：</label>
+                            <input type="password" id="password" class="form-control">
+                             <div class="form-links">
+                                <a href="#">忘记密码？</a>
+                            </div>
+                        </div>
+                         <div class="form-tip">
+                            <!-- 调整提示文字以匹配截图, 移除链接 -->
+                            若输入账户的 <span class="highlight">支付密码</span>，不是登录密码。
+                         </div>
+                         <div class="form-group"> <!-- 移除顶部外边距，由 form-tip 控制 -->
+                             <button type="submit" class="submit-button">下一步</button> <!-- Text restored -->
+                         </div>
+                    </form>
+                </div>
+                <!-- 对应的 Sidebar (Screenshot 1) -->
+                <div class="sidebar login-view">
+                    <div class="sidebar-title">试试手机支付宝</div>
+                    <div class="sidebar-icon">
+                        <!-- 背景图已在 CSS 中设置 -->
+                    </div>
+                    <a href="#" class="sidebar-button">扫一扫付款</a>
+                </div>
+
+
+                <!-- 备选显示: 扫一扫付款 (Screenshot 2/9) - 默认注释掉 -->
+                <!--
+                <div class="qr-payment">
+                    <div class="qr-code-area">
+                        <div class="qr-title">扫一扫付款 (元)</div>
+                        // 金额应与 order-info 中的金额一致 (例如 9.80 或 32.80)
+                        <div class="qr-amount">9.80</div>
+                        <div class="qr-code-container">
+                            // 实际应用中这里应插入二维码图片或 Canvas
+                            // 使用占位符图片或 CSS 背景
+                            <img src="https://via.placeholder.com/130/eee/999?text=QR+Code" alt="支付宝扫码付款二维码"> // 简单占位符
+                        </div>
+                        <div class="qr-instruction">
+                            <span class="icon-mobile"></span> 打开手机支付宝<br> 扫一扫付款
+                        </div>
+                         <div class="other-payment-link">
+                            <a href="#">首次使用请下载手机支付宝</a>
+                        </div>
+                    </div>
+                    <div class="qr-scan-animation">
+                        // 背景图已在 CSS 中设置
+                    </div>
+                </div>
+                -->
+                <!-- 对应的 Sidebar (Screenshot 2/9) - 默认注释掉 -->
+                <!--
+                <div class="sidebar qr-view">
+                    <div class="sidebar-icon"> // 支付宝 Logo
+                        // 背景图已在 CSS 中设置
+                    </div>
+                    <a href="#" class="sidebar-button">登录账户付款</a>
+                </div>
+                -->
+
+            </div> <!-- end payment-section -->
+        </div> <!-- end desktop-view -->
+
+        <!-- 页脚 (仅电脑端显示) -->
+        <div class="footer">
+            <span>ICP证：合字B2-20190046</span><br>
+            <!-- 使用带 class 的 span 和背景图模拟图片 -->
+            <span class="img-placeholder trustwave">Trustwave</span> <!-- 添加 Trustwave -->
+            <span class="img-placeholder verisign">VeriSign</span>
+            <span class="img-placeholder pci">PCI DSS</span>
+            <span class="img-placeholder visa">VISA</span>
+            <span class="img-placeholder mastercard">MasterCard</span>
+            <span class="img-placeholder jcb">JCB</span>
+        </div>
+    </div> <!-- end container -->
+
+    <!-- 移动端视图容器 -->
+    <div class="mobile-view">
+        <div class="mobile-header">
+            <a href="#" class="back-arrow">&lt;</a>
+            <span class="title">
+                <span class="title-logo-placeholder"></span> <!-- Logo Placeholder -->
+                <span class="title-text">支付宝付款</span>
+            </span>
+            <a href="#" class="more-options">...</a> <!-- 实际功能需 JS -->
+        </div>
+        <div class="mobile-content">
+            <!-- 根据 Screenshot 3 更新内容 -->
+            <div class="mobile-merchant-info">17745551445 (H)售后客服 KF.744.CN</div>
+            <div class="mobile-amount">
+                <span class="currency">¥</span>22.80
+            </div>
+            <button class="mobile-button">打开支付宝APP付款</button>
+            <a href="#" class="mobile-link">下载支付宝APP付款</a>
+        </div>
+        <div class="mobile-footer-link">
+            已支付完成返回查看订单
+        </div>
+
+        <!-- 模拟移动端选项菜单 (Screenshot 4) - 默认隐藏, 需 JS 控制 -->
+        <div class="mobile-options-menu" id="mobile-menu">
+             <ul>
+                 <li><a href="#">我的客服</a></li>
+                 <li><a href="#">问题反馈</a></li>
+                 <li><a href="#">下载支付宝</a></li>
+                 <!-- 使用 span 并添加 JS 点击事件来模拟按钮行为 -->
+                 <li class="cancel"><span onclick="hideMobileMenu()">取消</span></li>
+             </ul>
+        </div>
+
+        <!-- 模拟移动端 Toast 消息 (Screenshot 5) - 默认隐藏, 需 JS 控制 -->
+        <div class="mobile-toast" id="mobile-toast">
+            您还未完成付款，请继续付款
+        </div>
+
+    </div> <!-- end mobile-view -->
+
+    <!-- 可以在这里添加少量 JS 来模拟移动端菜单的显示/隐藏 -->
+    <script>
+        const moreOptionsButton = document.querySelector('.mobile-header .more-options');
+        const mobileMenu = document.getElementById('mobile-menu');
+        // const mobileToast = document.getElementById('mobile-toast'); // 获取 Toast 元素
+
+        function showMobileMenu() {
+            if (mobileMenu) {
+                mobileMenu.style.display = 'block';
+            }
+        }
+
+        function hideMobileMenu() {
+             if (mobileMenu) {
+                mobileMenu.style.display = 'none';
+            }
+        }
+
+        // 简单的示例：点击右上角 "..." 显示菜单
+        if (moreOptionsButton) {
+            moreOptionsButton.addEventListener('click', function(event) {
+                event.preventDefault(); // 阻止链接默认行为
+                showMobileMenu();
+            });
+        }
+
+        // 示例：显示 Toast (需要根据实际逻辑触发, 例如点击返回按钮时)
+        function showToast(message, duration = 3000) {
+            const mobileToast = document.getElementById('mobile-toast');
+            if (mobileToast) {
+                mobileToast.textContent = message; // 设置消息内容
+                mobileToast.style.display = 'block';
+                setTimeout(() => { mobileToast.style.display = 'none'; }, duration); // duration 后自动隐藏
+            }
+        }
+
+        // 示例调用 Toast (取消注释以测试)
+        // document.querySelector('.mobile-header .back-arrow').addEventListener('click', function(e) {
+        //     e.preventDefault();
+        //     showToast('您还未完成付款，请继续付款');
+        // });
+
+    </script>
+
+</body>
+</html>
+
