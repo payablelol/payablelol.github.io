@@ -13,4 +13,24 @@ $ukCompanyData = [
     ]
 ];
 print_r($ukCompanyData);
+
+$ukCompanyData2 = [
+    'annual_review_reminders' => [
+        ['id' => 1, 'operation_name' => '续费注册地址 (Update Registered Office Address)', 'frequency' => '每年或变更时 (Annually or as changes occur)', 'details' => '确保公司注册地址是最新的，并向Companies House报告任何变更。 (Ensure the registered office address is current and report any changes to Companies House.)', 'link_text' => '详情 (Details)', 'link_url' => 'https://www.gov.uk/change-your-registered-office-address', 'reminder_checkbox_id' => 'reminder_address_update'],
+        ['id' => 2, 'operation_name' => '提交确认声明 (File Confirmation Statement - CS01)', 'frequency' => '每年 (Annually)', 'details' => '向Companies House确认公司信息的准确性，通常费用为£13在线提交。 (Confirm company information with Companies House. Fee is typically £13 for online filing.)', 'link_text' => '详情 (Details)', 'link_url' => 'https://www.gov.uk/file-confirmation-statement-companies-house', 'reminder_checkbox_id' => 'reminder_confirmation_statement'],
+        ['id' => 3, 'operation_name' => '提交年度账目 (File Annual Accounts)', 'frequency' => '每年 (Annually)', 'details' => '向Companies House提交年度财务报表。截止日期通常为会计年度结束后的9个月。 (Submit annual financial statements to Companies House. Deadline is usually 9 months after the accounting year end.)', 'link_text' => '详情 (Details)', 'link_url' => 'https://www.gov.uk/prepare-file-annual-accounts-for-limited-company', 'reminder_checkbox_id' => 'reminder_annual_accounts'],
+        ['id' => 4, 'operation_name' => '提交公司税务申报 (File Company Tax Return - CT600)', 'frequency' => '每年 (Annually)', 'details' => '向HMRC申报公司所得税。申报截止日期通常为会计期结束后12个月，纳税截止日期为9个月零1天。 (File Corporation Tax return with HMRC. Filing deadline is usually 12 months after accounting period end, payment deadline is 9 months and 1 day.)', 'link_text' => '详情 (Details)', 'link_url' => 'https://www.gov.uk/company-tax-returns', 'reminder_checkbox_id' => 'reminder_tax_return'],
+        ['id' => 5, 'operation_name' => '维护法定登记簿 (Maintain Statutory Registers)', 'frequency' => '持续更新 (Ongoing)', 'details' => '保持公司内部记录的准确性，如董事、股东、PSC名册等。 (Keep internal company records accurate, e.g., registers of directors, members, PSCs.)', 'link_text' => '详情 (Details)', 'link_url' => 'https://www.gov.uk/running-a-limited-company/company-and-accounting-records', 'reminder_checkbox_id' => 'reminder_statutory_registers'],
+        // 根据需要添加VAT和PAYE等
+        // ['id' => 6, 'operation_name' => '增值税申报 (VAT Returns)', 'frequency' => '通常每季度 (Usually Quarterly - if registered)', 'details' => '提交VAT申报并支付应缴税款。 (Submit VAT returns and pay any VAT due.)', 'link_text' => '详情 (Details)', 'link_url' => 'https://www.gov.uk/vat-returns', 'reminder_checkbox_id' => 'reminder_vat_returns'],
+
+    ],
+    'registration_related_links' => [
+        ['id' => 1, 'link_name' => '英国政府官网 (UK Government - GOV.UK)', 'description' => '英国政府服务的官方门户网站。 (The official portal for UK government services.)', 'link_url' => 'https://www.gov.uk'],
+        ['id' => 2, 'link_name' => '英国公司注册处 (Companies House)', 'description' => '负责公司注册和公司信息存档的英国政府机构。 (UK government agency responsible for company registration and public records.)', 'link_url' => 'https://www.gov.uk/government/organisations/companies-house'],
+        ['id' => 3, 'link_name' => '注册新公司 (Register a New Company)', 'description' => '在英国注册成立新公司的官方指南和链接。 (Official guidance and links for setting up a new company in the UK.)', 'link_url' => 'https://www.gov.uk/register-a-company'],
+        ['id' => 4, 'link_name' => '英国税务及海关总署 (HM Revenue & Customs - HMRC)', 'description' => '负责征税和管理海关的英国政府部门。 (UK government department responsible for tax collection and customs administration.)', 'link_url' => 'https://www.gov.uk/government/organisations/hm-revenue-customs']
+    ]
+];
+
 ?>
