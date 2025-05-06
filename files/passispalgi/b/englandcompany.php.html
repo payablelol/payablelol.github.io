@@ -1,0 +1,16 @@
+<?php
+$ukCompanyData = [
+    'annual_review_reminders' => [
+        ['id' => 1, 'operation_name' => '续费地址', 'frequency' => '每年', 'details' => '检查并更新注册公司的地址信息', 'link_text' => '详情', 'link_url' => 'http://example.com/address', 'reminder_checkbox_id' => 'reminder1'],
+        ['id' => 2, 'operation_name' => '年审费用支付', 'frequency' => '每年', 'details' => '支付13英镑的年审费用', 'link_text' => '详情', 'link_url' => 'http://example.com/annual-fee', 'reminder_checkbox_id' => 'reminder2'],
+        ['id' => 3, 'operation_name' => '税务申报', 'frequency' => '每两年', 'details' => '完成一次全面的税务申报', 'link_text' => '详情', 'link_url' => 'http://example.com/tax-declaration', 'reminder_checkbox_id' => 'reminder3']
+    ],
+    'registration_related_links' => [
+        ['id' => 1, 'link_name' => '英国政府官网', 'link_url' => 'https://www.gov.uk'],
+        ['id' => 2, 'link_name' => 'Companies House', 'link_url' => 'https://www.gov.uk/government/organisations/companies-house'],
+        ['id' => 3, 'link_name' => '注册新公司', 'link_url' => 'https://www.gov.uk/register-a-company'],
+        ['id' => 4, 'link_name' => '英国税务及海关总署', 'link_url' => 'https://www.gov.uk/government/organisations/hm-revenue-customs']
+    ]
+];
+print_r($ukCompanyData);
+?>
