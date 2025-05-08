@@ -29,3 +29,19 @@ $array = [files/
         ]
     ]
 ];
+
+$cryptocurrencies_details = [
+    'Bitcoin' => ['symbol' => 'BTC', 'price_ntd' => 'NT$2,998,360.18', 'change_24hr' => '2.58%', 'source_code' => 'https://github.com/bitcoin/bitcoin', 'principle' => '比特币是一种点对点的电子现金系统。想象一下，有一个公开的、大家都可以查看和记录的账本（区块链），每一笔交易都被记录在这个账本上。这个账本不是由银行这样的中心机构维护的，而是由成千上万的计算机（矿工）共同维护和验证。当你发送比特币时，这个交易会被广播到网络中，矿工们会通过解决复杂的数学问题来竞争记录这个交易的权利，并获得新的比特币作为奖励。这个过程确保了交易的安全性和不可篡改性。'],
+    'Ethereum' => ['symbol' => 'ETH', 'price_ntd' => 'NT$57,545.74', 'change_24hr' => '3.95%', 'source_code' => 'https://github.com/ethereum/go-ethereum', 'principle' => '以太坊可以看作是一个“世界计算机”。它不仅像比特币一样可以进行价值转移，更重要的是它引入了“智能合约”的概念。智能合约就像是自动执行的合同条款，当满足特定条件时，代码会自动执行。这使得开发者可以在以太坊上构建各种去中心化应用（DApps），比如去中心化金融（DeFi）、游戏等。以太坊也有自己的区块链和加密货币（以太币，ETH），ETH用于支付在以太坊网络上执行操作的费用。'],
+    'Tether' => ['symbol' => 'USDT', 'price_ntd' => 'NT$30.30', 'change_24hr' => '0.02%', 'source_code' => 'https://github.com/tethercoin/USDT (主要是智能合约代码)', 'principle' => 'Tether (USDT) 是一种“稳定币”，它的目标是保持与美元1:1的锚定。也就是说，理论上1 USDT的价值约等于1美元。这是通过Tether公司储备等值的美元或其他资产来实现的。USDT的主要作用是在波动的加密货币市场中提供一个相对稳定的价值储存和交易媒介，方便用户在不同加密货币之间进行转换，或者暂时规避市场风险。'],
+    'XRP' => ['symbol' => 'XRP', 'price_ntd' => 'NT$66.29', 'change_24hr' => '1.99%', 'source_code' => 'https://github.com/ripple/xrpl-dev-portal (XRP Ledger相关代码)', 'principle' => 'XRP是由Ripple公司发行和推广的一种数字货币，主要用于促进快速、低成本的国际支付。它运行在XRP Ledger（瑞波共识账本）上，这是一个去中心化的公共区块链。与比特币的挖矿不同，XRP Ledger使用一种共识机制，由受信任的验证者网络来确认交易。这使得XRP的交易速度非常快，通常在几秒钟内就能完成。'],
+    'BNB' => ['symbol' => 'BNB', 'price_ntd' => 'NT$18,471.18', 'change_24hr' => '0.95%', 'source_code' => 'https://github.com/bnb-chain (BNB Chain相关代码)', 'principle' => 'BNB最初是由币安（Binance）交易所发行的平台币，用于支付币安平台上的交易手续费并获得折扣。后来，BNB发展成为BNB Chain（包括BNB Beacon Chain和BNB Smart Chain）的原生代币。BNB Smart Chain兼容以太坊虚拟机（EVM），支持智能合约和去中心化应用。BNB在BNB Chain生态系统中扮演着重要角色，用于支付交易费、参与治理、质押等。'],
+    'Solana' => ['symbol' => 'SOL', 'price_ntd' => 'NT$4,565.10', 'change_24hr' => '3.56%', 'source_code' => 'https://github.com/solana-labs/solana', 'principle' => 'Solana是一个高性能的区块链平台，旨在提供高吞吐量（每秒处理大量交易）和低延迟。它通过一种名为“历史证明”（Proof of History）的创新机制以及其他技术来实现这一目标。历史证明为交易打上时间戳，使得验证者可以更快地就交易顺序达成共识。SOL是Solana网络的原生代币，用于支付交易费、参与质押以保护网络安全等。'],
+    'USDC' => ['symbol' => 'USDC', 'price_ntd' => 'NT$30.30', 'change_24hr' => '0.00%', 'source_code' => 'https://github.com/centrehq/centre-whitepaper (白皮书和概念，智能合约代码分散在各链)', 'principle' => 'USD Coin (USDC) 是另一种流行的稳定币，与美元1:1锚定。它由Circle和Coinbase等公司组成的CENTRE联盟发行和管理。与Tether类似，USDC的价值由储备的美元或其他合格资产支持，并且会定期进行审计以确保透明度。USDC广泛用于加密货币交易、支付和去中心化金融应用中。'],
+    'Dogecoin' => ['symbol' => 'DOGE', 'price_ntd' => 'NT$5.46', 'change_24hr' => '4.75%', 'source_code' => 'https://github.com/dogecoin/dogecoin', 'principle' => '狗狗币（Dogecoin）最初是作为一个基于流行网络迷因“Doge”（一只柴犬的表情包）的玩笑而创建的。它基于莱特币（Litecoin）的代码，采用了与比特币类似的“工作量证明”机制，但有一些参数上的调整，比如更快的出块时间和更大的供应量。尽管起源于玩笑，狗狗币凭借其友好的社区和一些名人的推广，逐渐获得了广泛的认可和使用，尤其是在小额打赏和慈善捐赠方面。'],
+    'Cardano' => ['symbol' => 'ADA', 'price_ntd' => 'NT$21.30', 'change_24hr' => '3.62%', 'source_code' => 'https://github.com/cardano-foundation', 'principle' => '卡尔达诺（Cardano）是一个以科学哲学和研究为驱动的区块链平台，旨在提供更安全、更可持续和更具可扩展性的基础设施。它采用了一种名为“Ouroboros”的“权益证明”（Proof of Stake）共识机制，持有其原生代币ADA的用户可以通过质押来参与网络验证并获得奖励。Cardano的开发分为多个阶段，逐步实现智能合约、侧链等功能，目标是成为一个功能全面的去中心化应用平台。'],
+    'TRON' => ['symbol' => 'TRX', 'price_ntd' => 'NT$7.58', 'change_24hr' => '2.52%', 'source_code' => 'https://github.com/tronprotocol/java-tron', 'principle' => '波场（TRON）是一个旨在构建去中心化互联网及其基础设施的区块链平台。它专注于内容娱乐行业，希望让创作者能够直接向消费者分发内容，而无需依赖传统中间商。TRON采用了一种名为“委托权益证明”（Delegated Proof of Stake, DPoS）的共识机制，TRX是其原生代币，用于支付交易费、参与投票选举超级代表（负责验证交易和打包区块）以及在TRON生态系统中使用各种应用。']
+];
+
+// 您可以取消下面这行代码的注释来打印数组进行验证
+// print_r($cryptocurrencies_details);
